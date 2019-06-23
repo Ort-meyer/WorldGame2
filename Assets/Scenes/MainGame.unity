@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 228355221}
   - component: {fileID: 228355220}
   - component: {fileID: 228355219}
+  - component: {fileID: 228355224}
   m_Layer: 0
   m_Name: DebugUnit
   m_TagString: Untagged
@@ -214,6 +215,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!143 &228355224
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 228355218}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &387719936
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +429,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1537117214}
   m_LocalRotation: {x: 0.24256141, y: 0.1681922, z: -0.042742178, w: 0.95448864}
-  m_LocalPosition: {x: 0.8, y: 34, z: -14}
+  m_LocalPosition: {x: 24.78, y: 13.27, z: -6.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

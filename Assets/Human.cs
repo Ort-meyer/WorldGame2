@@ -31,6 +31,7 @@ public class Human : MonoBehaviour
         DoRaycast();
         RightClick();
         LeftClick();
+        Debug.DrawRay(m_hit.point, m_hit.normal);
     }
 
     // Simply does a raycast and stores the hit data in private member

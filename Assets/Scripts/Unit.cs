@@ -15,10 +15,13 @@ public class Unit : MonoBehaviour
 
     // Where the unit is currently moving to
     private Vector3 m_destination;
+    // Character controller of this unit
+    private CharacterController m_controller;
     // Use this for initialization
     void Start()
     {
         m_destination = transform.position;
+        m_controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -26,40 +29,17 @@ public class Unit : MonoBehaviour
     {
 
         // Movement: move in XY plane, then set height and up-vector (tilt)
-
         Vector3 vecToDest = m_destination - transform.position;
         float currentDistanceToDest = vecToDest.magnitude;
         // If not there yet, keep moving
-
-        Vector3 newForward = transform.forward;
-        Vector3 newUp = transform.up;
         if(!(currentDistanceToDest < m_stopDistance))
         {
             // Move in XZ plane
             Vector3 xyMoveVector = new Vector3(vecToDest.x, 0, vecToDest.z);
-            transform.position += m_moveSpeed * xyMoveVector.normalized * Time.deltaTime;
-            newForward = xyMoveVector;
-            //transform.rotation = Quaternion.FromToRotation(transform.forward, xyMoveVector);
-            //transform.rotation = Quaternion.Euler(0, 45, 0);
+            m_controller.SimpleMove(m_moveSpeed * xyMoveVector.normalized);
+            transform.forward = new Vector3(m_controller.velocity.x, 0, m_controller.velocity.z);
         }
 
-        // Adjust hover distance and tilt
-        Ray ray = new Ray(transform.position, -1 * Vector3.up);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
-        // Find terrain
-        foreach (RaycastHit hit in hits)
-        {
-            if(hit.transform.gameObject.GetComponent<Terrain>())
-            {
-                newUp = hit.normal;
-                // Set position to ray hit on terrain plus an offset (hover)
-                transform.position = hit.point + hit.normal.normalized * m_hoverheight;
-                break;
-            }
-        }
-
-        transform.rotation = Quaternion.LookRotation(newForward, newUp);
-        
     }
 
     public void M_SetDestination(Vector3 destination)

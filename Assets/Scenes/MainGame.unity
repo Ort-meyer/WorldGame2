@@ -113,6 +113,48 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &34338404
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 19.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 16.588
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511888224954762, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 149fcddfad98d4d47bf380d02881d5c9, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &132686978
 Prefab:
   m_ObjectHideFlags: 0
@@ -305,8 +347,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 187175076953cfb42b238c26ff6d0928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_wellPrefab: {fileID: 0}
-  m_farmPrefab: {fileID: 0}
+  m_wellPrefab: {fileID: 1892032585793124, guid: c6f8d330c5ce2ff4aa2582572941d0f7,
+    type: 2}
+  m_farmPrefab: {fileID: 1507587836271606, guid: 6d87d4269665cfb4daf69850e7395eb0,
+    type: 2}
+  m_dwellingPrefab: {fileID: 0}
+  m_foodPerPop: 0.2
+  m_newPopThreshold: 3
   food: 0
   water: 0
   people: 0

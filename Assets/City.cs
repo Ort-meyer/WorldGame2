@@ -128,12 +128,21 @@ public class City : MonoBehaviour
 
     // List of all buildings in this city
     private List<GameObject> m_buildings = new List<GameObject>();
+    private List<GameObject> m_dwellings = new List<GameObject>();
     // Resource type mapped to amount of said resource currently present in city
     private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
 
+    // Population
+    // Current population total
     private float m_population;
+    // How much food each pop eats
     public float m_foodPerPop;
+    // How much food before a new pop appears
     public float m_newPopThreshold;
+    //// How manu pops live in each dwelling
+    //public int m_popPerDwelling;
+    //// How many 
+    //private int m_currentPopDwellingCounter = 0;
 
     // DEBUG stuff
     public float food = 0;
@@ -148,8 +157,12 @@ public class City : MonoBehaviour
         m_population = 10;
 
         // Create some buildings
+        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(-1, 0, 1), transform.rotation, transform));
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
-        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -1), transform.rotation, transform));
+        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(1, 0, 1), transform.rotation, transform));
+
+        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(1, 0, -1), transform.rotation, transform));
+        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -2), transform.rotation, transform));
     }
 
     // Update is called once per frame
@@ -183,19 +196,28 @@ public class City : MonoBehaviour
     {
         float totalMaintenance = m_foodPerPop * m_population * Time.deltaTime;
         float remainingFood = m_resourceStockpiles[Resource.Food].m_amount - totalMaintenance;
+        // Surplus: consume all food and create new pop
         if (remainingFood > m_newPopThreshold)
         {
             m_population++;
+            m_resourceStockpiles[Resource.Food].m_amount = 0;
         }
-        if (remainingFood > 0)
+        // Maintain current pop
+        else if (remainingFood > 0)
         {
             m_resourceStockpiles[Resource.Food].m_amount = remainingFood;
         }
-        else // People starve
+        // Starvation: remove a pop
+        else
         {
             m_resourceStockpiles[Resource.Food].m_amount = 0;
             m_population -= 1 * Time.deltaTime; ;
         }
+    }
+
+    void M_PlaceDwelling()
+    {
+
     }
 }
 

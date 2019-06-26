@@ -21,40 +21,40 @@ using UnityEngine;
  Consumes: steel, concrete
  Produces: building materials*/
 
-public enum Resource { Food, Water, People }
+public enum Resource { Food, Water }
 
 
 public class ResourceStockpile
 {
     // Current amount of resources currently in stockpile
-    public float m_amount { get; private set; }
+    public float m_amount;
     // Maximum amount of resources in stockpile
-    public float m_max { get; private set; }
+    public float m_max;
 
-    public ResourceStockpile(float max)
+    public ResourceStockpile(float startAmount, float max)
     {
-        m_amount = 0;
+        m_amount = startAmount;
         m_max = max;
     }
     ///* Updates amount of a resource and returns whatever was left over
     // * if stockpile was e*/
-    public float M_ChangeAmount(float change)
-    {
-        float leftOver = 0;
-        float newAmount = m_amount + change;
-        if (newAmount < 0)
-        {
-            leftOver = -1 * newAmount;
-            newAmount = 0;
-        }
-        else if (newAmount > m_max)
-        {
-            leftOver = newAmount - m_max;
-            newAmount = m_max;
-        }
-        m_amount = newAmount;
-        return leftOver;
-    }
+    //public float M_ChangeAmount(float change)
+    //{
+    //    float leftOver = 0;
+    //    float newAmount = m_amount + change;
+    //    if (newAmount < 0)
+    //    {
+    //        leftOver = -1 * newAmount;
+    //        newAmount = 0;
+    //    }
+    //    else if (newAmount > m_max)
+    //    {
+    //        leftOver = newAmount - m_max;
+    //        newAmount = m_max;
+    //    }
+    //    m_amount = newAmount;
+    //    return leftOver;
+    //}
 };
 public class ResourceProcess
 {
@@ -106,12 +106,12 @@ public class ResourceProcess
         // Then consume the resources
         foreach (var item in m_resourcesConsumed)
         {
-            cityStockpiles[item.Key].M_ChangeAmount(-item.Value * Time.deltaTime);
+            cityStockpiles[item.Key].m_amount -= item.Value * Time.deltaTime;
         }
         // Finally add the produced resources
         foreach (var item in m_resourcesProduced)
         {
-            cityStockpiles[item.Key].M_ChangeAmount(item.Value * Time.deltaTime);
+            cityStockpiles[item.Key].m_amount += item.Value * Time.deltaTime;
         }
     }
 }
@@ -119,14 +119,21 @@ public class ResourceProcess
 public class City : MonoBehaviour
 {
     // This will have to be put in some sort of list or something
+    // Production buildings
     public GameObject m_wellPrefab;
     public GameObject m_farmPrefab;
+    // City buildings
+    public GameObject m_dwellingPrefab;
+
 
     // List of all buildings in this city
     private List<GameObject> m_buildings = new List<GameObject>();
     // Resource type mapped to amount of said resource currently present in city
     private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
 
+    private float m_population;
+    public float m_foodPerPop;
+    public float m_newPopThreshold;
 
     // DEBUG stuff
     public float food = 0;
@@ -136,11 +143,9 @@ public class City : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // Create all stockpiles with 0 value
-        foreach (Resource res in System.Enum.GetValues(typeof(Resource)))
-        {
-            m_resourceStockpiles[res] = new ResourceStockpile(4);
-        }
+        m_resourceStockpiles[Resource.Food] = new ResourceStockpile(0, 4);
+        m_resourceStockpiles[Resource.Water] = new ResourceStockpile(0, 4);
+        m_population = 10;
 
         // Create some buildings
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
@@ -149,6 +154,15 @@ public class City : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        M_UpdateProduction();
+        M_UpdatePopulation();
+        food = m_resourceStockpiles[Resource.Food].m_amount;
+        water = m_resourceStockpiles[Resource.Water].m_amount;
+        people = m_population;
+    }
+
+    void M_UpdateProduction()
     {
         // Update city stockpile with building consumption and production
         foreach (GameObject buildingObj in m_buildings)
@@ -163,10 +177,25 @@ public class City : MonoBehaviour
                 Debug.LogError("building object in city doesn't have building script");
             }
         }
+    }
 
-        food = m_resourceStockpiles[Resource.Food].m_amount;
-        water = m_resourceStockpiles[Resource.Water].m_amount;
-        people = m_resourceStockpiles[Resource.People].m_amount;
+    void M_UpdatePopulation()
+    {
+        float totalMaintenance = m_foodPerPop * m_population * Time.deltaTime;
+        float remainingFood = m_resourceStockpiles[Resource.Food].m_amount - totalMaintenance;
+        if (remainingFood > m_newPopThreshold)
+        {
+            m_population++;
+        }
+        if (remainingFood > 0)
+        {
+            m_resourceStockpiles[Resource.Food].m_amount = remainingFood;
+        }
+        else // People starve
+        {
+            m_resourceStockpiles[Resource.Food].m_amount = 0;
+            m_population -= 1 * Time.deltaTime; ;
+        }
     }
 }
 

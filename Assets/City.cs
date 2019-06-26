@@ -21,15 +21,40 @@ using UnityEngine;
  Consumes: steel, concrete
  Produces: building materials*/
 
+public enum Resource { Food, Water, People }
 
 
-public enum Resource { Food, Water, People}
-class ResourceStockpile
+public class ResourceStockpile
 {
     // Current amount of resources currently in stockpile
-    float m_amount;
+    public float m_amount { get; private set; }
     // Maximum amount of resources in stockpile
-    float m_max;
+    public float m_max { get; private set; }
+
+    public ResourceStockpile(float max)
+    {
+        m_amount = 0;
+        m_max = max;
+    }
+    ///* Updates amount of a resource and returns whatever was left over
+    // * if stockpile was e*/
+    public float M_ChangeAmount(float change)
+    {
+        float leftOver = 0;
+        float newAmount = m_amount + change;
+        if (newAmount < 0)
+        {
+            leftOver = -1 * newAmount;
+            newAmount = 0;
+        }
+        else if (newAmount > m_max)
+        {
+            leftOver = newAmount - m_max;
+            newAmount = m_max;
+        }
+        m_amount = newAmount;
+        return leftOver;
+    }
 };
 public class ResourceProcess
 {
@@ -43,12 +68,13 @@ public class ResourceProcess
     // Resource mapped to amount of resource produced by this process
     protected Dictionary<Resource, float> m_resourcesProduced;
     // Performs the process, consuming goods and producing
-    public void Execute(ref Dictionary<Resource, float> cityStockpiles)
+    public void Execute(ref Dictionary<Resource, ResourceStockpile> cityStockpiles)
     {
+        bool failed = false;
         // First make sure that the resources needed exist
-        foreach(var item in m_resourcesConsumed)
+        foreach (var item in m_resourcesConsumed)
         {
-            if(cityStockpiles[item.Key] - item.Value * Time.deltaTime >= 0)
+            if (cityStockpiles[item.Key].m_amount - item.Value * Time.deltaTime >= 0)
             {
                 // Check passed
                 continue;
@@ -56,100 +82,50 @@ public class ResourceProcess
             else
             {
                 // Check didn't pass, don't produce
-                return;
+                failed = true;
             }
         }
-        // Then consume the resources
-        foreach(var item in m_resourcesConsumed)
+        // Then make sure that produced goods actually fits
+        foreach (var item in m_resourcesProduced)
         {
-            cityStockpiles[item.Key] -= item.Value * Time.deltaTime;
+            if (cityStockpiles[item.Key].m_amount + item.Value * Time.deltaTime <= cityStockpiles[item.Key].m_max)
+            {
+                // Check passed
+                continue;
+            }
+            else
+            {
+                // Check didn't pass, don't produce
+                failed = true;
+            }
+        }
+        if (failed)
+        {
+            return;
+        }
+        // Then consume the resources
+        foreach (var item in m_resourcesConsumed)
+        {
+            cityStockpiles[item.Key].M_ChangeAmount(-item.Value * Time.deltaTime);
         }
         // Finally add the produced resources
-        foreach(var item in m_resourcesProduced)
+        foreach (var item in m_resourcesProduced)
         {
-            cityStockpiles[item.Key] += item.Value * Time.deltaTime;
+            cityStockpiles[item.Key].M_ChangeAmount(item.Value * Time.deltaTime);
         }
     }
 }
-// Placeholder classes
-public class Building
-{
-    // Workers (WIP)
-    //public int m_maxWorkers;
-    //public int m_currentWorkers;
-    // List of resource processes in this building
-    protected List<ResourceProcess> m_resourceProcesses = new List<ResourceProcess>();
 
-    public virtual void Produce(ref Dictionary<Resource, float> cityStockpiles)
-    {
-        foreach(ResourceProcess process in m_resourceProcesses)
-        {
-            process.Execute(ref cityStockpiles);
-        }
-        //// Consume resources
-        //foreach (KeyValuePair<Resource, float> kvp in m_resourceConsumption)
-        //{
-        //    cityStockpiles[kvp.Key] -= kvp.Value;
-        //}
-        //// Produce resources
-        //foreach (KeyValuePair<Resource, float> kvp in m_resourceConsumption)
-        //{
-        //    cityStockpiles[kvp.Key] += kvp.Value;
-        //}
-    }
-};
-class Farm : Building
-{
-    public Farm()
-    {
-        // TODO there must be a prettier way of doing this...
-        m_resourceProcesses.Add(
-            new ResourceProcess(
-                new Dictionary<Resource, float>
-                {
-                    { Resource.Water, 5 }
-                },
-                new Dictionary<Resource, float>
-                {
-                    { Resource.Food, 2 }
-                }));
-    }
-};
-public class Well : Building
-{
-    public Well()
-    {
-        m_resourceProcesses.Add(
-            new ResourceProcess(
-                new Dictionary<Resource, float>
-                {
-                    // No consumption
-                },
-                new Dictionary<Resource, float>
-                {
-                    {Resource.Water, 3 }
-                }
-                ));
-    }
-};
-//class House: Building
-//{
-//    public House()
-//    {
-//        m_resourceConsumption[Resource.Water] = 1;
-//        m_resourceConsumption[Resource.Food] = 2;
-//    }
-//    public override void Produce(ref Dictionary<Resource, float> cityStockpiles)
-//    {
-
-//    }
-//};
 public class City : MonoBehaviour
 {
+    // This will have to be put in some sort of list or something
+    public GameObject m_wellPrefab;
+    public GameObject m_farmPrefab;
+
     // List of all buildings in this city
-    private List<Building> m_buildings = new List<Building>();
+    private List<GameObject> m_buildings = new List<GameObject>();
     // Resource type mapped to amount of said resource currently present in city
-    private Dictionary<Resource, float> m_resourceStockpiles = new Dictionary<Resource, float>();
+    private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
 
 
     // DEBUG stuff
@@ -163,26 +139,67 @@ public class City : MonoBehaviour
         // Create all stockpiles with 0 value
         foreach (Resource res in System.Enum.GetValues(typeof(Resource)))
         {
-            m_resourceStockpiles[res] = 0;
+            m_resourceStockpiles[res] = new ResourceStockpile(4);
         }
 
         // Create some buildings
-        
-        m_buildings.Add(new Well());
-        m_buildings.Add(new Farm());
+        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
+        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -1), transform.rotation, transform));
     }
 
     // Update is called once per frame
     void Update()
     {
         // Update city stockpile with building consumption and production
-        foreach(Building building in m_buildings)
+        foreach (GameObject buildingObj in m_buildings)
         {
-            building.Produce(ref m_resourceStockpiles);
+            Building building = buildingObj.GetComponent<Building>();
+            if (building)
+            {
+                building.Produce(ref m_resourceStockpiles);
+            }
+            else
+            {
+                Debug.LogError("building object in city doesn't have building script");
+            }
         }
 
-        food = m_resourceStockpiles[Resource.Food];
-        water = m_resourceStockpiles[Resource.Water];
-        people = m_resourceStockpiles[Resource.People];
+        food = m_resourceStockpiles[Resource.Food].m_amount;
+        water = m_resourceStockpiles[Resource.Water].m_amount;
+        people = m_resourceStockpiles[Resource.People].m_amount;
     }
 }
+
+
+
+//public class ResourceCache
+//{
+//    Resource m_resource;
+//    float m_currentAmount;
+//    float m_maxAmount;
+
+//    public ResourceCache(Resource resource, float m_maxAmount)
+//    {
+//        m_resource = resource;
+//        m_currentAmount = 0;
+//    }
+
+//    /* Updates amount of a resource and returns whatever was left over
+//     * if stockpile was e*/
+//    public float M_changeAmount(float change)
+//    {
+//        float leftOver = 0;
+//        float newAmount = m_currentAmount - change;
+//        if(newAmount < 0)
+//        {
+//            leftOver = -1 * newAmount;
+//            newAmount = 0;
+//        }
+//        else if (newAmount > m_maxAmount)
+//        {
+//            leftOver = newAmount - m_maxAmount;
+//            newAmount = m_maxAmount;
+//        }
+//        return leftOver;
+//    }
+//};

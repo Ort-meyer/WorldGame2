@@ -56,62 +56,111 @@ public class ResourceStockpile
     //    return leftOver;
     //}
 };
+
 public class ResourceProcess
 {
-    public ResourceProcess(Dictionary<Resource, float> resourcesConsumed, Dictionary<Resource, float> resourcesProduced)
+    enum ProcessState { BuildingLocalStockpiles, Working, DoneWorking }
+    public ResourceProcess(Dictionary<Resource, int> resourcesConsumed, Dictionary<Resource, int> resourcesProduced, float completionTime)
     {
+        m_currentState = ProcessState.BuildingLocalStockpiles;
+        m_completionTime = completionTime;
         m_resourcesConsumed = resourcesConsumed;
         m_resourcesProduced = resourcesProduced;
+        // Build local stockpile maximums
+        foreach (var kvp in m_resourcesConsumed)
+        {
+            m_inputStockpiles[kvp.Key] = new ResourceStockpile(0, kvp.Value);
+        }
+        // TODO some test that asserts that the same resource isn't consume AND produce?
     }
+
+    // The time it takes for the process to be completed
+    protected float m_completionTime;
+    // How long the current process has been working
+    protected float m_currentTime;
+    // The current state of the process
+    ProcessState m_currentState;
+    // Whether the process is currently active
+    //protected bool m_currentlyActive;
     // Resource mapped to amount of resource consumed by this process to produce
-    protected Dictionary<Resource, float> m_resourcesConsumed;
+    protected Dictionary<Resource, int> m_resourcesConsumed = new Dictionary<Resource, int>();
     // Resource mapped to amount of resource produced by this process
-    protected Dictionary<Resource, float> m_resourcesProduced;
+    protected Dictionary<Resource, int> m_resourcesProduced = new Dictionary<Resource, int>();
+    // How much of each resource is currently stockpiled. This never exceed 1 for production and the amount needed for consumption
+    protected Dictionary<Resource, ResourceStockpile> m_inputStockpiles = new Dictionary<Resource, ResourceStockpile>();
+    //protected Dictionary<Resource, ResourceStockpile> m_outputStockpiles = new Dictionary<Resource, ResourceStockpile>();
     // Performs the process, consuming goods and producing
     public void Execute(ref Dictionary<Resource, ResourceStockpile> cityStockpiles)
     {
-        bool failed = false;
-        // First make sure that the resources needed exist
-        foreach (var item in m_resourcesConsumed)
+        if (m_currentState == ProcessState.BuildingLocalStockpiles)
         {
-            if (cityStockpiles[item.Key].m_amount - item.Value * Time.deltaTime >= 0)
+            // 1) Fill local input stockpiles if the city has the supplies we need
+            foreach (var kvp in m_inputStockpiles)
             {
-                // Check passed
-                continue;
+                if (kvp.Value.m_amount < kvp.Value.m_max)
+                {
+                    if (cityStockpiles[kvp.Key].m_amount >= 1)
+                    {
+                        cityStockpiles[kvp.Key].m_amount--;
+                        kvp.Value.m_amount++;
+                    }
+                }
             }
-            else
+            // 2) If ALL local stockpiles are filled, deplete them and start proce
+            bool allStockpilesFull = true;
+            foreach (var kvp in m_inputStockpiles)
             {
-                // Check didn't pass, don't produce
-                failed = true;
+                if (kvp.Value.m_amount != kvp.Value.m_max)
+                {
+                    allStockpilesFull = false;
+                    break;
+                }
+            }
+            if (allStockpilesFull)
+            {
+                foreach (var kvp in m_inputStockpiles)
+                {
+                    kvp.Value.m_amount = 0;
+                }
+                m_currentState = ProcessState.Working;
             }
         }
-        // Then make sure that produced goods actually fits
-        foreach (var item in m_resourcesProduced)
+
+        // 3) When complete time is exceeded, try to increase city stockpile by produced. If it isn't possible, try again next frame
+        if (m_currentState == ProcessState.Working)
         {
-            if (cityStockpiles[item.Key].m_amount + item.Value * Time.deltaTime <= cityStockpiles[item.Key].m_max)
+            m_currentTime += Time.deltaTime;
+            if (m_currentTime >= m_completionTime)
             {
-                // Check passed
-                continue;
-            }
-            else
-            {
-                // Check didn't pass, don't produce
-                failed = true;
+                m_currentTime = 0;
+                m_currentState = ProcessState.DoneWorking;
             }
         }
-        if (failed)
+        if (m_currentState == ProcessState.DoneWorking)
         {
-            return;
-        }
-        // Then consume the resources
-        foreach (var item in m_resourcesConsumed)
-        {
-            cityStockpiles[item.Key].m_amount -= item.Value * Time.deltaTime;
-        }
-        // Finally add the produced resources
-        foreach (var item in m_resourcesProduced)
-        {
-            cityStockpiles[item.Key].m_amount += item.Value * Time.deltaTime;
+            /* This only updates city stockpiles if ALL stockpiles can be updated at once
+             * This means that if a process produces two resources, then both need to fit or the process hangs
+             * It also means that if for instance newAmount is 14 but max is 15, it also hangs even though parts
+             * of the production can be stored*/
+            bool roomInCityStockiles = true;
+            foreach (var kvp in m_resourcesProduced)
+            {
+                float newAmount = cityStockpiles[kvp.Key].m_amount + kvp.Value;
+                if (newAmount >= cityStockpiles[kvp.Key].m_max)
+                {
+                    roomInCityStockiles = false;
+                }
+            }
+            if (roomInCityStockiles)
+            {
+                foreach (var kvp in m_resourcesProduced)
+                {
+                    float newAmount = cityStockpiles[kvp.Key].m_amount + kvp.Value;
+                    cityStockpiles[kvp.Key].m_amount = newAmount;
+                }
+                // 4) When city stockpiles are updated, go to 1)
+                m_currentState = ProcessState.BuildingLocalStockpiles;
+            }
         }
     }
 }
@@ -152,24 +201,24 @@ public class City : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_resourceStockpiles[Resource.Food] = new ResourceStockpile(0, 4);
-        m_resourceStockpiles[Resource.Water] = new ResourceStockpile(0, 4);
+        m_resourceStockpiles[Resource.Food] = new ResourceStockpile(0, 15);
+        m_resourceStockpiles[Resource.Water] = new ResourceStockpile(0, 15);
         m_population = 10;
 
         // Create some buildings
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(-1, 0, 1), transform.rotation, transform));
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
-        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(1, 0, 1), transform.rotation, transform));
+        //m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(1, 0, 1), transform.rotation, transform));
 
         m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(1, 0, -1), transform.rotation, transform));
-        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -2), transform.rotation, transform));
+        //m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -2), transform.rotation, transform));
     }
 
     // Update is called once per frame
     void Update()
     {
         M_UpdateProduction();
-        M_UpdatePopulation();
+        //M_UpdatePopulation();
         food = m_resourceStockpiles[Resource.Food].m_amount;
         water = m_resourceStockpiles[Resource.Water].m_amount;
         people = m_population;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
+    public int m_completionTime;
     // List of resource processes in this building
     protected List<ResourceProcess> m_resourceProcesses = new List<ResourceProcess>();
 

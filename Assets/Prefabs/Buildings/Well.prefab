@@ -108,4 +108,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cf0caf954bb3645b5b583ad34e340b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_waterProduced: 3
+  m_completionTime: 1
+  m_waterProduced: 1

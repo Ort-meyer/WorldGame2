@@ -108,5 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba52413c2449d2c46a9a3b718b1b8807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_waterConsumed: 4
+  m_completionTime: 1
+  m_waterConsumed: 1
   m_foodProduced: 2

@@ -20,8 +20,22 @@ using UnityEngine;
  Production of building materials (WIP)
  Consumes: steel, concrete
  Produces: building materials*/
-
+ // Different resource types
 public enum Resource { Food, Water }
+// All population types
+public enum PopulationType { Uneducated, Educated, Rich}
+
+public class Population
+{
+    // What type of pop this is
+    public PopulationType m_popType;
+    // How much in this population
+    public float m_amount;
+    // The needs of each resource for each pop in this group
+    public Dictionary<Resource, float> m_needs = new Dictionary<Resource, float>();
+    // How much of each resource is consumed by each pop in this group
+    public Dictionary<Resource, float> m_maintenance = new Dictionary<Resource, float>();
+};
 
 
 public class ResourceStockpile
@@ -182,12 +196,9 @@ public class City : MonoBehaviour
     private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
 
     // Population
+    private Dictionary<PopulationType, Population> m_population = new Dictionary<PopulationType, Population>();
+    // Used by editor
     // Current population total
-    private float m_population;
-    // How much food each pop eats
-    public float m_foodPerPop;
-    // How much food before a new pop appears
-    public float m_newPopThreshold;
     //// How manu pops live in each dwelling
     //public int m_popPerDwelling;
     //// How many 
@@ -197,14 +208,32 @@ public class City : MonoBehaviour
     public float food = 0;
     public float water = 0;
     public float people = 0;
+    public float m_startPopulation;
+    // How much food each pop eats
+    public float m_foodPerPop;
+    // How much food before a new pop appears
+    public float m_newPopThreshold;
+
 
     // Use this for initialization
     void Start()
     {
+        // Set stockpiles
         m_resourceStockpiles[Resource.Food] = new ResourceStockpile(0, 15);
         m_resourceStockpiles[Resource.Water] = new ResourceStockpile(0, 15);
-        m_population = 10;
 
+        // Setup some workers
+        Population uneducated = new Population();
+        uneducated.m_amount = m_startPopulation;
+        uneducated.m_maintenance[Resource.Food] = m_foodPerPop;
+        uneducated.m_needs[Resource.Food] = m_foodPerPop;
+        uneducated.m_popType = PopulationType.Uneducated;
+
+        m_population[PopulationType.Uneducated] = uneducated;
+        
+
+
+        // Debug stuff (kinda)
         // Create some buildings
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(-1, 0, 1), transform.rotation, transform));
         m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
@@ -218,10 +247,15 @@ public class City : MonoBehaviour
     void Update()
     {
         M_UpdateProduction();
-        //M_UpdatePopulation();
+        M_UpdatePopulation();
+
+
+        // Visualization debug stuff
         food = m_resourceStockpiles[Resource.Food].m_amount;
         water = m_resourceStockpiles[Resource.Water].m_amount;
-        people = m_population;
+
+        // Other debug stuff
+        m_population[PopulationType.Uneducated].m_maintenance[Resource.Food] = m_foodPerPop;
     }
 
     void M_UpdateProduction()
@@ -243,25 +277,46 @@ public class City : MonoBehaviour
 
     void M_UpdatePopulation()
     {
-        float totalMaintenance = m_foodPerPop * m_population * Time.deltaTime;
-        float remainingFood = m_resourceStockpiles[Resource.Food].m_amount - totalMaintenance;
-        // Surplus: consume all food and create new pop
-        if (remainingFood > m_newPopThreshold)
+        // Update maintenance
+        foreach(var kvp in m_population)
         {
-            m_population++;
-            m_resourceStockpiles[Resource.Food].m_amount = 0;
+            Population pop = kvp.Value;
+            foreach(var kvp1 in pop.m_maintenance)
+            {
+                Resource resource = kvp1.Key;
+                float maintenance = kvp1.Value;
+                float totalMaintenance = pop.m_amount * maintenance * Time.deltaTime;
+                float remainingResource = m_resourceStockpiles[resource].m_amount - totalMaintenance;
+                if(remainingResource > 0)
+                {
+                    m_resourceStockpiles[resource].m_amount = remainingResource;
+                }
+                else
+                {
+                    m_resourceStockpiles[resource].m_amount = 0;
+                }
+            }
         }
-        // Maintain current pop
-        else if (remainingFood > 0)
-        {
-            m_resourceStockpiles[Resource.Food].m_amount = remainingFood;
-        }
-        // Starvation: remove a pop
-        else
-        {
-            m_resourceStockpiles[Resource.Food].m_amount = 0;
-            m_population -= 1 * Time.deltaTime; ;
-        }
+
+        //float totalMaintenance = m_foodPerPop * m_population * Time.deltaTime;
+        //float remainingFood = m_resourceStockpiles[Resource.Food].m_amount - totalMaintenance;
+        //// Surplus: consume all food and create new pop
+        //if (remainingFood > m_newPopThreshold)
+        //{
+        //    m_population++;
+        //    m_resourceStockpiles[Resource.Food].m_amount = 0;
+        //}
+        //// Maintain current pop
+        //else if (remainingFood > 0)
+        //{
+        //    m_resourceStockpiles[Resource.Food].m_amount = remainingFood;
+        //}
+        //// Starvation: remove a pop
+        //else
+        //{
+        //    m_resourceStockpiles[Resource.Food].m_amount = 0;
+        //    m_population -= 1 * Time.deltaTime; ;
+        //}
     }
 
     void M_PlaceDwelling()

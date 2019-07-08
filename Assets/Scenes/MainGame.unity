@@ -352,11 +352,12 @@ MonoBehaviour:
   m_farmPrefab: {fileID: 1507587836271606, guid: 6d87d4269665cfb4daf69850e7395eb0,
     type: 2}
   m_dwellingPrefab: {fileID: 0}
-  m_foodPerPop: 0
-  m_newPopThreshold: 0
   food: 0
   water: 0
   people: 0
+  m_startPopulation: 10
+  m_foodPerPop: 0.05
+  m_newPopThreshold: 0
 --- !u!4 &334952288
 Transform:
   m_ObjectHideFlags: 0

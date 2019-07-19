@@ -355,6 +355,13 @@ MonoBehaviour:
   food: 0
   water: 0
   people: 0
+  drugs: 0
+  clothes: 0
+  foodNeed: 0
+  Need: 0
+  clothesNeed: 0
+  drugsNeed: 0
+  m_needChange: 0
   m_startPopulation: 10
   m_foodPerPop: 0.05
   m_newPopThreshold: 0

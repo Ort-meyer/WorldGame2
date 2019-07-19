@@ -32,7 +32,7 @@ public class Population
     // How much in this population
     public float m_amount;
     // The needs of each resource for each pop in this group
-    public Dictionary<Resource, float> m_needs = new Dictionary<Resource, float>();
+    //public Dictionary<Resource, float> m_needs = new Dictionary<Resource, float>();
     // How much of each resource is consumed by each pop in this group
     public Dictionary<Resource, float> m_maintenance = new Dictionary<Resource, float>();
     // How much this pop desires each resource
@@ -46,17 +46,11 @@ public class ResourceStockpile
     public float m_amount { get; private set; }
     // Maximum amount of resources in stockpile
     public float m_max { get; private set; }
-    // Indicates in how demand this resource is TODO define ranges
-    public float m_demand { get; private set; }
-    // How much of this resource was needed for maintenance last frame
-    public float m_totalDelta;
 
     public ResourceStockpile(float startAmount, float max)
     {
         m_amount = startAmount;
         m_max = max;
-        m_demand = 0; // TODO how do we determine this?
-        m_totalDelta = 0;
     }
     // Updates value. Tries to increase the stockpile. Returns remaining if full
     public float M_AddResources(float change)
@@ -236,6 +230,8 @@ public class City : MonoBehaviour
     // Resource type mapped to amount of said resource currently present in city
     private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
     private Dictionary<Resource, ResourceStockpile> m_prevResourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
+    // The demand for each resource in this city
+    private Dictionary<Resource, float> m_resourceDemands = new Dictionary<Resource, float>();
 
     // Population
     private Dictionary<PopulationType, Population> m_population = new Dictionary<PopulationType, Population>();
@@ -249,10 +245,17 @@ public class City : MonoBehaviour
     public float drugs = 0;
     public float clothes = 0;
 
-    public float foodNeed = 0;
-    public float Need = 0;
-    public float clothesNeed = 0;
-    public float drugsNeed = 0;
+    public float m_foodDemand = 0;
+    public float m_clothesDemand = 0;
+    public float m_drugsDemand = 0;
+
+    public float m_maxDemand = 20;
+    public float m_demandGrowthFactor = 1;
+
+    //public float foodNeed = 0;
+    //public float Need = 0;
+    //public float clothesNeed = 0;
+    //public float drugsNee = 0;
 
     public float m_needChange;
 
@@ -266,14 +269,14 @@ public class City : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // Set stockpiles, maintenance
+        // Initialize all resource thingies
         foreach (var resource in (Resource[])Enum.GetValues(typeof(Resource)))
         {
-            m_resourceStockpiles[resource] = new ResourceStockpile(0, 15);
+            m_resourceStockpiles[resource] = new ResourceStockpile(0, 15); // TOOO not have hardcoded max stockpile for each resource
+            m_resourceDemands[resource] = 0;
         }
 
         // Setup some workers
-
         Population uneducated = new Population();
         uneducated.m_amount = m_startPopulation;
 
@@ -281,11 +284,11 @@ public class City : MonoBehaviour
         uneducated.m_maintenance[Resource.Clothes] = m_foodPerPop;
         uneducated.m_maintenance[Resource.Drugs] = m_foodPerPop;
         uneducated.m_popType = PopulationType.Uneducated;
-        // Create a need for every maintenance
-        foreach (var kvp in uneducated.m_maintenance)
-        {
-            uneducated.m_needs[kvp.Key] = 0;
-        }
+        //// Create a need for every maintenance
+        //foreach (var kvp in uneducated.m_maintenance)
+        //{
+        //    uneducated.m_needs[kvp.Key] = 0;
+        //}
         m_population[PopulationType.Uneducated] = uneducated;
 
         // Debug stuff (kinda)
@@ -301,6 +304,11 @@ public class City : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyUp(KeyCode.K))
+        {
+            m_resourceStockpiles[Resource.Drugs].M_AddResources(100);
+        }
+
         m_prevResourceStockpiles = m_resourceStockpiles;
 
         M_UpdateProduction();
@@ -313,10 +321,17 @@ public class City : MonoBehaviour
         drugs = m_resourceStockpiles[Resource.Drugs].m_amount;
         clothes = m_resourceStockpiles[Resource.Clothes].m_amount;
 
-        foodNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Food];
-        clothesNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Clothes];
-        drugsNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Drugs];
 
+        m_foodDemand = m_resourceDemands[Resource.Food];
+        m_drugsDemand = m_resourceDemands[Resource.Drugs];
+        m_clothesDemand = m_resourceDemands[Resource.Clothes];
+        
+
+        //foodNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Food];
+        //clothesNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Clothes];
+        //drugsNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Drugs];
+
+        
         // Other debug stuff
         m_population[PopulationType.Uneducated].m_maintenance[Resource.Food] = m_foodPerPop;
     }
@@ -350,9 +365,24 @@ public class City : MonoBehaviour
                 float maintenance = kvp1.Value;
                 float totalMaintenance = pop.m_amount * maintenance * Time.deltaTime;
                 ResourceStockpile stockpile = m_resourceStockpiles[resource];
-                // TODO add some check on how the diff between what was needed and what was taken?
-                stockpile.M_FetchResources(totalMaintenance);
+                float unfulfilledMaintenance = totalMaintenance - stockpile.M_FetchResources(totalMaintenance);
 
+                // TODO improve this somehow?
+                /* 1) add base demand. Too much supply decreases, too little supple increases
+                 * 2) fix decay down to base demand
+                 * 3) exponential growth?*/
+                if (unfulfilledMaintenance > 0)
+                {
+                    m_resourceDemands[resource] += unfulfilledMaintenance * m_demandGrowthFactor;
+                    if (m_resourceDemands[resource] > m_maxDemand)
+                    {
+                        m_resourceDemands[resource] = m_maxDemand;
+                    }
+                }
+                else // Maintenance fulfilled
+                {
+                    m_resourceDemands[resource] = 0; // TODO not just clear maintenance
+                }
             }
         }
 

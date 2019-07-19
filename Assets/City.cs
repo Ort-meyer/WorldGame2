@@ -147,8 +147,6 @@ public class ResourceProcess
     protected float m_currentTime;
     // The current state of the process
     ProcessState m_currentState;
-    // Whether the process is currently active
-    //protected bool m_currentlyActive;
     // Resource mapped to amount of resource consumed by this process to produce
     protected Dictionary<Resource, int> m_resourcesConsumed = new Dictionary<Resource, int>();
     // Resource mapped to amount of resource produced by this process
@@ -165,15 +163,7 @@ public class ResourceProcess
             // 1) Fill local input stockpiles if the city has the supplies we need
             foreach (var kvp in m_inputStockpiles)
             {
-                kvp.Value.M_AddResources(kvp.Value.m_amount + cityStockpiles[kvp.Key].M_FetchResources(1)); // TODO reconsider fetching 1 at a time. Maybe more, maybe max?
-                //if (kvp.Value.m_amount < kvp.Value.m_max)
-                //{
-                //    if (cityStockpiles[kvp.Key].m_amount >= 1)
-                //    {
-                //        cityStockpiles[kvp.Key].m_amount--;
-                //        kvp.Value.m_amount++;
-                //    }
-                //}
+                kvp.Value.M_AddResources(kvp.Value.m_amount + cityStockpiles[kvp.Key].M_FetchResources(1)); // TODO reconsider fetching 1 at a time. Maybe more, maybe max
             }
             // 2) If ALL local stockpiles are filled, deplete them and start proce
             bool allStockpilesFull = true;
@@ -211,10 +201,6 @@ public class ResourceProcess
         }
         if (m_currentState == ProcessState.DoneWorking)
         {
-            /* Reimplement: have output stockpiles. After the production is completed, fill the stockpiles
-             * Then continually keep trying to empty the stockpiles into the city. Once they are all empty,
-             * go back to step 1.
-             * This means that */
             bool allTransfersDone = true;
             foreach (var kvp in m_outputStockpiles)
             {
@@ -230,33 +216,6 @@ public class ResourceProcess
             {
                 m_currentState = ProcessState.BuildingLocalStockpiles;
             }
-
-
-
-
-            /* This only updates city stockpiles if ALL stockpiles can be updated at once
-             * This means that if a process produces two resources, then both need to fit or the process hangs
-             * It also means that if for instance newAmount is 14 but max is 15, it also hangs even though parts
-             * of the production can be stored*/
-            //bool roomInCityStockiles = true;
-            //foreach (var kvp in m_resourcesProduced)
-            //{
-            //    float newAmount = cityStockpiles[kvp.Key].m_amount + kvp.Value;
-            //    if (newAmount >= cityStockpiles[kvp.Key].m_max)
-            //    {
-            //        roomInCityStockiles = false;
-            //    }
-            //}
-            //if (roomInCityStockiles)
-            //{
-            //    foreach (var kvp in m_resourcesProduced)
-            //    {
-            //        float newAmount = cityStockpiles[kvp.Key].m_amount + kvp.Value;
-            //        cityStockpiles[kvp.Key].m_amount = newAmount;
-            //    }
-            //    // 4) When city stockpiles are updated, go to 1)
-            //    m_currentState = ProcessState.BuildingLocalStockpiles;
-            //}
         }
     }
 }
@@ -282,15 +241,7 @@ public class City : MonoBehaviour
     private Dictionary<PopulationType, Population> m_population = new Dictionary<PopulationType, Population>();
     // Factor of how great reserves the city desires (between 0 and 1, where 1 is 100% stockpile filled) (TODO should be per-resource, not global)
     private float m_desiredResourceReserveFactor;
-
-
-    // Used by editor
-    // Current population total
-    //// How manu pops live in each dwelling
-    //public int m_popPerDwelling;
-    //// How many 
-    //private int m_currentPopDwellingCounter = 0;
-
+    
     // DEBUG stuff
     public float food = 0;
     public float water = 0;
@@ -401,15 +352,7 @@ public class City : MonoBehaviour
                 ResourceStockpile stockpile = m_resourceStockpiles[resource];
                 // TODO add some check on how the diff between what was needed and what was taken?
                 stockpile.M_FetchResources(totalMaintenance);
-                //float remainingResource = stockpile.m_amount - totalMaintenance;
-                //if (remainingResource > 0)
-                //{
-                //    stockpile.m_amount = remainingResource;
-                //}
-                //else
-                //{
-                //    stockpile.m_amount = 0;
-                //}
+
             }
         }
 

@@ -3,23 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/*
- Procution of water (well)
- Produces: water
-    
- Production of food (farm)
- Consumes: water
- Produces: food
- 
- Production of population (house)
- Consumes: water and food
- Produces: people
- 
- 
 
- Production of building materials (WIP)
- Consumes: steel, concrete
- Produces: building materials*/
 // Different resource types
 public enum Resource { Food, Water, Clothes, Drugs }
 // All population types
@@ -252,18 +236,9 @@ public class City : MonoBehaviour
     public float m_maxDemand = 20;
     public float m_demandGrowthFactor = 1;
 
-    //public float foodNeed = 0;
-    //public float Need = 0;
-    //public float clothesNeed = 0;
-    //public float drugsNee = 0;
-
-    public float m_needChange;
-
     public float m_startPopulation;
     // How much food each pop eats
     public float m_foodPerPop;
-    // How much food before a new pop appears
-    public float m_newPopThreshold;
 
 
     // Use this for initialization
@@ -284,11 +259,6 @@ public class City : MonoBehaviour
         uneducated.m_maintenance[Resource.Clothes] = m_foodPerPop;
         uneducated.m_maintenance[Resource.Drugs] = m_foodPerPop;
         uneducated.m_popType = PopulationType.Uneducated;
-        //// Create a need for every maintenance
-        //foreach (var kvp in uneducated.m_maintenance)
-        //{
-        //    uneducated.m_needs[kvp.Key] = 0;
-        //}
         m_population[PopulationType.Uneducated] = uneducated;
 
         // Debug stuff (kinda)
@@ -321,16 +291,9 @@ public class City : MonoBehaviour
         drugs = m_resourceStockpiles[Resource.Drugs].m_amount;
         clothes = m_resourceStockpiles[Resource.Clothes].m_amount;
 
-
         m_foodDemand = m_resourceDemands[Resource.Food];
         m_drugsDemand = m_resourceDemands[Resource.Drugs];
         m_clothesDemand = m_resourceDemands[Resource.Clothes];
-        
-
-        //foodNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Food];
-        //clothesNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Clothes];
-        //drugsNeed = m_population[PopulationType.Uneducated].m_needs[Resource.Drugs];
-
         
         // Other debug stuff
         m_population[PopulationType.Uneducated].m_maintenance[Resource.Food] = m_foodPerPop;
@@ -385,26 +348,6 @@ public class City : MonoBehaviour
                 }
             }
         }
-
-        // Update needs
-        //foreach (var kvp in m_resourceStockpiles)
-        //{
-        //    Resource res = kvp.Key;
-        //    ResourceStockpile stockpile = kvp.Value;
-
-        //    // Update demand depending on delta
-        //    float delta = stockpile.m_amount - m_prevResourceStockpiles[res].m_amount;
-        //    float deltaFactor = delta / stockpile.m_max;
-        //    stockpile.m_demand += -1 * deltaFactor;
-
-        //    // Update demand depending on reserves
-        //    float stockpileFactor = stockpile.m_amount / stockpile.m_max;
-        //    stockpile.m_demand += m_desiredResourceReserveFactor - stockpileFactor;
-        //}
-
-
-
-        // Update population counts
     }
 
     void M_PlaceDwelling()
@@ -412,37 +355,3 @@ public class City : MonoBehaviour
 
     }
 }
-
-
-
-//public class ResourceCache
-//{
-//    Resource m_resource;
-//    float m_currentAmount;
-//    float m_maxAmount;
-
-//    public ResourceCache(Resource resource, float m_maxAmount)
-//    {
-//        m_resource = resource;
-//        m_currentAmount = 0;
-//    }
-
-//    /* Updates amount of a resource and returns whatever was left over
-//     * if stockpile was e*/
-//    public float M_changeAmount(float change)
-//    {
-//        float leftOver = 0;
-//        float newAmount = m_currentAmount - change;
-//        if(newAmount < 0)
-//        {
-//            leftOver = -1 * newAmount;
-//            newAmount = 0;
-//        }
-//        else if (newAmount > m_maxAmount)
-//        {
-//            leftOver = newAmount - m_maxAmount;
-//            newAmount = m_maxAmount;
-//        }
-//        return leftOver;
-//    }
-//};

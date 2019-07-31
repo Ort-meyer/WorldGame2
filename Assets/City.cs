@@ -219,8 +219,9 @@ public class City : MonoBehaviour
 
     // Population
     private Dictionary<PopulationType, Population> m_population = new Dictionary<PopulationType, Population>();
-    // Factor of how great reserves the city desires (between 0 and 1, where 1 is 100% stockpile filled) (TODO should be per-resource, not global)
-    private float m_desiredResourceReserveFactor;
+
+    // Fixed constant need decay TODO make this into some cool feature, based on consumption/production and stuff
+    public float m_needDecay;
     
     // DEBUG stuff
     public float food = 0;
@@ -344,7 +345,11 @@ public class City : MonoBehaviour
                 }
                 else // Maintenance fulfilled
                 {
-                    m_resourceDemands[resource] = 0; // TODO not just clear maintenance
+                    m_resourceDemands[resource] -= m_needDecay * Time.deltaTime; // TODO not just clear maintenance
+                    if(m_resourceDemands[resource] <= 0)
+                    {
+                        m_resourceDemands[resource] = 0;
+                    }
                 }
             }
         }

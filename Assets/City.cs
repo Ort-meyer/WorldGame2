@@ -204,6 +204,7 @@ public class City : MonoBehaviour
     // Production buildings
     public GameObject m_wellPrefab;
     public GameObject m_farmPrefab;
+    public GameObject m_tailorPrefab;
     // City buildings
     public GameObject m_dwellingPrefab;
 
@@ -241,6 +242,7 @@ public class City : MonoBehaviour
     // How much food each pop eats
     public float m_foodPerPop;
 
+    public int m_cityIndex;
 
     // Use this for initialization
     void Start()
@@ -262,14 +264,16 @@ public class City : MonoBehaviour
         uneducated.m_popType = PopulationType.Uneducated;
         m_population[PopulationType.Uneducated] = uneducated;
 
-        // Debug stuff (kinda)
-        // Create some buildings
-        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(-1, 0, 1), transform.rotation, transform));
-        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
-        //m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(1, 0, 1), transform.rotation, transform));
 
-        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(1, 0, -1), transform.rotation, transform));
-        //m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(0, 0, -2), transform.rotation, transform));
+        // Debug stuff (kinda)
+        if(m_cityIndex == 0)
+        {
+            M_CreateFoodCity();
+        }
+        else if (m_cityIndex == 1)
+        {
+            M_CreateClothesCity();
+        }
     }
 
     // Update is called once per frame
@@ -298,6 +302,19 @@ public class City : MonoBehaviour
         
         // Other debug stuff
         m_population[PopulationType.Uneducated].m_maintenance[Resource.Food] = m_foodPerPop;
+    }
+
+    private void M_CreateFoodCity()
+    {
+        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(-1, 0, 1), transform.rotation, transform));
+        m_buildings.Add(Instantiate(m_wellPrefab, transform.position + new Vector3(0, 0, 1), transform.rotation, transform));
+
+        m_buildings.Add(Instantiate(m_farmPrefab, transform.position + new Vector3(1, 0, -1), transform.rotation, transform));
+    }
+
+    private void M_CreateClothesCity()
+    {
+        m_buildings.Add(Instantiate(m_tailorPrefab, transform.position + new Vector3(1, 0, -1), transform.rotation, transform));
     }
 
     void M_UpdateProduction()

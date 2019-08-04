@@ -213,10 +213,10 @@ public class City : MonoBehaviour
     private List<GameObject> m_buildings = new List<GameObject>();
     private List<GameObject> m_dwellings = new List<GameObject>();
     // Resource type mapped to amount of said resource currently present in city
-    private Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
+    public Dictionary<Resource, ResourceStockpile> m_resourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
     private Dictionary<Resource, ResourceStockpile> m_prevResourceStockpiles = new Dictionary<Resource, ResourceStockpile>();
     // The demand for each resource in this city
-    private Dictionary<Resource, float> m_resourceDemands = new Dictionary<Resource, float>();
+    public Dictionary<Resource, float> m_resourceDemands = new Dictionary<Resource, float>();
 
     // Population
     private Dictionary<PopulationType, Population> m_population = new Dictionary<PopulationType, Population>();

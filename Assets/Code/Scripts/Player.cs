@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
             if (pair.Value == null)
                 continue;
             GameObject obj = pair.Value;
-            obj.GetComponent<Unit>().M_SetDestination(destination);
+            obj.GetComponent<BaseMovement>().M_MoveTo(destination);
 
             // Pretty hard coded for now. Have to be able to order multiple units
             //BaseUnit thisUnit = obj.GetComponent<BaseUnit>();

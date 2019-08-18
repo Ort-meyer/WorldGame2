@@ -12,7 +12,7 @@ public class Human : MonoBehaviour
 
     private bool m_isDragging = false;
 
-    private RaycastHit m_hit;
+    private RaycastHit[] m_hits;
 
     private Player m_player;
 
@@ -31,14 +31,13 @@ public class Human : MonoBehaviour
         DoRaycast();
         RightClick();
         LeftClick();
-        Debug.DrawRay(m_hit.point, m_hit.normal);
     }
 
     // Simply does a raycast and stores the hit data in private member
     private void DoRaycast()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Physics.Raycast(ray, out m_hit);
+        m_hits = Physics.RaycastAll(ray);
     }
 
     private void RightClick()
@@ -46,22 +45,29 @@ public class Human : MonoBehaviour
         // Right mouse button - move order (really bad idea to have it here)
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (m_hit.transform != null)
+            foreach (RaycastHit hit in m_hits)
             {
-                m_player.M_MoveSelectedUnits(m_hit.point);
-                //// See if we clicked an enemy
-                //BaseUnit unit = m_hit.transform.GetComponent<BaseUnit>();
-                //if (unit)
-                //{
-                //    if (unit.m_alignment != m_player.m_alignment)
-                //    {
-                //        m_player.M_EngageWithSelectedUnits(new List<GameObject> { m_hit.transform.gameObject });
-                //    }
-                //}
-                //else
-                //{
-                //    m_player.M_MoveSelectedUnits(m_hit.point);
-                //}
+                if (hit.transform != null)
+                {
+                    // Move if this hit was on a terrain
+                    if (hit.transform.GetComponent<Terrain>())
+                    {
+                        m_player.M_MoveSelectedUnits(hit.point);
+                    }
+                    //// See if we clicked an enemy
+                    //BaseUnit unit = m_hit.transform.GetComponent<BaseUnit>();
+                    //if (unit)
+                    //{
+                    //    if (unit.m_alignment != m_player.m_alignment)
+                    //    {
+                    //        m_player.M_EngageWithSelectedUnits(new List<GameObject> { m_hit.transform.gameObject });
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    m_player.M_MoveSelectedUnits(m_hit.point);
+                    //}
+                }
             }
         }
     }
@@ -71,8 +77,11 @@ public class Human : MonoBehaviour
         // Temporary to select just the one unit
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            if(m_hit.transform.gameObject.GetComponent<Unit>())
-                m_player.M_SelectUnits(new List<GameObject> { m_hit.transform.gameObject });
+            foreach (RaycastHit hit in m_hits)
+            {
+                if (hit.transform.gameObject.GetComponent<Unit>())
+                    m_player.M_SelectUnits(new List<GameObject> { hit.transform.gameObject });
+            }
         }
 
         //if (Input.GetKeyDown(KeyCode.Mouse0))

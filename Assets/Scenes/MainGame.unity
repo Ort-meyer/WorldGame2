@@ -98,7 +98,7 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 3
+    agentRadius: 1
     agentHeight: 2
     agentSlope: 34.9
     agentClimb: 0.4
@@ -106,7 +106,7 @@ NavMeshSettings:
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 1
+    cellSize: 0.33333334
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -390,6 +390,7 @@ GameObject:
   - component: {fileID: 1330803773}
   - component: {fileID: 1330803776}
   - component: {fileID: 1330803779}
+  - component: {fileID: 1330803778}
   - component: {fileID: 1330803777}
   m_Layer: 0
   m_Name: RaiderBuggy
@@ -460,13 +461,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 1330803772}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 070bc6728a5b32840b1f549e385e7eca, type: 3}
+  m_Script: {fileID: 11500000, guid: 3289f12a8725f584e9f412afa4db0fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_moveSpeed: 2
-  m_rotationSpeed: 2
-  m_hoverheight: 1
-  m_stopDistance: 1
+  m_speed: 2
+  m_turnSpeed: 3
+--- !u!195 &1330803778
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1330803772}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &1330803779
 MonoBehaviour:
   m_ObjectHideFlags: 0

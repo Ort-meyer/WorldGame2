@@ -30,6 +30,9 @@ public class CarMovement : BaseMovement
         m_charControl = gameObject.GetComponent<CharacterController>();
         m_agent.isStopped = true;
         m_wheelForward = transform.forward;
+
+        // Debug stuff
+        M_MoveTo(transform.position + transform.forward * 30);
     }
 
     void Update()
@@ -58,7 +61,7 @@ public class CarMovement : BaseMovement
             m_charControl.SimpleMove(m_wheelForward.normalized * m_speed);
             // Rotate car towards wheels
             float diffAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
-            float steerAngle = Mathf.Sign(diffAngle) * m_steering * Time.deltaTime;
+            float steerAngle = Helpers.Sign(diffAngle) * m_steering * Time.deltaTime;
 
             transform.Rotate(0, steerAngle, 0);
 
@@ -84,9 +87,35 @@ public class CarMovement : BaseMovement
     private void M_TurnWheels(Vector3 direction)
     {
 
-        float targetAngle = Helpers.GetDiffAngle2D(m_wheelForward, direction);
-        float sign = Mathf.Sign(targetAngle);
+        /*
+        If we're approaching the target angle, we want to start returning the wheels
+        to facing straight.
+        If targetAngle is starting to get low, revert sign
+
+
+        TargetAngle = 45
+        CurrentAngle
+         */
+        float diffAngle = Helpers.GetDiffAngle2D(m_wheelForward, direction);
+        float sign = Helpers.Sign(diffAngle);
+
+        //if (Mathf.Abs(diffAngle) < 30 && Mathf.Abs(m_currentWheelAngle) < Mathf.Abs(diffAngle))
+        //if()
+        //{
+        //    sign *= -1;
+        //}
+        //float oldAngle = m_currentWheelAngle;
+        //float oldSign = Mathf.Sign(m_currentWheelAngle);
         m_currentWheelAngle += sign * m_turnSpeed * Time.deltaTime;
+        //// If this doesnt work soon, just force the damn thing to point to the next waypoint
+        //if (oldSign != Mathf.Sign(m_currentWheelAngle))
+        //{
+        //    m_currentWheelAngle = 0;
+        //}
+        //if (oldAngle * m_currentWheelAngle < 0)
+        //{
+        //    m_currentWheelAngle = diffAngle;
+        //}
         // Limit wheel angle (wheels are instant atm)
         if (Mathf.Abs(m_currentWheelAngle) > m_maxWheelAngle)
         {

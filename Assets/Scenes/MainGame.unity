@@ -699,7 +699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 2
-  m_turnSpeed: 5
+  m_turnSpeed: 30
   m_maxWheelAngle: 30
   m_steering: 100
   m_frontWheels:
@@ -987,7 +987,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1537117214}
   m_LocalRotation: {x: 0.24256141, y: 0.1681922, z: -0.042742178, w: 0.95448864}
-  m_LocalPosition: {x: 24.78, y: 13.27, z: -6.77}
+  m_LocalPosition: {x: 15.54, y: 13.27, z: -3.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

@@ -19,4 +19,15 @@ public static class Helpers
         }
         return diffAngle;
     }
+    public static float Sign(float number)
+    {
+        if (number == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return Mathf.Sign(number);
+        }
+    }
 }

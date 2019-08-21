@@ -699,8 +699,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 2
-  m_turnSpeed: 3
+  m_turnSpeed: 5
   m_maxWheelAngle: 30
+  m_steering: 100
   m_frontWheels:
   - {fileID: 1587573776}
   - {fileID: 520108563}
@@ -732,7 +733,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1330803772}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc7618ace7222bc4dace0458fd17699d, type: 3}
   m_Name: 

@@ -9,6 +9,8 @@ public class CarMovement : BaseMovement
     public float m_speed = 2;
     public float m_turnSpeed = 3;
     public float m_maxWheelAngle = 30;
+    // How much the car follows the wheels. This is somewhat arbitrary atm
+    public float m_steering = 10;
     public List<GameObject> m_frontWheels;
 
     public GameObject m_DEBUG;
@@ -50,8 +52,16 @@ public class CarMovement : BaseMovement
             //transform.rotation = targetRot;
             m_DEBUG.transform.position = m_agent.path.corners[1];
 
+            // Turn wheels
             M_TurnWheels(toNextWaypoint);
-            
+            // Move car along wheels
+            m_charControl.SimpleMove(m_wheelForward.normalized * m_speed);
+            // Rotate car towards wheels
+            float diffAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
+            float steerAngle = Mathf.Sign(diffAngle) * m_steering * Time.deltaTime;
+
+            transform.Rotate(0, steerAngle, 0);
+
             //m_charControl.SimpleMove(m_desVelocity.normalized * m_speed);
         }
 
@@ -73,6 +83,7 @@ public class CarMovement : BaseMovement
 
     private void M_TurnWheels(Vector3 direction)
     {
+
         float targetAngle = Helpers.GetDiffAngle2D(m_wheelForward, direction);
         float sign = Mathf.Sign(targetAngle);
         m_currentWheelAngle += sign * m_turnSpeed * Time.deltaTime;
@@ -81,7 +92,6 @@ public class CarMovement : BaseMovement
         {
             m_currentWheelAngle = Mathf.Sign(m_currentWheelAngle) * m_maxWheelAngle;
         }
-
         Quaternion wheelRot = Quaternion.Euler(0, m_currentWheelAngle, 0);
 
         // Face the wheels correctly

@@ -9,13 +9,15 @@ public class CarMovement : BaseMovement
     public float m_speed = 2;
     public float m_turnSpeed = 3;
     public float m_maxWheelAngle = 30;
-    // How much the car follows the wheels. This is somewhat arbitrary atm
-    public float m_steering = 10;
+    // How much the car turns towards the wheels. From 0 to 1 (0 no turning at all, 1 instantaneous)
+    //public float m_steeringFactor = 1;
+    // How many degrees the car turns towards the wheels per second
+    public float m_steering = 30;
     public List<GameObject> m_frontWheels;
 
     public GameObject m_DEBUG;
 
-    private NavMeshAgent m_agent;
+    private NavPathManager m_navPathManager;
     private Vector3 m_desVelocity;
     private CharacterController m_charControl;
 
@@ -26,101 +28,103 @@ public class CarMovement : BaseMovement
 
     void Start()
     {
-        m_agent = gameObject.GetComponent<NavMeshAgent>();
+        m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
-        m_agent.isStopped = true;
+
         m_wheelForward = transform.forward;
 
         // Debug stuff
-        M_MoveTo(transform.position + transform.forward * 30);
     }
 
     void Update()
     {
+        if(Input.GetKeyUp(KeyCode.U))
+        {
+            M_MoveTo(transform.position + transform.forward * 10);
+        }
+        if (Input.GetKeyUp(KeyCode.H))
+        {
+            M_MoveTo(transform.position + transform.right * -1 * 10);
+        }
+        if (Input.GetKeyUp(KeyCode.K))
+        {
+            M_MoveTo(transform.position + transform.right * 10);
+        }
         Quaternion targetRot;
-
-        m_agent.destination = m_destinationPostion;
-        m_desVelocity = m_agent.desiredVelocity;
-
-        m_agent.updatePosition = false;
-        m_agent.updateRotation = false;
-
-        if (!m_agent.isStopped)
+        
+        if (!m_navPathManager.M_DestinationReached())
         {
             // Move wheels to face towards next waypoint
-            NavMeshPath path = m_agent.path;
-            Vector3 toNextWaypoint = m_agent.path.corners[1] - transform.position;
+            Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
+            if(toNextWaypoint.x != 0)
+            {
+                int derp = 2;
+                derp++;
+                //Debug.Break();
+            }
             toNextWaypoint.y = 0;
             //targetRot = Quaternion.LookRotation(toNextWaypoint);
             //transform.rotation = targetRot;
-            m_DEBUG.transform.position = m_agent.path.corners[1];
+            m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
 
             // Turn wheels
             M_TurnWheels(toNextWaypoint);
-            // Move car along wheels
-            m_charControl.SimpleMove(m_wheelForward.normalized * m_speed);
+
             // Rotate car towards wheels
             float diffAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
-            float steerAngle = Helpers.Sign(diffAngle) * m_steering * Time.deltaTime;
 
-            transform.Rotate(0, steerAngle, 0);
+            float steering = Helpers.Sign(diffAngle) * m_steering * Time.deltaTime;
 
-            //m_charControl.SimpleMove(m_desVelocity.normalized * m_speed);
+            if(Mathf.Abs(steering) > Mathf.Abs(diffAngle))
+            {
+                transform.rotation = Quaternion.LookRotation(toNextWaypoint);
+            }
+            else
+            {
+                transform.Rotate(0, steering, 0);
+            }
+            m_charControl.SimpleMove(transform.forward.normalized * m_speed);
         }
 
-        m_agent.velocity = m_charControl.velocity;
     }
 
     // Sets the destination for this unit to move to
     public override void M_MoveTo(Vector3 destination)
     {
-        m_destinationPostion = destination;
-        m_agent.isStopped = false;
+        m_navPathManager.M_SetDestination(destination);
     }
 
     // Clears destination and causes the unit to stop
     public override void M_StopOrder()
     {
-        m_agent.isStopped = true;
+        m_navPathManager.M_ClearDestination();
     }
 
     private void M_TurnWheels(Vector3 direction)
     {
-
-        /*
-        If we're approaching the target angle, we want to start returning the wheels
-        to facing straight.
-        If targetAngle is starting to get low, revert sign
-
-
-        TargetAngle = 45
-        CurrentAngle
-         */
         float diffAngle = Helpers.GetDiffAngle2D(m_wheelForward, direction);
-        float sign = Helpers.Sign(diffAngle);
 
-        //if (Mathf.Abs(diffAngle) < 30 && Mathf.Abs(m_currentWheelAngle) < Mathf.Abs(diffAngle))
-        //if()
-        //{
-        //    sign *= -1;
-        //}
-        //float oldAngle = m_currentWheelAngle;
-        //float oldSign = Mathf.Sign(m_currentWheelAngle);
-        m_currentWheelAngle += sign * m_turnSpeed * Time.deltaTime;
-        //// If this doesnt work soon, just force the damn thing to point to the next waypoint
-        //if (oldSign != Mathf.Sign(m_currentWheelAngle))
+        if (diffAngle > 0)
+        {
+            int derp = 2;
+            derp++;
+        }
+
+        m_currentWheelAngle += Helpers.Sign(diffAngle) * m_turnSpeed * Time.deltaTime;
+
+        //if(Helpers.Sign(diffAngle) != Helpers.Sign(m_currentWheelAngle))
         //{
         //    m_currentWheelAngle = 0;
+        //    transform.rotation = Quaternion.FromToRotation(transform.forward, direction);
         //}
-        //if (oldAngle * m_currentWheelAngle < 0)
-        //{
-        //    m_currentWheelAngle = diffAngle;
-        //}
-        // Limit wheel angle (wheels are instant atm)
+
+
+        // Limit to max wheel angle
         if (Mathf.Abs(m_currentWheelAngle) > m_maxWheelAngle)
         {
             m_currentWheelAngle = Mathf.Sign(m_currentWheelAngle) * m_maxWheelAngle;
         }
+
         Quaternion wheelRot = Quaternion.Euler(0, m_currentWheelAngle, 0);
 
         // Face the wheels correctly
@@ -130,112 +134,4 @@ public class CarMovement : BaseMovement
             m_wheelForward = obj.transform.forward;
         }
     }
-
-
-    //public float m_maxMoveSpeed;
-    //public float m_acceleration;
-    //public float m_turnTime;
-
-    //public float m_breakDistance;
-    //public float m_breakPower;
-
-    //public GameObject[] frontWheels;
-    //public GameObject[] rearWheels;
-
-    //// The maximum angle of the wheels
-    //public float m_maxWheelAngle = 45;
-
-    //private NavPathManager m_pathManager;
-
-    ////private GameObject m_parent;
-
-    //private float m_currentMoveSpeed = 0;
-    //private float m_currentAngle = 0;
-    //// Use this for initialization
-    //void Start()
-    //{
-    //    m_pathManager = GetComponent<NavPathManager>();
-    //    //m_parent = GetComponentInParent<BaseUnit>().gameObject;
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //    if (!m_pathManager.M_DestinationReached())
-    //    {
-    //        // Get next corner
-    //        Vector3 nextCorner = m_pathManager.M_GetNextCorner();
-    //        Vector3 nextToCurrent = nextCorner - transform.position;
-
-    //        // Start breaking if we're approaching the destination
-    //        if (m_pathManager.M_GetDistanceToDestination() <= m_breakDistance)
-    //        {
-    //            Break();
-    //        }
-    //        else
-    //        {
-    //            TurnWheels(nextToCurrent);
-    //            Accelerate();
-    //            // Rotate car depending on wheel angle
-    //            Vector3 pivotPoint = transform.position; // Should be rear wheels, I reckon
-    //            transform.RotateAround(pivotPoint, transform.up, m_currentAngle * m_turnTime * Time.deltaTime);
-    //        }
-    //        // Move car
-    //        Vector3 movement = transform.forward * m_currentMoveSpeed * Time.deltaTime;
-    //        GetComponent<CharacterController>().Move(movement);
-    //    }
-    //    else // Hard stop
-    //    {
-    //        m_currentMoveSpeed = 0;
-    //    }
-    //}
-
-
-    //private void TurnWheels(Vector3 direction)
-    //{
-    //    m_currentAngle = Helpers.GetDiffAngle2D(transform.forward, direction);
-    //    // Limit wheel angle (wheels are instant atm)
-    //    if (Mathf.Abs(m_currentAngle) > m_maxWheelAngle)
-    //    {
-    //        m_currentAngle = Mathf.Sign(m_currentAngle) * m_maxWheelAngle;
-    //    }
-
-    //    // Face the wheels correctly
-    //    Vector3 wheelForward = new Vector3(0, 0, 0);
-    //    foreach (GameObject obj in frontWheels)
-    //    {
-    //        obj.transform.localRotation = Quaternion.Euler(0, m_currentAngle, 0);
-    //        wheelForward = obj.transform.forward;
-    //    }
-    //}
-
-    //private void Accelerate()
-    //{
-    //    // Todo: accelerate according to animation curve (quick in start, slow at end)
-    //    m_currentMoveSpeed += m_acceleration * Time.deltaTime;
-    //    if (m_currentMoveSpeed > m_maxMoveSpeed)
-    //    {
-    //        m_currentMoveSpeed = m_maxMoveSpeed;
-    //    }
-    //}
-
-    //private void Break()
-    //{
-    //    m_currentMoveSpeed -= m_breakPower * Time.deltaTime;
-    //    if (m_currentMoveSpeed < 0)
-    //    {
-    //        m_currentMoveSpeed = 0;
-    //    }
-    //}
-
-    //public override void M_MoveTo(Vector3 destination)
-    //{
-    //    m_pathManager.M_SetDestination(destination);
-    //}
-
-    //public override void M_StopOrder()
-    //{
-    //    m_pathManager.M_ClearDestination();
-    //}
 }

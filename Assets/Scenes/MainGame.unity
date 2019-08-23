@@ -620,7 +620,6 @@ GameObject:
   - component: {fileID: 1330803773}
   - component: {fileID: 1330803776}
   - component: {fileID: 1330803779}
-  - component: {fileID: 1330803778}
   - component: {fileID: 1330803777}
   m_Layer: 0
   m_Name: RaiderBuggy
@@ -701,45 +700,24 @@ MonoBehaviour:
   m_speed: 2
   m_turnSpeed: 30
   m_maxWheelAngle: 30
-  m_steering: 100
+  m_steering: 30
   m_frontWheels:
   - {fileID: 1587573776}
   - {fileID: 520108563}
   m_DEBUG: {fileID: 1799991578}
---- !u!195 &1330803778
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1330803772}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &1330803779
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1330803772}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc7618ace7222bc4dace0458fd17699d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_pathUpdateFrequency: 0
-  m_cornerIncrementDistance: 0
+  m_pathUpdateFrequency: 1
+  m_cornerIncrementDistance: 0.1
 --- !u!1 &1348467730
 GameObject:
   m_ObjectHideFlags: 0

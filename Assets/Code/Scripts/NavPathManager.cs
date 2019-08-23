@@ -63,6 +63,7 @@ public class NavPathManager : MonoBehaviour
 
     public void M_SetDestination(Vector3 destination)
     {
+        // TODO what happens when I want to go somewhere I can't? Add feature to move to closes viable position
         m_active = true;
         m_destinationReached = false;
         m_destination = destination;

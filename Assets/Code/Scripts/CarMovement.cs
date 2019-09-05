@@ -23,7 +23,7 @@ public class CarMovement : BaseMovement
 
     private Vector3 m_destinationPostion;
 
-    private float m_currentWheelAngle = 0;
+    //private float m_currentWheelAngle = 0;
     private Vector3 m_wheelForward = new Vector3(0, 0, 1);
 
     void Start()
@@ -81,9 +81,9 @@ public class CarMovement : BaseMovement
             //}
             //else
             {
-                transform.Rotate(0, steering, 0);
+                //transform.Rotate(0, steering, 0);
             }
-            m_charControl.SimpleMove(transform.forward.normalized * m_speed);
+            //m_charControl.SimpleMove(transform.forward.normalized * m_speed);
         }
 
     }
@@ -102,35 +102,27 @@ public class CarMovement : BaseMovement
 
     private void M_TurnWheels(Vector3 direction)
     {
-        float diffAngle = Helpers.GetDiffAngle2D(m_wheelForward, direction);
-
-        if (diffAngle > 0)
+        float diffToTarget = Helpers.GetDiffAngle2D(m_wheelForward, direction);
+        float wheelAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
+        float changeAngle = Helpers.Sign(diffToTarget) * m_turnSpeed * Time.deltaTime;
+        float newAngle = wheelAngle + changeAngle;
+        
+        float diff = Mathf.Abs(diffToTarget) - Mathf.Abs(newAngle);
+        if( diff < 0 && Mathf.Abs(diffToTarget) < 0.5)
         {
-            int derp = 2;
-            derp++;
+            changeAngle = diffToTarget;
         }
-
-        m_currentWheelAngle += Helpers.Sign(diffAngle) * m_turnSpeed * Time.deltaTime;
-
-        //if(Helpers.Sign(diffAngle) != Helpers.Sign(m_currentWheelAngle))
-        //{
-        //    m_currentWheelAngle = 0;
-        //    transform.rotation = Quaternion.FromToRotation(transform.forward, direction);
-        //}
-
-
-        // Limit to max wheel angle
-        if (Mathf.Abs(m_currentWheelAngle) > m_maxWheelAngle)
+        
+        //// Limit to max wheel angle
+        if (Mathf.Abs(newAngle) > m_maxWheelAngle)  // TODO solve bug with waypoints right behind car
         {
-            m_currentWheelAngle = Mathf.Sign(m_currentWheelAngle) * m_maxWheelAngle;
+            changeAngle = 0;
         }
-
-        Quaternion wheelRot = Quaternion.Euler(0, m_currentWheelAngle, 0);
 
         // Face the wheels correctly
         foreach (GameObject obj in m_frontWheels)
         {
-            obj.transform.localRotation = wheelRot;
+            obj.transform.Rotate(0, changeAngle, 0);
             m_wheelForward = obj.transform.forward;
         }
     }

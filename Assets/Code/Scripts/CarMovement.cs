@@ -75,11 +75,11 @@ public class CarMovement : BaseMovement
 
             float steering = Helpers.Sign(diffAngle) * m_steering * Time.deltaTime;
 
-            if(Mathf.Abs(steering) > Mathf.Abs(diffAngle))
-            {
-                transform.rotation = Quaternion.LookRotation(toNextWaypoint);
-            }
-            else
+            //if(Mathf.Abs(steering) > Mathf.Abs(diffAngle))
+            //{
+            //    transform.rotation = Quaternion.LookRotation(toNextWaypoint);
+            //}
+            //else
             {
                 transform.Rotate(0, steering, 0);
             }

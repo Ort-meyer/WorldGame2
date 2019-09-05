@@ -716,8 +716,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7618ace7222bc4dace0458fd17699d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_pathUpdateFrequency: 1
-  m_cornerIncrementDistance: 0.1
+  m_pathUpdateFrequency: 0
+  m_cornerIncrementDistance: 0
 --- !u!1 &1348467730
 GameObject:
   m_ObjectHideFlags: 0

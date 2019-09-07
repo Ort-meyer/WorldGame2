@@ -26,6 +26,9 @@ public class CarMovement : BaseMovement
     //private float m_currentWheelAngle = 0;
     private Vector3 m_wheelForward = new Vector3(0, 0, 1);
 
+    private float m_currentWheelAngle = 0;
+    private float m_currentTransformAngle = 0;
+
     void Start()
     {
         m_navPathManager = gameObject.GetComponent<NavPathManager>();
@@ -54,36 +57,43 @@ public class CarMovement : BaseMovement
         
         if (!m_navPathManager.M_DestinationReached())
         {
-            // Move wheels to face towards next waypoint
+            //// Move wheels to face towards next waypoint
             Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
-            if(toNextWaypoint.x != 0)
-            {
-                int derp = 2;
-                derp++;
-                //Debug.Break();
-            }
+
             toNextWaypoint.y = 0;
             //targetRot = Quaternion.LookRotation(toNextWaypoint);
             //transform.rotation = targetRot;
             m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
 
-            // Turn wheels
-            M_TurnWheels(toNextWaypoint);
+            //// Turn wheels
+            //M_TurnWheels(toNextWaypoint);
 
-            // Rotate car towards wheels
-            float diffAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
+            //// Rotate car towards wheels
+            //float diffToTarget = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
+            ////float wheelAngle = 0; // TODO Remove this
+            //float changeAngle = Helpers.Sign(diffToTarget) * m_steering * Time.deltaTime;
+            //float newAngle = changeAngle;
 
-            float steering = Helpers.Sign(diffAngle) * m_steering * Time.deltaTime;
-
-            //if(Mathf.Abs(steering) > Mathf.Abs(diffAngle))
+            //float diff = Mathf.Abs(diffToTarget) - Mathf.Abs(newAngle);
+            //if (diff < 0 && Mathf.Abs(diffToTarget) < 0.5)
             //{
-            //    transform.rotation = Quaternion.LookRotation(toNextWaypoint);
+            //    changeAngle = diffToTarget;
             //}
-            //else
-            {
-                //transform.Rotate(0, steering, 0);
-            }
-            //m_charControl.SimpleMove(transform.forward.normalized * m_speed);
+
+            ////// Limit to max wheel angle
+            //if (Mathf.Abs(newAngle) > m_maxWheelAngle)  // TODO solve bug with waypoints right behind car
+            //{
+            //    changeAngle = 0;
+            //}
+
+            //transform.Rotate(0, changeAngle, 0);
+            ////transform.Rotate(0, diffToTarget, 0);
+            ////if(Mathf.Abs(steering) > Mathf.Abs(diffAngle))
+            ////{
+            ////    transform.rotation = Quaternion.LookRotation(toNextWaypoint);
+            ////}
+            ////else
+            ////m_charControl.SimpleMove(transform.forward.normalized * m_speed);
         }
 
     }
@@ -102,28 +112,32 @@ public class CarMovement : BaseMovement
 
     private void M_TurnWheels(Vector3 direction)
     {
-        float diffToTarget = Helpers.GetDiffAngle2D(m_wheelForward, direction);
-        float wheelAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
-        float changeAngle = Helpers.Sign(diffToTarget) * m_turnSpeed * Time.deltaTime;
-        float newAngle = wheelAngle + changeAngle;
-        
-        float diff = Mathf.Abs(diffToTarget) - Mathf.Abs(newAngle);
-        if( diff < 0 && Mathf.Abs(diffToTarget) < 0.5)
-        {
-            changeAngle = diffToTarget;
-        }
-        
-        //// Limit to max wheel angle
-        if (Mathf.Abs(newAngle) > m_maxWheelAngle)  // TODO solve bug with waypoints right behind car
-        {
-            changeAngle = 0;
-        }
+        //float diffToTarget = Helpers.GetDiffAngle2D(m_wheelForward, direction);
 
-        // Face the wheels correctly
-        foreach (GameObject obj in m_frontWheels)
-        {
-            obj.transform.Rotate(0, changeAngle, 0);
-            m_wheelForward = obj.transform.forward;
-        }
+        //// debug
+        ////float changeAngle = diffToTarget;
+
+        //float wheelAngle = Helpers.GetDiffAngle2D(transform.forward, m_wheelForward);
+        //float changeAngle = Helpers.Sign(diffToTarget) * m_turnSpeed * Time.deltaTime;
+        //float newAngle = wheelAngle + changeAngle;
+
+        //float diff = Mathf.Abs(diffToTarget) - Mathf.Abs(newAngle);
+        //if (diff < 0 && Mathf.Abs(diffToTarget) < 0.5)
+        //{
+        //    changeAngle = diffToTarget;
+        //}
+
+        ////// Limit to max wheel angle
+        //if (Mathf.Abs(newAngle) > m_maxWheelAngle)  // TODO solve bug with waypoints right behind car
+        //{
+        //    changeAngle = 0;
+        //}
+
+        ////// Face the wheels correctly
+        //foreach (GameObject obj in m_frontWheels)
+        //{
+        //    obj.transform.Rotate(0, changeAngle, 0);
+        //}
+        //m_wheelForward = Quaternion.Euler(0, changeAngle, 0) * m_wheelForward;
     }
 }

@@ -699,8 +699,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 2
   m_turnSpeed: 30
-  m_maxWheelAngle: 30
-  m_steering: 30
+  m_maxWheelAngle: 111
+  m_steering: 1
   m_frontWheels:
   - {fileID: 1587573776}
   - {fileID: 520108563}

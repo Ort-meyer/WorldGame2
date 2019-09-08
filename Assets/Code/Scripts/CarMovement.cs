@@ -7,7 +7,7 @@ public class CarMovement : BaseMovement
 {
 
     public float m_speed = 2;
-    public float m_turnSpeed = 3;
+    //public float m_turnSpeed = 3;
     public float m_maxWheelAngle = 30;
     // How much the car turns towards the wheels. From 0 to 1 (0 no turning at all, 1 instantaneous)
     //public float m_steeringFactor = 1;
@@ -24,24 +24,27 @@ public class CarMovement : BaseMovement
     private Vector3 m_destinationPostion;
 
     //private float m_currentWheelAngle = 0;
-    private Vector3 m_wheelForward = new Vector3(0, 0, 1);
+    //private Vector3 m_wheelForward = new Vector3(0, 0, 1);
+
+    //private float m_currentWheelAngle = 0;
+    //private float m_currentTransformAngle = 0;
+
 
     private float m_currentWheelAngle = 0;
-    private float m_currentTransformAngle = 0;
 
     void Start()
     {
         m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
 
-        m_wheelForward = transform.forward;
+        //m_wheelForward = transform.forward;
 
         // Debug stuff
     }
 
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.U))
+        if (Input.GetKeyUp(KeyCode.U))
         {
             M_MoveTo(transform.position + transform.forward * 10);
         }
@@ -54,16 +57,28 @@ public class CarMovement : BaseMovement
             M_MoveTo(transform.position + transform.right * 10);
         }
         Quaternion targetRot;
-        
+
         if (!m_navPathManager.M_DestinationReached())
         {
-            //// Move wheels to face towards next waypoint
-            Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
-
-            toNextWaypoint.y = 0;
-            //targetRot = Quaternion.LookRotation(toNextWaypoint);
-            //transform.rotation = targetRot;
             m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
+            // Move wheels towards next waypoint
+            Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
+            toNextWaypoint.y = 0;
+
+            M_TurnWheels(toNextWaypoint);
+            M_TurnVehicle();
+
+            //m_charControl.SimpleMove(transform.forward.normalized * m_speed);
+            m_charControl.SimpleMove(m_frontWheels[0].transform.forward.normalized * m_speed);
+
+
+            ////// Move wheels to face towards next waypoint
+            //Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
+
+            //toNextWaypoint.y = 0;
+            ////targetRot = Quaternion.LookRotation(toNextWaypoint);
+            ////transform.rotation = targetRot;
+            //m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
 
             //// Turn wheels
             //M_TurnWheels(toNextWaypoint);
@@ -93,7 +108,6 @@ public class CarMovement : BaseMovement
             ////    transform.rotation = Quaternion.LookRotation(toNextWaypoint);
             ////}
             ////else
-            ////m_charControl.SimpleMove(transform.forward.normalized * m_speed);
         }
 
     }
@@ -112,6 +126,16 @@ public class CarMovement : BaseMovement
 
     private void M_TurnWheels(Vector3 direction)
     {
+        float diffToTarget = Helpers.GetDiffAngle2D(m_frontWheels[0].transform.forward, direction);
+        m_currentWheelAngle += diffToTarget;
+        m_currentWheelAngle = Helpers.LimitWithSign(m_currentWheelAngle, m_maxWheelAngle);
+
+        foreach (GameObject obj in m_frontWheels)
+        {
+            obj.transform.localRotation = Quaternion.Euler(0, m_currentWheelAngle, 0);
+        }
+
+
         //float diffToTarget = Helpers.GetDiffAngle2D(m_wheelForward, direction);
 
         //// debug
@@ -139,5 +163,10 @@ public class CarMovement : BaseMovement
         //    obj.transform.Rotate(0, changeAngle, 0);
         //}
         //m_wheelForward = Quaternion.Euler(0, changeAngle, 0) * m_wheelForward;
+    }
+
+    private void M_TurnVehicle()
+    {
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, m_frontWheels[0].transform.rotation, m_steering * Time.deltaTime);
     }
 }

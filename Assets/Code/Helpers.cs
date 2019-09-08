@@ -53,6 +53,16 @@ public static class Helpers
             return Mathf.Sign(number);
         }
     }
+
+    // Limits the number to absLimit, with sign (i.e. -40 limited to 30 returns -30)
+    public static float LimitWithSign(float number, float absLimit)
+    {
+        if (Mathf.Abs(number) > absLimit)
+        {
+            number = Mathf.Sign(number) * absLimit;
+        }
+        return number;
+    }
     
     //public static bool IsParallel(Vector3 v1, Vector3 v2)
     //{

@@ -17,8 +17,14 @@ public class RotatingTurret : BaseTurret
     {
         if (m_targets.Count > 0)
         {
-            m_target = m_targets[0].transform;
-            Vector3 toTarget = m_target.position - transform.position;
+            // Set target (this should obviously have some more solid logic in the future...)
+            m_targetTrans = m_targets[0].transform;
+            // Set the same target for all weapons on this turret
+            foreach (GameObject weaponObj in m_weapons)
+            {
+                weaponObj.GetComponent<BaseWeapon>().M_SetTargetPos(m_targetTrans);
+            }
+            Vector3 toTarget = m_targetTrans.position - transform.position;
             float diffToTarget = Helpers.GetDiffAngle2D(transform.forward, toTarget);
             if (Mathf.Abs(diffToTarget) < 1) // TODO improve this? Magic number is kinda bad
             {

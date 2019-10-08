@@ -5,9 +5,11 @@ using UnityEngine;
 public class BaseTurret : MonoBehaviour
 {
     // The target that the turret should be facing
-    protected Transform m_target = null;
+    protected Transform m_targetTrans = null;
     // The list of all targets that the turret is set to engage
     public List<GameObject> m_targets;
+
+    public List<GameObject> m_weapons;
 
     // Use this for initialization
     protected virtual void Start()
@@ -24,9 +26,19 @@ public class BaseTurret : MonoBehaviour
         m_targets = targets;
     }
 
+    virtual public void M_SetTarget(GameObject target)
+    {
+        M_SetTargets(new List<GameObject> { target });
+    }
+
+    virtual public void M_SetTargetPos(Transform targetPos)
+    {
+        m_targetTrans = targetPos;
+    }
+
     virtual public void M_ClearTarget()
     {
-        m_target = null;
+        m_targetTrans = null;
         m_targets.Clear();
     }
 }

@@ -112,6 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851c60791b458fd45a3811df0daffc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_impactEffectPrefab: {fileID: 100002, guid: 0b24f31f464fa614a84acdeac974ed6b, type: 2}
+  m_particleManager: {fileID: 0}
 --- !u!135 &135663938392888362
 SphereCollider:
   m_ObjectHideFlags: 1

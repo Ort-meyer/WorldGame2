@@ -799,7 +799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pathUpdateFrequency: 0
-  m_cornerIncrementDistance: 0
+  m_cornerIncrementDistance: 1
 --- !u!1 &1348467730
 GameObject:
   m_ObjectHideFlags: 0

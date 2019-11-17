@@ -5,16 +5,17 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
 
-    public GameObject DEBUGTarget;
 
     // All turrets directly attached to this unit
     public List<GameObject> m_turrets;
+    // What faction this unit belongs to
+    public int m_faction;
 
     void Start()
     {
-        foreach(GameObject turret in m_turrets)
+        foreach (GameObject turret in m_turrets)
         {
-            turret.GetComponent<BaseTurret>().M_SetTargets(new List<GameObject> { DEBUGTarget });
+            //turret.GetComponent<BaseTurret>().M_SetTargets(new List<GameObject> { DEBUGTarget });
         }
     }
 
@@ -24,5 +25,13 @@ public class Unit : MonoBehaviour
 
 
 
+    }
+
+    public void M_AttackOrder(List<GameObject> targets)
+    {
+        foreach (GameObject turret in m_turrets)
+        {
+            turret.GetComponent<BaseTurret>().M_SetTargets(targets);
+        }
     }
 }

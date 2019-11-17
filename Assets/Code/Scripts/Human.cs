@@ -49,6 +49,16 @@ public class Human : MonoBehaviour
             {
                 if (hit.transform != null)
                 {
+                    Unit hitUnit = hit.transform.GetComponent<Unit>();
+                    if (hitUnit)
+                    {
+                        // If we hit a unit that't not our own
+                        if(hitUnit.m_faction != m_player.m_faction)
+                        {
+                            m_player.M_EngageWithSelectedUnits(hitUnit.gameObject);
+                            break; ; // Probably a bad way to only avoid multiple commands
+                        }
+                    }
                     // Move if this hit was on a terrain
                     if (hit.transform.GetComponent<Terrain>())
                     {

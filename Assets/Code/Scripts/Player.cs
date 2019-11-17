@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int m_alignment;
+    public int m_faction;
     public Dictionary<int, GameObject> m_selectedUnits;
     // Use this for initialization
     void Start()
@@ -52,20 +52,25 @@ public class Player : MonoBehaviour
         }
     }
 
-    //public void M_EngageWithSelectedUnits(List<GameObject> targets)
-    //{
-    //    foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)
-    //    {
-    //        if (pair.Value == null)
-    //            continue;
-    //        GameObject obj = pair.Value;
-    //        BaseUnit thisUnit = obj.GetComponent<BaseUnit>();
-    //        if (thisUnit)
-    //        {
-    //            thisUnit.M_AttackOrder(targets);
-    //        }
-    //    }
-    //}
+    public void M_EngageWithSelectedUnits(List<GameObject> targets)
+    {
+        foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)
+        {
+            if (pair.Value == null)
+                continue;
+            GameObject obj = pair.Value;
+            Unit thisUnit = obj.GetComponent<Unit>(); // This shouldn't be necessary. Can I ever select something that's not a unit?
+            if (thisUnit)
+            {
+                thisUnit.M_AttackOrder(targets);
+            }
+        }
+    }
+
+    public void M_EngageWithSelectedUnits(GameObject target)
+    {
+        M_EngageWithSelectedUnits(new List<GameObject> { target });
+    }
 
     //public void M_ClearSelectedUnits()
     //{

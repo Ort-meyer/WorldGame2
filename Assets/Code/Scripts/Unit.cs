@@ -7,16 +7,13 @@ public class Unit : MonoBehaviour
 
 
     // All turrets directly attached to this unit
-    public List<GameObject> m_turrets;
+    private List<GameObject> m_turrets = new List<GameObject>();
     // What faction this unit belongs to
     public int m_faction;
 
     void Start()
     {
-        foreach (GameObject turret in m_turrets)
-        {
-            //turret.GetComponent<BaseTurret>().M_SetTargets(new List<GameObject> { DEBUGTarget });
-        }
+
     }
 
     // Update is called once per frame
@@ -32,6 +29,15 @@ public class Unit : MonoBehaviour
         foreach (GameObject turret in m_turrets)
         {
             turret.GetComponent<BaseTurret>().M_SetTargets(targets);
+        }
+    }
+
+    public void M_Init()
+    {
+        BaseTurret[] turrets = GetComponentsInChildren<BaseTurret>();
+        foreach (BaseTurret turret in turrets)
+        {
+            m_turrets.Add(turret.gameObject);
         }
     }
 }

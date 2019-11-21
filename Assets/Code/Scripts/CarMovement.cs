@@ -13,7 +13,7 @@ public class CarMovement : BaseMovement
     public float m_steering = 30;
     public List<GameObject> m_frontWheels;
 
-    public GameObject m_DEBUG;
+    //public GameObject m_DEBUG;
 
     private NavPathManager m_navPathManager;
     private Vector3 m_desVelocity;
@@ -47,7 +47,7 @@ public class CarMovement : BaseMovement
 
         if (!m_navPathManager.M_DestinationReached())
         {
-            m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
+            //m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
             // Move wheels towards next waypoint
             Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
             toNextWaypoint.y = 0;

@@ -5,18 +5,23 @@ using UnityEngine;
 public class Bullet : BaseProjectile
 {
     public GameObject m_impactEffectPrefab;
+    // How many seconds it takes for the object to stabilize (graphical only)
+    public float m_stabilityTime = 1;
 
     private ParticleManager m_particleManager;
+    Rigidbody m_rigidBody;
+
 
     // Use this for initialization
     protected override void Start()
     {
         m_particleManager = Object.FindObjectOfType<ParticleManager>();
+        m_rigidBody = GetComponent<Rigidbody>();
     }
 
     protected override void Update()
     {
-
+        transform.rotation = Quaternion.LookRotation(m_rigidBody.velocity);
     }
 
     void OnTriggerEnter(Collider other)

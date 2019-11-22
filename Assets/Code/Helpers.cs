@@ -63,7 +63,30 @@ public static class Helpers
         }
         return number;
     }
-    
+
+    // Taken from https://www.gamedev.net/forums/topic/107074-calculating-projectile-launch-angle-to-hit-a-target/?page=3
+    // Returns angle necessary to hit the target with the given parameters
+    public static float GetAngleToHit(float distanceToTarget, float heightDifference, float speed)
+    {
+        // Broken up for debugging purposes. Keeping it around for readability
+        float u = speed;
+        float us = Mathf.Pow(u, 2);
+        float x = distanceToTarget;
+        float xs = Mathf.Pow(x, 2);
+        float y = heightDifference;
+        float g = 9.81f;
+
+        float xsus = xs / us;
+        float gxsus = g * xsus;
+        float part0 = y + 0.5f * gxsus;
+        float part0point5 = us - 2 * g * part0;
+        float part1 = u - Mathf.Sqrt(part0point5);
+        float part2 = g * (x / u);
+        float angle = Mathf.Atan(part1 / part2);
+
+        return angle;
+    }
+
     //public static bool IsParallel(Vector3 v1, Vector3 v2)
     //{
     //    //return Vector3.Equals(Vector3.Cross(v1, v2), Vector3.zero);

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TraversingTurret : BaseTurret
 {
+    // Speed of projectile fired by weapon, used to calculate traverse
+    public float m_weaponProjectileLaunchSpeed = 10;
+
     public float m_traverseSpeed = 200;
     public float m_elevationSpeed = 20;
 
@@ -44,7 +47,25 @@ public class TraversingTurret : BaseTurret
             }
             // Clamp to max traverse
             m_currentTraverseAngle = Helpers.LimitWithSign(m_currentTraverseAngle, m_maxTraverse);
-            transform.localRotation = Quaternion.Euler(m_currentElevationAngle, m_currentTraverseAngle, 0);
+
+            // Elevation
+            float distanceToTarget = toTarget.magnitude;
+            float heightDifference = toTarget.y;
+            float elevationTarget = Helpers.GetAngleToHit(distanceToTarget, heightDifference, m_weaponProjectileLaunchSpeed) * Mathf.Rad2Deg;
+            float elevationDiff = elevationTarget - m_currentElevationAngle;
+
+            if (Mathf.Abs(elevationDiff) < 1) // TODO improve this? Magic number is kinda bad
+            {
+                m_currentElevationAngle += elevationDiff;
+            }
+            else
+            {
+                m_currentElevationAngle += Mathf.Sign(elevationDiff) * m_elevationSpeed * Time.deltaTime;
+            }
+            // Clamp to max traverse
+            m_currentElevationAngle = Helpers.LimitWithSign(m_currentElevationAngle, m_maxElevation);
+
+            transform.localRotation = Quaternion.Euler(-1*m_currentElevationAngle, m_currentTraverseAngle, 0);
         }
     }
 }

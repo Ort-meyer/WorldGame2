@@ -18,7 +18,11 @@ public class MachineGun : BaseWeapon
     // Use this for initialization
     protected override void Start()
     {
-
+        TraversingTurret parentTraversingTurret =  m_parentTurretObj.GetComponent<TraversingTurret>();
+        if(parentTraversingTurret)
+        {
+            parentTraversingTurret.m_weaponProjectileLaunchSpeed = m_projectileLaunchSpeed;
+        }
     }
 
     // Update is called once per frame

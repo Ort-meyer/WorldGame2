@@ -158,11 +158,12 @@ public class UnitBuilder : MonoBehaviour
 
     private GameObject M_BuildWeapon(MetaWeapon metaWeapon, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
     {
-        GameObject newTurretObj = Instantiate(m_weaponPrefabs[metaWeapon.m_weaponType], parentObj.transform);
-        newTurretObj.transform.localPosition = localPosition;
-        newTurretObj.transform.localRotation = localRotation;
-        parentObj.GetComponent<BaseTurret>().m_weapons.Add(newTurretObj);
-        return newTurretObj; // Do we need this?
+        GameObject newWeaponObj = Instantiate(m_weaponPrefabs[metaWeapon.m_weaponType], parentObj.transform);
+        newWeaponObj.transform.localPosition = localPosition;
+        newWeaponObj.transform.localRotation = localRotation;
+        newWeaponObj.GetComponent<BaseWeapon>().m_parentTurretObj = parentObj;
+        parentObj.GetComponent<BaseTurret>().m_weapons.Add(newWeaponObj);
+        return newWeaponObj; // Do we need this?
     }
 
 

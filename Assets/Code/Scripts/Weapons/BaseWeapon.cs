@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BaseWeapon : MonoBehaviour
 {
+    // The turret object that this weapon is attached to
+    public GameObject m_parentTurretObj;
     // The target that the weapon should be firing at
     protected Transform m_targetTrans = null;
     // The list of all targets that the turret is set to engage

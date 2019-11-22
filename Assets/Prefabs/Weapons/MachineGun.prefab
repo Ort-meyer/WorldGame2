@@ -227,12 +227,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba958a42d5ec7940bc8ee3980034265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_parentTurretObj: {fileID: 0}
   m_targets: []
   m_angleDiffToFire: 5
   m_projectilePrefab: {fileID: 1049699034347194, guid: 4e5571e5670d61944a53a64885559425,
     type: 2}
   m_projectileLaunchSpeed: 10
   m_maxCooldown: 0.1
+  m_weaponSpread: 2
 --- !u!136 &136466837531207310
 CapsuleCollider:
   m_ObjectHideFlags: 1

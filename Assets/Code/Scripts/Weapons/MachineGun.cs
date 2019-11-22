@@ -13,6 +13,8 @@ public class MachineGun : BaseWeapon
     public float m_projectileLaunchSpeed;
     // The time between each shot
     public float m_maxCooldown;
+    // How many degrees the weapon fire can diff
+    public float m_weaponSpread = 0;
 
     private float m_currentCooldown;
     // Use this for initialization
@@ -53,9 +55,12 @@ public class MachineGun : BaseWeapon
 
     private void M_FireWeapon()
     {
-        Vector3 velocity = transform.forward.normalized * m_projectileLaunchSpeed;
         GameObject newProjectile = Instantiate(m_projectilePrefab, transform.position, transform.rotation);
-        newProjectile.GetComponent<Rigidbody>().velocity = velocity;
+        // Spread it some
+        float spreadx = Random.Range(-m_weaponSpread, m_weaponSpread);
+        float spready = Random.Range(-m_weaponSpread, m_weaponSpread);
+        newProjectile.transform.Rotate(spreadx, spready, 0, Space.Self);
+        newProjectile.GetComponent<Rigidbody>().velocity = newProjectile.transform.forward.normalized * m_projectileLaunchSpeed;
         // Add firing unit to the projectile so it doesnt hit itself
         GameObject firingUnit = GetComponentInParent<Unit>().gameObject;
         newProjectile.GetComponent<BaseProjectile>().M_SetFiringUnit(firingUnit); // TODO safeguard this?

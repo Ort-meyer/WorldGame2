@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum HullType { Tank, Buggy };
-public enum TurretType { Rotating };
+public enum TurretType { Rotating, Traverse };
 public enum WeaponType { MachineGun, Cannon };
 
 [System.Serializable]
@@ -89,8 +89,11 @@ public class UnitBuilder : MonoBehaviour
         // Create a full meta unit here for development purposes
         MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
 
+        MetaTurret machineGunMount = new MetaTurret(TurretType.Traverse);
+        machineGunMount.m_weapons.Add(0, machineGun);
+
         MetaTurret turret = new MetaTurret(TurretType.Rotating);
-        turret.m_weapons.Add(0, machineGun);
+        turret.m_turrets.Add(0, machineGunMount);
 
         MetaUnit devUnit = new MetaUnit(HullType.Buggy);
         devUnit.m_turrets.Add(0, turret);

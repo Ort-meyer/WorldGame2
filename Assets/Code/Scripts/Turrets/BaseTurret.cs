@@ -7,13 +7,14 @@ public class BaseTurret : MonoBehaviour
     // The target that the turret should be facing
     protected Transform m_targetTrans = null;
     // The list of all targets that the turret is set to engage
-    public List<GameObject> m_targets;
+    public List<GameObject> m_targets = new List<GameObject>();
 
-    public List<GameObject> m_weapons;
+    public List<GameObject> m_weapons = new List<GameObject>();
 
     // Use this for initialization
     protected virtual void Start()
     {
+
     }
 
     // Update is called once per frame

@@ -7,9 +7,9 @@ public class RotatingTurret : BaseTurret
     public float m_rotationSpeed = 30;
     private float m_currentAngle = 0;
     // Use this for initialization
-    void Start()
+    protected override void Start()
     {
-
+        base.Start();
     }
 
     // Update is called once per frame

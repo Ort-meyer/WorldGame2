@@ -302,8 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_targets: []
-  m_weapons:
-  - {fileID: 0}
+  m_weapons: []
   m_rotationSpeed: 30
 --- !u!114 &114860315021010800
 MonoBehaviour:

@@ -31,7 +31,6 @@ public class MetaUnit
 {
     public HullType m_hullType;
     public Dictionary<int, MetaTurret> m_turrets = new Dictionary<int, MetaTurret>();
-    public Dictionary<int, MetaWeapon> m_weapons = new Dictionary<int, MetaWeapon>();
     public MetaUnit(HullType hulltype)
     {
         m_hullType = hulltype;
@@ -130,22 +129,10 @@ public class UnitBuilder : MonoBehaviour
         }
     }
 
-    private void M_BuildWeapons(Dictionary<int, MetaWeapon> weapons, GameObject parentObj)
-    {
-        foreach (var kvp in weapons)
-        {
-            int hardpointIndex = kvp.Key;
-            MetaWeapon weapon= kvp.Value;
-            Transform hardpointTransform = parentObj.GetComponent<Hardpoints>().m_hardPoints[hardpointIndex].transform;
-            Vector3 turretLocalPosition = hardpointTransform.localPosition;
-            Quaternion turretLocalRotation = hardpointTransform.localRotation;
-            M_BuildWeapon(weapon, parentObj, turretLocalPosition, turretLocalRotation);
-        }
-    }
-
     private GameObject M_BuildTurret(MetaTurret metaTurret, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
     {
         GameObject newTurretObj = Instantiate(m_turrentPrefabs[metaTurret.m_turretType],parentObj.transform);
+        BaseTurret turret = newTurretObj.GetComponent<BaseTurret>();
         newTurretObj.transform.localPosition = localPosition;
         newTurretObj.transform.localRotation = localRotation;
         M_BuildTurrets(metaTurret.m_turrets, newTurretObj);
@@ -153,11 +140,25 @@ public class UnitBuilder : MonoBehaviour
         return newTurretObj; // Do we need this?
     }
 
+    private void M_BuildWeapons(Dictionary<int, MetaWeapon> weapons, GameObject parentObj)
+    {
+        foreach (var kvp in weapons)
+        {
+            int hardpointIndex = kvp.Key;
+            MetaWeapon weapon = kvp.Value;
+            Transform hardpointTransform = parentObj.GetComponent<Hardpoints>().m_hardPoints[hardpointIndex].transform;
+            Vector3 turretLocalPosition = hardpointTransform.localPosition;
+            Quaternion turretLocalRotation = hardpointTransform.localRotation;
+            M_BuildWeapon(weapon, parentObj, turretLocalPosition, turretLocalRotation);
+        }
+    }
+
     private GameObject M_BuildWeapon(MetaWeapon metaWeapon, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
     {
         GameObject newTurretObj = Instantiate(m_weaponPrefabs[metaWeapon.m_weaponType], parentObj.transform);
         newTurretObj.transform.localPosition = localPosition;
         newTurretObj.transform.localRotation = localRotation;
+        parentObj.GetComponent<BaseTurret>().m_weapons.Add(newTurretObj);
         return newTurretObj; // Do we need this?
     }
 

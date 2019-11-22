@@ -87,7 +87,7 @@ public class UnitBuilder : MonoBehaviour
         }
 
         // Create a full meta unit here for development purposes
-        MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
+        MetaWeapon machineGun = new MetaWeapon(WeaponType.Cannon);
 
         MetaTurret machineGunMount = new MetaTurret(TurretType.Traverse);
         machineGunMount.m_weapons.Add(0, machineGun);

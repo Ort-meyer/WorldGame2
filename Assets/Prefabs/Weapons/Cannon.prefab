@@ -301,12 +301,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba958a42d5ec7940bc8ee3980034265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_parentTurretObj: {fileID: 0}
   m_targets: []
   m_angleDiffToFire: 5
   m_projectilePrefab: {fileID: 1863090733136782, guid: 040cd951eba5b3e4690eec7eaca14f6c,
     type: 2}
-  m_projectileLaunchSpeed: 10
-  m_maxCooldown: 1
+  m_projectileLaunchSpeed: 20
+  m_maxCooldown: 3
 --- !u!136 &136240992827353132
 CapsuleCollider:
   m_ObjectHideFlags: 1

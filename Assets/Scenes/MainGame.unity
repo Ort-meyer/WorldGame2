@@ -495,6 +495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 482037825}
   - component: {fileID: 482037826}
+  - component: {fileID: 482037827}
   m_Layer: 0
   m_Name: UnitBuilder
   m_TagString: Untagged
@@ -540,6 +541,17 @@ MonoBehaviour:
   - weaponType: 1
     prefab: {fileID: 1123271890646208, guid: 1e9ab78142db64d469b7d03233daaea9, type: 2}
   m_spawnPosition: {fileID: 96500987}
+--- !u!114 &482037827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 482037824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd71a3b3f687e641bafc8e9e2371ab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &511276396
 Prefab:
   m_ObjectHideFlags: 0

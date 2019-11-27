@@ -98,8 +98,14 @@ public class UnitBuilder : MonoBehaviour
         MetaUnit devUnit = new MetaUnit(HullType.Buggy);
         devUnit.m_turrets.Add(0, turret);
 
-        M_BuildMetaUnit(devUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
-        
+        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
+        saveLoadHandler.M_SaveUnitToFile("buggy", devUnit);
+
+        MetaUnit loadedUnit = saveLoadHandler.M_LoadFromFile("buggy");
+        //M_BuildMetaUnit(devUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
+        M_BuildMetaUnit(loadedUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
+
+
     }
 
     // Update is called once per frame
@@ -107,7 +113,7 @@ public class UnitBuilder : MonoBehaviour
     {
 
     }
-
+        
     public GameObject M_BuildMetaUnit(MetaUnit metaUnit, Vector3 spawnPosition, Quaternion spawnRotation)
     {
         GameObject newUnitObj = Instantiate(m_hullPrefabs[metaUnit.m_hullType]);

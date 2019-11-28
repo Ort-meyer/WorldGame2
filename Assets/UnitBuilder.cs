@@ -27,7 +27,6 @@ public struct WeaponTypePrefab
     public GameObject prefab;
 }
 
-[System.Serializable]
 public class MetaUnit
 {
     public HullType m_hullType;
@@ -38,7 +37,6 @@ public class MetaUnit
     }
 }
 
-[System.Serializable]
 public class MetaTurret
 {
     public TurretType m_turretType;
@@ -50,7 +48,6 @@ public class MetaTurret
     }
 }
 
-[System.Serializable]
 public class MetaWeapon
 {
     public WeaponType m_weaponType;
@@ -102,7 +99,7 @@ public class UnitBuilder : MonoBehaviour
         devUnit.m_turrets.Add(0, turret);
 
         UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
-        saveLoadHandler.M_SaveUnitToFile("buggy", devUnit);
+        //saveLoadHandler.M_SaveUnitToFile("buggy", devUnit);
 
         MetaUnit loadedUnit = saveLoadHandler.M_LoadFromFile("buggy");
         //M_BuildMetaUnit(devUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);

@@ -4,16 +4,6 @@ using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
 
-[System.Serializable]
-public class SaveUnitThing
-{
-    /* Type of thing, formatted with module type and then module name
-     * e.g. weapon  */
-    public string type;
-    public List<int> indices = new List<int>();
-    public List<SaveUnitThing> thingies = new List<SaveUnitThing>(); 
-}
-
 public class UnitSaveLoader : MonoBehaviour
 {
     private UnitBuilder m_unitBuilder;
@@ -36,55 +26,9 @@ public class UnitSaveLoader : MonoBehaviour
     {
         // See if unit name already exists, and if we should overwrite. Make check separate method?
         string fullFileName = m_unitSaveFolder + unitName + m_fileFormat;
-        string saveString = "debug";
-
-        SaveUnitThing thing = new SaveUnitThing();
-
-        thing.type = "hull:" + metaUnit.m_hullType.ToString();
-        foreach(var kvp in  metaUnit.m_turrets)
-        {
-            int index = kvp.Key;
-            thing.indices.Add(index);
-            MetaTurret turret = kvp.Value;
-            thing.thingies.Add(M_SaveTurret(turret));
-        }
-
         string jsonString = JsonConvert.SerializeObject(metaUnit);
-        //string jsonString = JsonUtility.ToJson(thing);
-        //string jsonString = JsonUtility.ToJson(metaUnit);
         File.WriteAllText(fullFileName, jsonString);
 
-    }
-
-    SaveUnitThing M_SaveTurret(MetaTurret metaTurret)
-    {
-        SaveUnitThing thing = new SaveUnitThing();
-
-        thing.type = "turret:" + metaTurret.m_turretType.ToString();
-        foreach (var kvp in metaTurret.m_turrets)
-        {
-            int index = kvp.Key;
-            thing.indices.Add(index);
-            MetaTurret turret = kvp.Value;
-            thing.thingies.Add(M_SaveTurret(turret));
-        }
-
-        foreach (var kvp in metaTurret.m_weapons)
-        {
-            int index = kvp.Key;
-            thing.indices.Add(index);
-            MetaWeapon weapon = kvp.Value;
-            thing.thingies.Add(M_SaveWeapon(weapon));
-        }
-
-        return thing;
-    }
-
-    SaveUnitThing M_SaveWeapon(MetaWeapon metaWeapon)
-    {
-        SaveUnitThing thing = new SaveUnitThing();
-        thing.type = "weapon:" + metaWeapon.m_weaponType.ToString();
-        return thing;
     }
 
     public MetaUnit M_LoadFromFile(string unitName)

@@ -27,6 +27,7 @@ public struct WeaponTypePrefab
     public GameObject prefab;
 }
 
+[System.Serializable]
 public class MetaUnit
 {
     public HullType m_hullType;
@@ -37,6 +38,7 @@ public class MetaUnit
     }
 }
 
+[System.Serializable]
 public class MetaTurret
 {
     public TurretType m_turretType;
@@ -48,6 +50,7 @@ public class MetaTurret
     }
 }
 
+[System.Serializable]
 public class MetaWeapon
 {
     public WeaponType m_weaponType;

@@ -166,7 +166,8 @@ public class UnitBuilder : MonoBehaviour
     {
         GameObject newTurretObj = Instantiate(m_turrentPrefabs[metaTurret.m_turretType],parentObj.transform);
         BaseTurret turret = newTurretObj.GetComponent<BaseTurret>();
-        newTurretObj.transform.localPosition = localPosition;
+        Transform attachToTransform = newTurretObj.GetComponent<Hardpoints>().m_attachesToHardpoint;
+        newTurretObj.transform.localPosition = localPosition - attachToTransform.localPosition;
         newTurretObj.transform.localRotation = localRotation;
         M_BuildTurrets(metaTurret.m_turrets, newTurretObj);
         M_BuildWeapons(metaTurret.m_weapons, newTurretObj);
@@ -189,7 +190,8 @@ public class UnitBuilder : MonoBehaviour
     private GameObject M_BuildWeapon(MetaWeapon metaWeapon, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
     {
         GameObject newWeaponObj = Instantiate(m_weaponPrefabs[metaWeapon.m_weaponType], parentObj.transform);
-        newWeaponObj.transform.localPosition = localPosition;
+        Transform attachToTransform = newWeaponObj.GetComponent<Hardpoints>().m_attachesToHardpoint;
+        newWeaponObj.transform.localPosition = localPosition - attachToTransform.localPosition;
         newWeaponObj.transform.localRotation = localRotation;
         newWeaponObj.GetComponent<BaseWeapon>().m_parentTurretObj = parentObj;
         parentObj.GetComponent<BaseTurret>().m_weapons.Add(newWeaponObj);

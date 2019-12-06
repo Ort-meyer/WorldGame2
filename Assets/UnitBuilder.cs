@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum HullType { Tank, Buggy };
-public enum TurretType { Rotating, Traverse };
+public enum TurretType { Rotating, Traverse, TankTurret };
 public enum WeaponType { MachineGun, Cannon };
 
 [System.Serializable]
@@ -86,24 +86,48 @@ public class UnitBuilder : MonoBehaviour
             m_weaponPrefabs.Add(kvp.weaponType, kvp.prefab);
         }
 
+
+
+        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
+        ///////////////// Define and build buggy///////////////
         // Create a full meta unit here for development purposes
-        MetaWeapon machineGun = new MetaWeapon(WeaponType.Cannon);
+        MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
 
         MetaTurret machineGunMount = new MetaTurret(TurretType.Traverse);
         machineGunMount.m_weapons.Add(0, machineGun);
 
-        MetaTurret turret = new MetaTurret(TurretType.Rotating);
-        turret.m_turrets.Add(0, machineGunMount);
+        MetaTurret buggyTurret = new MetaTurret(TurretType.Rotating);
+        buggyTurret.m_turrets.Add(0, machineGunMount);
 
-        MetaUnit devUnit = new MetaUnit(HullType.Buggy);
-        devUnit.m_turrets.Add(0, turret);
+        MetaUnit buggyUnit = new MetaUnit(HullType.Buggy);
+        buggyUnit.m_turrets.Add(0, buggyTurret);
 
-        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
-        //saveLoadHandler.M_SaveUnitToFile("buggy", devUnit);
+        saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
 
-        MetaUnit loadedUnit = saveLoadHandler.M_LoadFromFile("buggy");
-        //M_BuildMetaUnit(devUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
-        M_BuildMetaUnit(loadedUnit, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
+        MetaUnit loadedBuggy= saveLoadHandler.M_LoadFromFile("buggy");
+        M_BuildMetaUnit(loadedBuggy, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
+
+        ///////////////// Define and build buggy///////////////
+        // Create a full meta unit here for development purposes
+        MetaWeapon mainGun = new MetaWeapon(WeaponType.Cannon);
+        MetaTurret mainGunMount = new MetaTurret(TurretType.Traverse);
+        mainGunMount.m_weapons.Add(0, mainGun);
+
+        MetaWeapon auxGun = new MetaWeapon(WeaponType.MachineGun);
+        MetaTurret auxGunMount = new MetaTurret(TurretType.Traverse);
+        auxGunMount.m_weapons.Add(0, auxGun);
+
+        MetaTurret tankTurret = new MetaTurret(TurretType.TankTurret);
+        tankTurret.m_turrets.Add(0, mainGunMount);
+        tankTurret.m_turrets.Add(1, auxGunMount);
+
+        MetaUnit tankUnit = new MetaUnit(HullType.Tank);
+        tankUnit.m_turrets.Add(0, tankTurret);
+
+        saveLoadHandler.M_SaveUnitToFile("tank", tankUnit);
+
+        MetaUnit loadedTank = saveLoadHandler.M_LoadFromFile("tank");
+        M_BuildMetaUnit(loadedTank, m_spawnPosition.transform.position + new Vector3(-3,0,0), m_spawnPosition.transform.rotation);
 
 
     }

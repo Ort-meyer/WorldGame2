@@ -57,10 +57,10 @@ GameObject:
   - component: {fileID: 4181599076580116}
   - component: {fileID: 114476166830383918}
   - component: {fileID: 143961574987361418}
-  - component: {fileID: 135088848709189756}
   - component: {fileID: 114954079675083636}
-  - component: {fileID: 114756071958793862}
   - component: {fileID: 114207982868106496}
+  - component: {fileID: 114648554808547562}
+  - component: {fileID: 65881719864187522}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -380,6 +380,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &65881719864187522
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1695947525043890}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 1.5, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65956245260897970
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -419,7 +431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_faction: 0
---- !u!114 &114756071958793862
+--- !u!114 &114648554808547562
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -427,16 +439,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1695947525043890}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3289f12a8725f584e9f412afa4db0fbd, type: 3}
+  m_Script: {fileID: 11500000, guid: 093833cf4ae727247b6f4f4744213695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 2
-  m_turnSpeed: 20
-  m_maxWheelAngle: 30
-  m_steering: 30
-  m_frontWheels:
-  - {fileID: 0}
-  - {fileID: 0}
+  m_speed: 5
+  m_turnSpeed: 30
+  m_angleToMove: 15
 --- !u!114 &114954079675083636
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -450,18 +458,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pathUpdateFrequency: 0
   m_cornerIncrementDistance: 1
---- !u!135 &135088848709189756
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1695947525043890}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!143 &143961574987361418
 CharacterController:
   m_ObjectHideFlags: 1

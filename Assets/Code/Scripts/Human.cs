@@ -87,10 +87,13 @@ public class Human : MonoBehaviour
         // Temporary to select just the one unit
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
+            m_player.M_ClearSelectedUnits();
             foreach (RaycastHit hit in m_hits)
             {
                 if (hit.transform.gameObject.GetComponent<Unit>())
+                {
                     m_player.M_SelectUnits(new List<GameObject> { hit.transform.gameObject });
+                }
             }
         }
 

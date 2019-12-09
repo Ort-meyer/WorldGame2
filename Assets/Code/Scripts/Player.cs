@@ -37,6 +37,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void M_ClearSelectedUnits()
+    {
+        m_selectedUnits.Clear();
+    }
+
     public void M_MoveSelectedUnits(Vector3 destination)
     {
         foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)

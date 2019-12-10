@@ -30,10 +30,12 @@ public struct WeaponTypePrefab
 public class MetaUnit
 {
     public HullType m_hullType;
+    public int m_faction; // This is also tracked in the unit component. That feels redundant
     public Dictionary<int, MetaTurret> m_turrets = new Dictionary<int, MetaTurret>();
-    public MetaUnit(HullType hulltype)
+    public MetaUnit(HullType hulltype, int faction)
     {
         m_hullType = hulltype;
+        m_faction = faction;
     }
 }
 
@@ -69,9 +71,17 @@ public class UnitBuilder : MonoBehaviour
 
     public GameObject m_spawnPosition;
 
-    // Use this for initialization
-    void Start()
+    // TODO just move all this singleton meta thingies to the same game object?
+    WorldManager m_worldManager;
+
+    private void Awake()
     {
+        m_worldManager = FindObjectOfType<WorldManager>();
+    }
+
+    private void Start()
+    {
+
         // Convert arrays to dictionaries
         foreach(HullTypePrefab kvp in hullPrefabsArray)
         {
@@ -85,8 +95,7 @@ public class UnitBuilder : MonoBehaviour
         {
             m_weaponPrefabs.Add(kvp.weaponType, kvp.prefab);
         }
-
-
+        
 
         UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
         ///////////////// Define and build buggy///////////////
@@ -99,7 +108,7 @@ public class UnitBuilder : MonoBehaviour
         MetaTurret buggyTurret = new MetaTurret(TurretType.Rotating);
         buggyTurret.m_turrets.Add(0, machineGunMount);
 
-        MetaUnit buggyUnit = new MetaUnit(HullType.Buggy);
+        MetaUnit buggyUnit = new MetaUnit(HullType.Buggy, 1);
         buggyUnit.m_turrets.Add(0, buggyTurret);
 
         saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
@@ -121,7 +130,7 @@ public class UnitBuilder : MonoBehaviour
         tankTurret.m_turrets.Add(0, mainGunMount);
         tankTurret.m_turrets.Add(1, auxGunMount);
 
-        MetaUnit tankUnit = new MetaUnit(HullType.Tank);
+        MetaUnit tankUnit = new MetaUnit(HullType.Tank, 1);
         tankUnit.m_turrets.Add(0, tankTurret);
 
         saveLoadHandler.M_SaveUnitToFile("tank", tankUnit);
@@ -144,8 +153,9 @@ public class UnitBuilder : MonoBehaviour
         newUnitObj.transform.position = spawnPosition;
         newUnitObj.transform.rotation = spawnRotation;
         M_BuildTurrets(metaUnit.m_turrets, newUnitObj);
-        newUnitObj.GetComponent<Unit>().M_Init();
+        newUnitObj.GetComponent<Unit>().M_Init(metaUnit);
 
+        m_worldManager.m_players[metaUnit.m_faction].m_ownedUnits.Add(newUnitObj.GetInstanceID(), newUnitObj);
         return newUnitObj;
     }
 

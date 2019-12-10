@@ -5,11 +5,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public int m_faction;
-    public Dictionary<int, GameObject> m_selectedUnits;
+    public Dictionary<int, GameObject> m_selectedUnits = new Dictionary<int, GameObject>();
+    // Dictionary of every unit owned by this player
+    public Dictionary<int, GameObject> m_ownedUnits = new Dictionary<int, GameObject>();
     // Use this for initialization
     void Start()
     {
-        m_selectedUnits = new Dictionary<int, GameObject>();
+        //m_selectedUnits = new Dictionary<int, GameObject>();
     }
 
     // Update is called once per frame

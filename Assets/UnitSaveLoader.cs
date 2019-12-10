@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
 
+
+// TODO butcher this class and make it part of unit builder
 public class UnitSaveLoader : MonoBehaviour
 {
     private UnitBuilder m_unitBuilder;

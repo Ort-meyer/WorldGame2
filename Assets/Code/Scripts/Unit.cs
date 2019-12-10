@@ -10,6 +10,8 @@ public class Unit : MonoBehaviour
     private List<GameObject> m_turrets = new List<GameObject>();
     // What faction this unit belongs to
     public int m_faction;
+    // Meta unit representation of this unit (won't consistency be a problem?)
+    public MetaUnit m_metaUnit;
 
     void Start()
     {
@@ -32,8 +34,9 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void M_Init()
+    public void M_Init(MetaUnit metaUnit)
     {
+        m_metaUnit = metaUnit;
         BaseTurret[] turrets = GetComponentsInChildren<BaseTurret>();
         foreach (BaseTurret turret in turrets)
         {

@@ -16,12 +16,14 @@ public class Human : MonoBehaviour
 
     private Player m_player;
 
+    private WorldManager m_worldManager;
 
 
     // Use this for initialization
     void Start()
     {
         m_player = GetComponent<Player>();
+        m_worldManager = FindObjectOfType<WorldManager>();
     }
 
     // Update is called once per frame
@@ -53,7 +55,7 @@ public class Human : MonoBehaviour
                     if (hitUnit)
                     {
                         // If we hit a unit that't not our own
-                        if(hitUnit.m_faction != m_player.m_faction)
+                        if (hitUnit.m_faction != m_player.m_faction)
                         {
                             m_player.M_EngageWithSelectedUnits(hitUnit.gameObject);
                             break; ; // Probably a bad way to only avoid multiple commands
@@ -84,24 +86,83 @@ public class Human : MonoBehaviour
 
     private void LeftClick()
     {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            m_isDragging = true;
+            m_mouseDownPoint = Input.mousePosition;
+        }
         // Temporary to select just the one unit
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            m_player.M_ClearSelectedUnits();
-            foreach (RaycastHit hit in m_hits)
+            if (!Input.GetKey(KeyCode.LeftShift))
             {
-                if (hit.transform.gameObject.GetComponent<Unit>())
+                m_player.M_ClearSelectedUnits();
+            }
+            List<GameObject> selected = new List<GameObject>();
+            //foreach (RaycastHit hit in m_hits)
+            //{
+            //    if (hit.transform.gameObject.GetComponent<Unit>())
+            //    {
+            //        m_player.M_SelectUnits(new List<GameObject> { hit.transform.gameObject });
+            //    }
+            //}
+            m_isDragging = false;
+            // Check if selection was just a click (kinda ugly but should be stable)
+            // Click (both where we started dragging and where we release are basically the same points)
+            if ((Input.mousePosition - m_mouseDownPoint).magnitude < 4) // Value is virtually pixels in screenspace
+            {
+                // If we hit something, and if that is a player unit, select it 
+                if (m_hits.Length > 0)
                 {
-                    m_player.M_SelectUnits(new List<GameObject> { hit.transform.gameObject });
+                    foreach (RaycastHit hit in m_hits)
+                    {
+                        // See if we select something new
+                        Unit hitUnit = hit.transform.GetComponent<Unit>();
+                        if (hitUnit)
+                        {
+                            if (hitUnit.m_faction == m_player.m_faction)
+                            {
+                                selected.Add(hit.transform.gameObject);
+                                break; // TODO I think that the list is sorted by distance. If not, ensure we only take the closes unit
+                            }
+                        }
+                    }
                 }
             }
+            // Drag (selection box)
+            else
+            {
+                // Group engage
+                //if (Input.GetKey(KeyCode.LeftControl))
+                //{
+                //    Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
+                //    List<GameObject> targets = new List<GameObject>();
+                //    for (int i = 0; i < objs.Length; i++)
+                //    {
+                //        GameObject obj = (objs[i] as EnemyEntity).gameObject;
+                //        if (IsWithinSelectionBounds(obj))
+                //        {
+                //            targets.Add(obj);
+                //        }
+                //    }
+                //    m_player.M_EngageWithSelectedUnits(targets);
+                //}
+                // Group select
+                //else
+                {
+                    Object[] objs = FindObjectsOfType(typeof(Unit));
+                    foreach (GameObject obj in m_worldManager.m_players[m_player.m_faction].m_ownedUnits.Values)
+                    {
+                        if (IsWithinSelectionBounds(obj))
+                        {
+                            selected.Add(obj);
+                        }
+                    }
+                }
+            }
+            m_player.M_SelectUnits(selected);
         }
 
-        //if (Input.GetKeyDown(KeyCode.Mouse0))
-        //{
-        //    m_isDragging = true;
-        //    m_mouseDownPoint = Input.mousePosition;
-        //}
 
         //if (Input.GetKeyUp(KeyCode.Mouse0))
         //{
@@ -171,58 +232,58 @@ public class Human : MonoBehaviour
     }
 
 
-    //private void OnGUI()
-    //{
-    //    if (m_isDragging)
-    //    {
-    //        Rect rect = GetScreenRect(m_mouseDownPoint, Input.mousePosition);
-    //        DrawSelectionBox(rect);
-    //    }
-    //}
+    private void OnGUI()
+    {
+        if (m_isDragging)
+        {
+            Rect rect = GetScreenRect(m_mouseDownPoint, Input.mousePosition);
+            DrawSelectionBox(rect);
+        }
+    }
 
-    //private Rect GetScreenRect(Vector3 screenPosition1, Vector3 screenPosition2)
-    //{
-    //    // Move origin from bottom left to top left
-    //    screenPosition1.y = Screen.height - screenPosition1.y;
-    //    screenPosition2.y = Screen.height - screenPosition2.y;
-    //    // Calculate corners
-    //    var topLeft = Vector3.Min(screenPosition1, screenPosition2);
-    //    var bottomRight = Vector3.Max(screenPosition1, screenPosition2);
-    //    // Create Rect
-    //    return Rect.MinMaxRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
-    //}
+    private Rect GetScreenRect(Vector3 screenPosition1, Vector3 screenPosition2)
+    {
+        // Move origin from bottom left to top left
+        screenPosition1.y = Screen.height - screenPosition1.y;
+        screenPosition2.y = Screen.height - screenPosition2.y;
+        // Calculate corners
+        var topLeft = Vector3.Min(screenPosition1, screenPosition2);
+        var bottomRight = Vector3.Max(screenPosition1, screenPosition2);
+        // Create Rect
+        return Rect.MinMaxRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
+    }
 
-    //private void DrawSelectionBox(Rect rect)
-    //{
-    //    // Draw the inner box
-    //    GUI.DrawTexture(rect, m_selectionTexture);
-    //    // Draw the edges
-    //    GUI.DrawTexture(new Rect(rect.xMin, rect.yMin, rect.width, m_edgeThickness), m_selectionEdgeTexture);
-    //    // Left
-    //    GUI.DrawTexture(new Rect(rect.xMin, rect.yMin, m_edgeThickness, rect.height), m_selectionEdgeTexture);
-    //    // Right
-    //    GUI.DrawTexture(new Rect(rect.xMax - m_edgeThickness, rect.yMin, m_edgeThickness, rect.height), m_selectionEdgeTexture);
-    //    // Bottom
-    //    GUI.DrawTexture(new Rect(rect.xMin, rect.yMax - m_edgeThickness, rect.width, m_edgeThickness), m_selectionEdgeTexture);
-    //}
+    private void DrawSelectionBox(Rect rect)
+    {
+        // Draw the inner box
+        GUI.DrawTexture(rect, m_selectionTexture);
+        // Draw the edges
+        GUI.DrawTexture(new Rect(rect.xMin, rect.yMin, rect.width, m_edgeThickness), m_selectionEdgeTexture);
+        // Left
+        GUI.DrawTexture(new Rect(rect.xMin, rect.yMin, m_edgeThickness, rect.height), m_selectionEdgeTexture);
+        // Right
+        GUI.DrawTexture(new Rect(rect.xMax - m_edgeThickness, rect.yMin, m_edgeThickness, rect.height), m_selectionEdgeTexture);
+        // Bottom
+        GUI.DrawTexture(new Rect(rect.xMin, rect.yMax - m_edgeThickness, rect.width, m_edgeThickness), m_selectionEdgeTexture);
+    }
 
-    //private Bounds GetViewportBounds(Vector3 screenPosition1, Vector3 screenPosition2)
-    //{
-    //    var v1 = Camera.main.ScreenToViewportPoint(screenPosition1);
-    //    var v2 = Camera.main.ScreenToViewportPoint(screenPosition2);
-    //    var min = Vector3.Min(v1, v2);
-    //    var max = Vector3.Max(v1, v2);
-    //    min.z = Camera.main.nearClipPlane;
-    //    max.z = Camera.main.farClipPlane;
+    private Bounds GetViewportBounds(Vector3 screenPosition1, Vector3 screenPosition2)
+    {
+        var v1 = Camera.main.ScreenToViewportPoint(screenPosition1);
+        var v2 = Camera.main.ScreenToViewportPoint(screenPosition2);
+        var min = Vector3.Min(v1, v2);
+        var max = Vector3.Max(v1, v2);
+        min.z = Camera.main.nearClipPlane;
+        max.z = Camera.main.farClipPlane;
 
-    //    var bounds = new Bounds();
-    //    bounds.SetMinMax(min, max);
-    //    return bounds;
-    //}
+        var bounds = new Bounds();
+        bounds.SetMinMax(min, max);
+        return bounds;
+    }
 
-    //public bool IsWithinSelectionBounds(GameObject gameObject)
-    //{
-    //    var viewportBounds = GetViewportBounds(m_mouseDownPoint, Input.mousePosition);
-    //    return viewportBounds.Contains(Camera.main.WorldToViewportPoint(gameObject.transform.position));
-    //}
+    public bool IsWithinSelectionBounds(GameObject gameObject)
+    {
+        var viewportBounds = GetViewportBounds(m_mouseDownPoint, Input.mousePosition);
+        return viewportBounds.Contains(Camera.main.WorldToViewportPoint(gameObject.transform.position));
+    }
 }

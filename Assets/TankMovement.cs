@@ -51,4 +51,10 @@ public class TankMovement : BaseMovement
     {
         m_navPathManager.M_SetDestination(destination);
     }
+
+    // Clears destination and causes the unit to stop
+    public override void M_StopOrder()
+    {
+        m_navPathManager.M_ClearDestination();
+    }
 }

@@ -28,6 +28,7 @@ public class Unit : MonoBehaviour
 
     public void M_AttackOrder(List<GameObject> targets)
     {
+        GetComponent<BaseMovement>().M_StopOrder();
         foreach (GameObject turret in m_turrets)
         {
             turret.GetComponent<BaseTurret>().M_SetTargets(targets);

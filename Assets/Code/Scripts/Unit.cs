@@ -21,16 +21,16 @@ public class Unit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
-
+        
     }
 
     public void M_AttackOrder(List<GameObject> targets)
     {
-        GetComponent<BaseMovement>().M_StopOrder();
+        GetComponent<BaseMovement>().M_StopOrder(); // TODO this should probably not this universal
+        
         foreach (GameObject turret in m_turrets)
         {
+
             turret.GetComponent<BaseTurret>().M_SetTargets(targets);
         }
     }

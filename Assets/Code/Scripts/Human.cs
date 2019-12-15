@@ -66,19 +66,6 @@ public class Human : MonoBehaviour
                     {
                         m_player.M_MoveSelectedUnits(hit.point);
                     }
-                    //// See if we clicked an enemy
-                    //BaseUnit unit = m_hit.transform.GetComponent<BaseUnit>();
-                    //if (unit)
-                    //{
-                    //    if (unit.m_alignment != m_player.m_alignment)
-                    //    {
-                    //        m_player.M_EngageWithSelectedUnits(new List<GameObject> { m_hit.transform.gameObject });
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    m_player.M_MoveSelectedUnits(m_hit.point);
-                    //}
                 }
             }
         }
@@ -94,18 +81,7 @@ public class Human : MonoBehaviour
         // Temporary to select just the one unit
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            if (!Input.GetKey(KeyCode.LeftShift))
-            {
-                m_player.M_ClearSelectedUnits();
-            }
             List<GameObject> selected = new List<GameObject>();
-            //foreach (RaycastHit hit in m_hits)
-            //{
-            //    if (hit.transform.gameObject.GetComponent<Unit>())
-            //    {
-            //        m_player.M_SelectUnits(new List<GameObject> { hit.transform.gameObject });
-            //    }
-            //}
             m_isDragging = false;
             // Check if selection was just a click (kinda ugly but should be stable)
             // Click (both where we started dragging and where we release are basically the same points)
@@ -123,6 +99,11 @@ public class Human : MonoBehaviour
                             if (hitUnit.m_faction == m_player.m_faction)
                             {
                                 selected.Add(hit.transform.gameObject);
+                                if (!Input.GetKey(KeyCode.LeftShift))
+                                {
+                                    m_player.M_ClearSelectedUnits();
+                                }
+                                m_player.M_SelectUnits(selected);
                                 break; // TODO I think that the list is sorted by distance. If not, ensure we only take the closes unit
                             }
                         }
@@ -133,24 +114,38 @@ public class Human : MonoBehaviour
             else
             {
                 // Group engage
-                //if (Input.GetKey(KeyCode.LeftControl))
-                //{
-                //    Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
-                //    List<GameObject> targets = new List<GameObject>();
-                //    for (int i = 0; i < objs.Length; i++)
-                //    {
-                //        GameObject obj = (objs[i] as EnemyEntity).gameObject;
-                //        if (IsWithinSelectionBounds(obj))
-                //        {
-                //            targets.Add(obj);
-                //        }
-                //    }
-                //    m_player.M_EngageWithSelectedUnits(targets);
-                //}
-                // Group select
-                //else
+                if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    Object[] objs = FindObjectsOfType(typeof(Unit));
+                    // Engage all other players' units (TODO change when there's allied players)
+                    foreach (Player player in m_worldManager.m_players.Values)
+                    {
+                        // Only hit things that aren't our own
+                        if(player.m_faction != m_player.m_faction)
+                        {
+                            foreach (GameObject obj in player.m_ownedUnits.Values)
+                            {
+                                if (IsWithinSelectionBounds(obj))
+                                {
+                                    selected.Add(obj);
+                                }
+                            }
+                        }
+                        //Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
+                        //List<GameObject> targets = new List<GameObject>();
+                        //for (int i = 0; i < objs.Length; i++)
+                        //{
+                        //    GameObject obj = (objs[i] as EnemyEntity).gameObject;
+                        //    if (IsWithinSelectionBounds(obj))
+                        //    {
+                        //        targets.Add(obj);
+                        //    }
+                        //}
+                    }
+                    m_player.M_EngageWithSelectedUnits(selected); // Selected is a dumb name but the code is pretty
+                }
+                // Group select
+                else
+                {
                     foreach (GameObject obj in m_worldManager.m_players[m_player.m_faction].m_ownedUnits.Values)
                     {
                         if (IsWithinSelectionBounds(obj))
@@ -158,9 +153,13 @@ public class Human : MonoBehaviour
                             selected.Add(obj);
                         }
                     }
+                    if (!Input.GetKey(KeyCode.LeftShift))
+                    {
+                        m_player.M_ClearSelectedUnits();
+                    }
+                    m_player.M_SelectUnits(selected);
                 }
             }
-            m_player.M_SelectUnits(selected);
         }
 
 

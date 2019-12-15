@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Distance between each unit in a formation. TODO have this be dynamic somehow
+    public int m_formationSpread;
     public int m_faction;
     public Dictionary<int, GameObject> m_selectedUnits = new Dictionary<int, GameObject>();
     // Dictionary of every unit owned by this player
@@ -11,7 +13,20 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //m_selectedUnits = new Dictionary<int, GameObject>();
+        // Hack to get all debug units into the list of owned units for AI TODO clean this up
+        if (m_faction == 0)
+        {
+            Object[] objs = FindObjectsOfType<Unit>();
+            for (int i = 0; i < objs.Length; i++)
+            {
+                Unit unit = (objs[i] as Unit);
+                if (unit.m_faction == m_faction)
+                {
+                    m_ownedUnits.Add(unit.gameObject.GetInstanceID(), unit.gameObject);
+                }
+            }
+        }
+
     }
 
     // Update is called once per frame
@@ -52,20 +67,16 @@ public class Player : MonoBehaviour
                 continue;
             GameObject obj = pair.Value;
             obj.GetComponent<BaseMovement>().M_MoveTo(destination);
-
-            // Pretty hard coded for now. Have to be able to order multiple units
-            //BaseUnit thisUnit = obj.GetComponent<BaseUnit>();
-            //thisUnit.M_MoveOrder(destination);
         }
     }
 
     public void M_EngageWithSelectedUnits(List<GameObject> targets)
     {
-        foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)
+        foreach (GameObject obj in m_selectedUnits.Values)
         {
-            if (pair.Value == null)
+            if (obj == null) // Cannot assume that dictionary is clean TODO clean it up somewhere? 
                 continue;
-            GameObject obj = pair.Value;
+
             Unit thisUnit = obj.GetComponent<Unit>(); // This shouldn't be necessary. Can I ever select something that's not a unit?
             if (thisUnit)
             {

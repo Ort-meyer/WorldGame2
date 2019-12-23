@@ -1031,10 +1031,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0ea498575062ba488ebc16d3035fd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_keyMoveSpeed: 0
-  m_mouseMoveSpeed: 0
-  m_rotationSpeed: 0
-  m_zoomSpeed: 0
+  m_keyMoveSpeed: 11
+  m_mouseMoveSpeed: 50
+  m_rotationSpeed: 120
+  m_zoomSpeed: 80
 --- !u!1 &1657154295
 GameObject:
   m_ObjectHideFlags: 0

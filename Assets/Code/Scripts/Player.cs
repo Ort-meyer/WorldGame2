@@ -61,12 +61,27 @@ public class Player : MonoBehaviour
 
     public void M_MoveSelectedUnits(Vector3 destination)
     {
+        int squareSize = (int)System.Math.Ceiling(System.Math.Sqrt(m_selectedUnits.Count));
+        int unitIndex = 0;
+
         foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)
         {
             if (pair.Value == null)
                 continue;
             GameObject obj = pair.Value;
-            obj.GetComponent<BaseMovement>().M_MoveTo(destination);
+
+            // Place the units in a square centered on the destination point.
+            int row = unitIndex % squareSize;
+            int col = unitIndex / squareSize;
+            float rowOffset = ((float)row - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
+            float colOffset = ((float)col - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
+
+            Vector3 unitDestination = destination;
+            unitDestination.x += rowOffset;
+            unitDestination.z += colOffset;
+
+            obj.GetComponent<BaseMovement>().M_MoveTo(unitDestination);
+            unitIndex++;
         }
     }
 

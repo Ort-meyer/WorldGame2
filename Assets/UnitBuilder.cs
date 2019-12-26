@@ -152,8 +152,9 @@ public class UnitBuilder : MonoBehaviour
         GameObject newUnitObj = Instantiate(m_hullPrefabs[metaUnit.m_hullType]);
         newUnitObj.transform.position = spawnPosition;
         newUnitObj.transform.rotation = spawnRotation;
-        M_BuildTurrets(metaUnit.m_turrets, newUnitObj);
-        newUnitObj.GetComponent<Unit>().M_Init(metaUnit);
+        Unit newUnit = newUnitObj.GetComponent<Unit>();
+        M_BuildTurrets(metaUnit.m_turrets, newUnit.m_gfxObject);
+        newUnit.M_Init(metaUnit);
 
         m_worldManager.m_players[metaUnit.m_faction].m_ownedUnits.Add(newUnitObj.GetInstanceID(), newUnitObj);
         return newUnitObj;

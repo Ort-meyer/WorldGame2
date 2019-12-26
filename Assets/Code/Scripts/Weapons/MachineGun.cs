@@ -15,6 +15,8 @@ public class MachineGun : BaseWeapon
     public float m_maxCooldown;
     // How many degrees the weapon fire can diff
     public float m_weaponSpread = 0;
+    // How strong the recoil is (arbitrary number for now)
+    public float m_recoil = 0;
 
     private float m_currentCooldown;
     // Use this for initialization
@@ -62,7 +64,9 @@ public class MachineGun : BaseWeapon
         newProjectile.transform.Rotate(spreadx, spready, 0, Space.Self);
         newProjectile.GetComponent<Rigidbody>().velocity = newProjectile.transform.forward.normalized * m_projectileLaunchSpeed;
         // Add firing unit to the projectile so it doesnt hit itself
-        GameObject firingUnit = GetComponentInParent<Unit>().gameObject;
-        newProjectile.GetComponent<BaseProjectile>().M_SetFiringUnit(firingUnit); // TODO safeguard this?
+        Unit firingUnit = GetComponentInParent<Unit>();
+        GameObject firingUnitObj = firingUnit.gameObject;
+        newProjectile.GetComponent<BaseProjectile>().M_SetFiringUnit(firingUnitObj); // TODO safeguard this?
+        firingUnit.M_AddRecoil(newProjectile.transform.forward * m_recoil);
     }
 }

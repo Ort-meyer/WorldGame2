@@ -249,6 +249,7 @@ MonoBehaviour:
   m_projectileLaunchSpeed: 10
   m_maxCooldown: 0.1
   m_weaponSpread: 2
+  m_recoil: 5
 --- !u!136 &136466837531207310
 CapsuleCollider:
   m_ObjectHideFlags: 1

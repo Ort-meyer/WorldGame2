@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum HullType { Tank, Buggy };
-public enum TurretType { Rotating, Traverse, TankTurret };
+public enum TurretType { Rotating, Traverse, TankTurret, Double};
 public enum WeaponType { MachineGun, Cannon };
 
 [System.Serializable]
@@ -138,6 +138,29 @@ public class UnitBuilder : MonoBehaviour
         MetaUnit loadedTank = saveLoadHandler.M_LoadFromFile("tank");
         M_BuildMetaUnit(loadedTank, m_spawnPosition.transform.position + new Vector3(-3,0,0), m_spawnPosition.transform.rotation);
 
+
+        /////////////// Define and build double cannon tank
+        MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
+        MetaTurret rightGunMount = new MetaTurret(TurretType.Traverse);
+        rightGunMount.m_weapons.Add(0, rightGun);
+
+        MetaWeapon leftGun = new MetaWeapon(WeaponType.Cannon);
+        MetaTurret leftGunMount = new MetaTurret(TurretType.Traverse);
+        leftGunMount.m_weapons.Add(0, leftGun);
+
+        MetaTurret doubleGunMount = new MetaTurret(TurretType.Double);
+        doubleGunMount.m_turrets.Add(0, rightGunMount);
+        doubleGunMount.m_turrets.Add(1, leftGunMount);
+
+        MetaTurret doubleTankTurret = new MetaTurret(TurretType.TankTurret);
+        doubleTankTurret.m_turrets.Add(0, doubleGunMount);
+
+        MetaUnit doubleTankUnit = new MetaUnit(HullType.Tank, 1);
+        doubleTankUnit.m_turrets.Add(0, doubleTankTurret);
+
+        saveLoadHandler.M_SaveUnitToFile("doubletank", doubleTankUnit);
+        MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
+        M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-6, 0, 0), m_spawnPosition.transform.rotation);
 
     }
 

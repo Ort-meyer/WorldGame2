@@ -113,6 +113,61 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: d41b39ea8fb937947a96cb3a5c803255, type: 2}
+--- !u!1001 &66796975
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 18.565
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.9710001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 16.407
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513629762933888, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4894885172693522, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.199
+      objectReference: {fileID: 0}
+    - target: {fileID: 114463604661095942, guid: 3087cba69f1388049b9970ec22ec3cfc,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696111488734408, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &96500987
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +612,8 @@ MonoBehaviour:
     prefab: {fileID: 1609254557199888, guid: 7622a9000f1e85c4d9651e2d25441057, type: 2}
   - turretType: 2
     prefab: {fileID: 1704378804917796, guid: 763a1adc0423629468f5249b7570c595, type: 2}
+  - turretType: 3
+    prefab: {fileID: 1696111488734408, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
   weaponPrefabsArray:
   - weaponType: 0
     prefab: {fileID: 1592195919002650, guid: 54433ebefe746a549bc3c9646c9d9452, type: 2}
@@ -764,7 +821,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4023791179510252, guid: 763a1adc0423629468f5249b7570c595, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1704378804917796, guid: 763a1adc0423629468f5249b7570c595, type: 2}
       propertyPath: m_IsActive
@@ -1216,7 +1273,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4932261378698356, guid: 54433ebefe746a549bc3c9646c9d9452, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 1592195919002650, guid: 54433ebefe746a549bc3c9646c9d9452, type: 2}
       propertyPath: m_IsActive
@@ -1467,7 +1524,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4304573438245420, guid: 1e9ab78142db64d469b7d03233daaea9, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1123271890646208, guid: 1e9ab78142db64d469b7d03233daaea9, type: 2}
       propertyPath: m_IsActive

@@ -10,6 +10,9 @@ public class BaseWeapon : MonoBehaviour
     protected Transform m_targetTrans = null;
     // The list of all targets that the turret is set to engage
     public List<GameObject> m_targets;
+    // Whether this weapon is allowed to fire or not
+    public bool m_isFiring = false;
+
     // Use this for initialization
     protected virtual void Start()
     {
@@ -41,5 +44,10 @@ public class BaseWeapon : MonoBehaviour
     {
         m_targetTrans= null;
         m_targets.Clear();
+    }
+
+    virtual public void M_SetFiring(bool isFiring)
+    {
+        m_isFiring = isFiring;
     }
 }

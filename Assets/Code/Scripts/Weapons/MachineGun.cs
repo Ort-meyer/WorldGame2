@@ -32,26 +32,29 @@ public class MachineGun : BaseWeapon
     // Update is called once per frame
     protected override void Update()
     {
-        if (m_currentCooldown <= 0)
+        if (m_isFiring)
         {
-            if (m_targetTrans != null)
+            if (m_currentCooldown <= 0)
             {
-                Vector3 toTarget = m_targetTrans.position - transform.position;
-                toTarget.y = 0;
-                Vector3 forward = transform.forward;
-                forward.y = 0;
-                float diff = Helpers.GetDiffAngle2D(toTarget, forward);
-
-                if (diff <= m_angleDiffToFire)
+                if (m_targetTrans != null)
                 {
-                    M_FireWeapon();
-                    m_currentCooldown = m_maxCooldown;
+                    Vector3 toTarget = m_targetTrans.position - transform.position;
+                    toTarget.y = 0;
+                    Vector3 forward = transform.forward;
+                    forward.y = 0;
+                    float diff = Helpers.GetDiffAngle2D(toTarget, forward);
+
+                    if (diff <= m_angleDiffToFire)
+                    {
+                        M_FireWeapon();
+                        m_currentCooldown = m_maxCooldown;
+                    }
                 }
             }
-        }
-        else
-        {
-            m_currentCooldown -= Time.deltaTime;
+            else
+            {
+                m_currentCooldown -= Time.deltaTime;
+            }
         }
     }
 

@@ -87,6 +87,23 @@ public static class Helpers
         return angle;
     }
 
+    // Returns the closes GameObject from a list, to a given GameObject 
+    public static GameObject GetClosestObject(GameObject fromObj, List<GameObject> toObjects)
+    {
+        float currentDistance = 100000;
+        GameObject closestObj = null;
+        foreach(GameObject obj in toObjects)
+        {
+            float thisDistance = (fromObj.transform.position - obj.transform.position).magnitude;
+            if(thisDistance < currentDistance)
+            {
+                currentDistance = thisDistance;
+                closestObj = obj;
+            }
+        }
+        return closestObj;
+    }
+
     //public static bool IsParallel(Vector3 v1, Vector3 v2)
     //{
     //    //return Vector3.Equals(Vector3.Cross(v1, v2), Vector3.zero);

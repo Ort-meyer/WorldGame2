@@ -12,6 +12,8 @@ public class BaseTurret : MonoBehaviour
     public List<BaseTurret> m_turrets = new List<BaseTurret>();
     public List<BaseWeapon> m_weapons = new List<BaseWeapon>();
 
+    public bool m_isFiring = false;
+
     // Use this for initialization
     protected virtual void Start()
     {
@@ -29,10 +31,12 @@ public class BaseTurret : MonoBehaviour
         foreach (BaseTurret turret in m_turrets)
         {
             turret.M_SetTargets(targets);
+            //turret.M_SetFiring(true);
         }
         foreach(BaseWeapon weapon in m_weapons)
         {
             weapon.M_SetTargets(targets);
+            weapon.M_SetFiring(true);
         }
     }
 
@@ -50,6 +54,19 @@ public class BaseTurret : MonoBehaviour
     {
         m_targetTrans = null;
         m_targets.Clear();
+    }
+
+    virtual public void M_SetFiring(bool isFiring)
+    {
+        m_isFiring = isFiring;
+        foreach (BaseTurret turret in m_turrets)
+        {
+            turret.M_SetFiring(isFiring);
+        }
+        foreach (BaseWeapon weapon in m_weapons)
+        {
+            weapon.M_SetFiring(isFiring);
+        }
     }
 }
 

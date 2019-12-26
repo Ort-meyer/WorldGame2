@@ -176,15 +176,16 @@ public class UnitBuilder : MonoBehaviour
         newUnitObj.transform.position = spawnPosition;
         newUnitObj.transform.rotation = spawnRotation;
         Unit newUnit = newUnitObj.GetComponent<Unit>();
-        M_BuildTurrets(metaUnit.m_turrets, newUnit.m_gfxObject);
-        newUnit.M_Init(metaUnit);
+        List<BaseTurret> builtTurrets = M_BuildTurrets(metaUnit.m_turrets, newUnit.m_gfxObject);
+        newUnit.M_Init(metaUnit, builtTurrets);
 
         m_worldManager.m_players[metaUnit.m_faction].m_ownedUnits.Add(newUnitObj.GetInstanceID(), newUnitObj);
         return newUnitObj;
     }
 
-    private void M_BuildTurrets(Dictionary<int, MetaTurret> turrets, GameObject parentObj)
+    private List<BaseTurret> M_BuildTurrets(Dictionary<int, MetaTurret> turrets, GameObject parentObj)
     {
+        List<BaseTurret> builtTurrets = new List<BaseTurret>();
         foreach (var kvp in turrets)
         {
             int hardpointIndex = kvp.Key;
@@ -192,8 +193,10 @@ public class UnitBuilder : MonoBehaviour
             Transform hardpointTransform = parentObj.GetComponent<Hardpoints>().m_hardPoints[hardpointIndex].transform;
             Vector3 turretLocalPosition = hardpointTransform.localPosition;
             Quaternion turretLocalRotation = hardpointTransform.localRotation;
-            M_BuildTurret(turret, parentObj, turretLocalPosition, turretLocalRotation);
+            GameObject newTurretObj = M_BuildTurret(turret, parentObj, turretLocalPosition, turretLocalRotation);
+            builtTurrets.Add(newTurretObj.GetComponent<BaseTurret>());
         }
+        return builtTurrets;
     }
 
     private GameObject M_BuildTurret(MetaTurret metaTurret, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
@@ -203,13 +206,14 @@ public class UnitBuilder : MonoBehaviour
         Transform attachToTransform = newTurretObj.GetComponent<Hardpoints>().m_attachesToHardpoint;
         newTurretObj.transform.localPosition = localPosition - attachToTransform.localPosition;
         newTurretObj.transform.localRotation = localRotation;
-        M_BuildTurrets(metaTurret.m_turrets, newTurretObj);
-        M_BuildWeapons(metaTurret.m_weapons, newTurretObj);
+        turret.m_turrets = M_BuildTurrets(metaTurret.m_turrets, newTurretObj);
+        turret.m_weapons = M_BuildWeapons(metaTurret.m_weapons, newTurretObj);
         return newTurretObj; // Do we need this?
     }
 
-    private void M_BuildWeapons(Dictionary<int, MetaWeapon> weapons, GameObject parentObj)
+    private List<BaseWeapon> M_BuildWeapons(Dictionary<int, MetaWeapon> weapons, GameObject parentObj)
     {
+        List<BaseWeapon> builtWeapons = new List<BaseWeapon>();
         foreach (var kvp in weapons)
         {
             int hardpointIndex = kvp.Key;
@@ -217,8 +221,10 @@ public class UnitBuilder : MonoBehaviour
             Transform hardpointTransform = parentObj.GetComponent<Hardpoints>().m_hardPoints[hardpointIndex].transform;
             Vector3 turretLocalPosition = hardpointTransform.localPosition;
             Quaternion turretLocalRotation = hardpointTransform.localRotation;
-            M_BuildWeapon(weapon, parentObj, turretLocalPosition, turretLocalRotation);
+            GameObject newWeaponObj = M_BuildWeapon(weapon, parentObj, turretLocalPosition, turretLocalRotation);
+            builtWeapons.Add(newWeaponObj.GetComponent<BaseWeapon>());
         }
+        return builtWeapons;
     }
 
     private GameObject M_BuildWeapon(MetaWeapon metaWeapon, GameObject parentObj, Vector3 localPosition, Quaternion localRotation)
@@ -228,7 +234,6 @@ public class UnitBuilder : MonoBehaviour
         newWeaponObj.transform.localPosition = localPosition - attachToTransform.localPosition;
         newWeaponObj.transform.localRotation = localRotation;
         newWeaponObj.GetComponent<BaseWeapon>().m_parentTurretObj = parentObj;
-        parentObj.GetComponent<BaseTurret>().m_weapons.Add(newWeaponObj);
         return newWeaponObj; // Do we need this?
     }
 

@@ -152,15 +152,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 14
       objectReference: {fileID: 0}
-    - target: {fileID: 4894885172693522, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -0.199
-      objectReference: {fileID: 0}
-    - target: {fileID: 114463604661095942, guid: 3087cba69f1388049b9970ec22ec3cfc,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1696111488734408, guid: 3087cba69f1388049b9970ec22ec3cfc, type: 2}
       propertyPath: m_IsActive
       value: 0

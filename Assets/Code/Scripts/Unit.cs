@@ -10,7 +10,7 @@ public class Unit : MonoBehaviour
     }
 
     // All turrets directly attached to this unit
-    private List<GameObject> m_turrets = new List<GameObject>();
+    private List<BaseTurret> m_turrets = new List<BaseTurret>();
     // What faction this unit belongs to
     public int m_faction;
     // Meta unit representation of this unit (won't consistency be a problem?)
@@ -65,21 +65,16 @@ public class Unit : MonoBehaviour
     {
         GetComponent<BaseMovement>().M_StopOrder(); // TODO this should probably not this universal
 
-        foreach (GameObject turret in m_turrets)
+        foreach (BaseTurret turret in m_turrets)
         {
-
-            turret.GetComponent<BaseTurret>().M_SetTargets(targets);
+            turret.M_SetTargets(targets);
         }
     }
 
-    public void M_Init(MetaUnit metaUnit)
+    public void M_Init(MetaUnit metaUnit, List<BaseTurret> turrets)
     {
         m_metaUnit = metaUnit;
-        BaseTurret[] turrets = GetComponentsInChildren<BaseTurret>();
-        foreach (BaseTurret turret in turrets)
-        {
-            m_turrets.Add(turret.gameObject);
-        }
+        m_turrets = turrets;
     }
 
 

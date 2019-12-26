@@ -70,7 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4513629762933888}
   - component: {fileID: 114446564417991330}
-  - component: {fileID: 114463604661095942}
+  - component: {fileID: 114646249064415734}
   m_Layer: 0
   m_Name: DoubleStaticTurret
   m_TagString: Untagged
@@ -189,7 +189,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1707741708630772}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.199}
   m_LocalScale: {x: 0.22140999, y: 0.22140999, z: 0.22140999}
   m_Children: []
   m_Father: {fileID: 4513629762933888}
@@ -390,7 +390,7 @@ MonoBehaviour:
   - {fileID: 4169639028905760}
   - {fileID: 4293107190253134}
   m_attachesToHardpoint: {fileID: 4894885172693522}
---- !u!114 &114463604661095942
+--- !u!114 &114646249064415734
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -398,13 +398,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1696111488734408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4823d95dfe3061547885bda112eae43a, type: 3}
+  m_Script: {fileID: 11500000, guid: f35982a62205ae746a22a66f5834df68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_targets: []
-  m_weapons: []
-  m_weaponProjectileLaunchSpeed: 10
-  m_traverseSpeed: 200
-  m_elevationSpeed: 20
-  m_maxTraverse: 50
-  m_maxElevation: 30

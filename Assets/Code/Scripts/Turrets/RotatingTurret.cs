@@ -40,9 +40,9 @@ public class RotatingTurret : BaseTurret
             // Set target (this should obviously have some more solid logic in the future...)
             m_targetTrans = m_targets[0].transform;
             // Set the same target for all weapons on this turret
-            foreach (GameObject weaponObj in m_weapons)
+            foreach (BaseWeapon weapon in m_weapons)
             {
-                weaponObj.GetComponent<BaseWeapon>().M_SetTargetPos(m_targetTrans);
+                weapon.M_SetTargetPos(m_targetTrans);
             }
             Vector3 toTarget = m_targetTrans.position - transform.position;
             float diffToTarget = Helpers.GetDiffAngle2D(transform.forward, toTarget);

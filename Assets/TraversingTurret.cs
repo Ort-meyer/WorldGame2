@@ -29,9 +29,9 @@ public class TraversingTurret : BaseTurret
         {
             // TODO can't much of this be inherited from RotatingTurret?
             m_targetTrans = m_targets[0].transform;
-            foreach (GameObject weaponObj in m_weapons)
+            foreach (BaseWeapon weapon in m_weapons)
             {
-                weaponObj.GetComponent<BaseWeapon>().M_SetTargetPos(m_targetTrans);
+                weapon.M_SetTargetPos(m_targetTrans);
             }
 
             // Traverse

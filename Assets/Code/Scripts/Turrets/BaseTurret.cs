@@ -9,7 +9,8 @@ public class BaseTurret : MonoBehaviour
     // The list of all targets that the turret is set to engage
     public List<GameObject> m_targets = new List<GameObject>();
 
-    public List<GameObject> m_weapons = new List<GameObject>();
+    public List<BaseTurret> m_turrets = new List<BaseTurret>();
+    public List<BaseWeapon> m_weapons = new List<BaseWeapon>();
 
     // Use this for initialization
     protected virtual void Start()
@@ -25,6 +26,14 @@ public class BaseTurret : MonoBehaviour
     virtual public void M_SetTargets(List<GameObject> targets)
     {
         m_targets = targets;
+        foreach (BaseTurret turret in m_turrets)
+        {
+            turret.M_SetTargets(targets);
+        }
+        foreach(BaseWeapon weapon in m_weapons)
+        {
+            weapon.M_SetTargets(targets);
+        }
     }
 
     virtual public void M_SetTarget(GameObject target)

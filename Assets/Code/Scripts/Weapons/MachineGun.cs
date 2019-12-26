@@ -5,7 +5,7 @@ using UnityEngine;
 public class MachineGun : BaseWeapon
 {
     // The gun will fire when the diff to the target is lower than this
-    public float m_angleDiffToFire= 5;
+    public float m_angleDiffToFire = 5;
 
     // Prefab for the projectile fired
     public GameObject m_projectilePrefab;
@@ -22,8 +22,8 @@ public class MachineGun : BaseWeapon
     // Use this for initialization
     protected override void Start()
     {
-        TraversingTurret parentTraversingTurret =  m_parentTurretObj.GetComponent<TraversingTurret>();
-        if(parentTraversingTurret)
+        TraversingTurret parentTraversingTurret = m_parentTurretObj.GetComponent<TraversingTurret>();
+        if (parentTraversingTurret)
         {
             parentTraversingTurret.m_weaponProjectileLaunchSpeed = m_projectileLaunchSpeed;
         }

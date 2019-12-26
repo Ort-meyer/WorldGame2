@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    private class Recoil
+    {
 
+    }
 
     // All turrets directly attached to this unit
     private List<GameObject> m_turrets = new List<GameObject>();
@@ -37,9 +40,9 @@ public class Unit : MonoBehaviour
     void Update()
     {
         // DEBUG to add some recoil
-        if(Input.GetKeyUp(KeyCode.X))
+        if (Input.GetKeyUp(KeyCode.X))
         {
-            M_AddRecoil(new Vector3(0,0,0));
+            M_AddRecoil(new Vector3(0, 0, 0));
         }
 
         if (m_gfxObject)

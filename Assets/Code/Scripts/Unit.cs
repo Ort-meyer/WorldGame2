@@ -55,7 +55,8 @@ public class Unit : MonoBehaviour
                 m_currentRecoilProgress = m_currentRecoilTimer / m_recoilDuration;
                 wobble = m_recoilCurve.Evaluate(m_currentRecoilProgress) * m_maxRecoil;
             }
-            m_gfxObject.transform.localEulerAngles = m_wobbleAxis.normalized * wobble;
+            m_gfxObject.transform.localRotation = Quaternion.AngleAxis(wobble, m_wobbleAxis.normalized);
+            //m_gfxObject.transform.localEulerAngles = m_wobbleAxis.normalized * wobble;
 
         }
     }

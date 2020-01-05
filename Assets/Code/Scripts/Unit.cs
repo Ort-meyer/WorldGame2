@@ -6,7 +6,13 @@ public class Unit : MonoBehaviour
 {
     private class Recoil
     {
+        public float currentTimer = 0;
+        public Vector3 recoil;
 
+        public Recoil(Vector3 recoil)
+        {
+            this.recoil = recoil;
+        }
     }
 
     // All turrets directly attached to this unit
@@ -25,10 +31,11 @@ public class Unit : MonoBehaviour
     private float m_currentRecoilTimer = 0;
     // Time in seconds that the recoil progresses
     public float m_recoilDuration = 1;
-    private float m_currentRecoilProgress = 1;
     public AnimationCurve m_recoilCurve;
 
     Vector3 m_wobbleAxis = new Vector3(0, 0, 1);
+
+    List<Recoil> m_recoilList = new List<Recoil>();
 
     void Start()
     {
@@ -47,17 +54,25 @@ public class Unit : MonoBehaviour
 
         if (m_gfxObject)
         {
-            //m_current
-            float wobble = 0;
-            if (m_currentRecoilTimer < m_recoilDuration)
+            // Calculate recoil based on all currently active recoils
+            Vector3 totalRecoil = new Vector3();
+            
+            foreach (Recoil recoil in m_recoilList)
             {
-                m_currentRecoilTimer += Time.deltaTime;
-                m_currentRecoilProgress = m_currentRecoilTimer / m_recoilDuration;
-                wobble = m_recoilCurve.Evaluate(m_currentRecoilProgress) * m_maxRecoil;
+                if (recoil.currentTimer < m_recoilDuration)
+                {
+                    recoil.currentTimer += Time.deltaTime;
+                    float progress = recoil.currentTimer / m_recoilDuration;
+                    float factor = m_recoilCurve.Evaluate(progress) * m_maxRecoil;
+                    totalRecoil += factor * recoil.recoil;
+                }
             }
-            m_gfxObject.transform.localRotation = Quaternion.AngleAxis(wobble, m_wobbleAxis.normalized);
-            //m_gfxObject.transform.localEulerAngles = m_wobbleAxis.normalized * wobble;
+            // TODO maybe not do this so often?
+            m_recoilList.RemoveAll(recoil => recoil.currentTimer > m_recoilDuration);
 
+            Vector3 wobbleAxis = Vector3.Cross(totalRecoil.normalized, transform.up);
+
+            m_gfxObject.transform.localRotation = Quaternion.AngleAxis(totalRecoil.magnitude, wobbleAxis);
         }
     }
 
@@ -82,9 +97,8 @@ public class Unit : MonoBehaviour
     {
         if (direction.magnitude > 80)
         {
-            m_wobbleAxis = Vector3.Cross(direction.normalized, transform.up);
-            m_currentRecoilProgress = 0;
-            m_currentRecoilTimer = 0;
+            // TODO have magnitude be relevant
+            m_recoilList.Add(new Recoil(direction.normalized));
         }
     }
 }

@@ -404,7 +404,8 @@ MonoBehaviour:
   m_targets: []
   m_turrets: []
   m_weapons: []
-  m_isFiring: 0
-  m_durationBetweenGunFire: 0.3
+  m_isFiring: 1
+  m_durationBetweenGunFire: 0.2
   m_diffAngleBeforeFiring: 5
   m_target: {fileID: 0}
+  m_deepWeapons: []

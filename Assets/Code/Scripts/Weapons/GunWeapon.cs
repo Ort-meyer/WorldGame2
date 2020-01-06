@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MachineGun : BaseWeapon
+public class GunWeapon : BaseWeapon
 {
     // The gun will fire when the diff to the target is lower than this
     public float m_angleDiffToFire = 5;
@@ -38,27 +38,6 @@ public class MachineGun : BaseWeapon
         {
             M_Fire();
         }
-
-        //if (m_currentCooldown <= 0)
-        //{
-        //    if (m_targetTrans != null)
-        //    {
-        //        Vector3 toTarget = m_targetTrans.position - transform.position;
-        //        toTarget.y = 0;
-        //        Vector3 forward = transform.forward;
-        //        forward.y = 0;
-        //        float diff = Helpers.GetDiffAngle2D(toTarget, forward);
-
-        //        if (diff <= m_angleDiffToFire)
-        //        {
-        //            m_readyToFire = true;
-        //            if (m_automaticFiring)
-        //            {
-        //                M_FireWeapon();
-        //            }
-        //        }
-        //    }
-        //}
     }
 
     private void M_UpdateCooldown()

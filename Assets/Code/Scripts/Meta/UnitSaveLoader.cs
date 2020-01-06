@@ -30,7 +30,6 @@ public class UnitSaveLoader : MonoBehaviour
         string fullFileName = m_unitSaveFolder + unitName + m_fileFormat;
         string jsonString = JsonConvert.SerializeObject(metaUnit);
         File.WriteAllText(fullFileName, jsonString);
-
     }
 
     public MetaUnit M_LoadFromFile(string unitName)
@@ -45,38 +44,4 @@ public class UnitSaveLoader : MonoBehaviour
         MetaUnit loadedMetaUnit = JsonConvert.DeserializeObject<MetaUnit>(fullFileName);
         return loadedMetaUnit;
     }
-
-    //public void M_SaveUnitToFile(string unitName, UnitModule unitModuleToSave)
-    //{
-    //    SavedModule unitToSave =  SaveSubModules(unitModuleToSave);
-    //    string jsonString = JsonUtility.ToJson(unitToSave);
-    //    SaveToFile(unitName, jsonString);
-    //}
-
-    //public SavedModule M_LoadUnitFromFile(string unitName)
-    //{
-    //    string jsonString = LoadFromFile(m_unitSaveFolder + unitName + m_fileFormat);
-
-    //    SavedModule unitToLoad = JsonUtility.FromJson<SavedModule>(jsonString);
-    //    return unitToLoad;
-
-    //    //////// This stuff should be in showroom manager, or buildroom
-    //    //GameObject newUnit = m_unitBuilder.M_BuildUnit((ModuleType)Enum.Parse(typeof(ModuleType), unitToLoad.moduleType), m_spawnPosition);
-    //    //Destroy(m_currentVehicle);
-    //    //m_currentVehicle = newUnit;
-    //    //m_currentHardpoint = null;
-    //}
-
-    //SavedModule SaveSubModules(UnitModule currentModule)
-    //{
-    //    SavedModule moduleToSave = new SavedModule();
-    //    moduleToSave.moduleType = currentModule.m_moduleType.ToString();
-    //    foreach (UnitSubModule module in currentModule.m_modules.Values)
-    //    {
-    //        SavedModule subModule = SaveSubModules(module);
-    //        subModule.attachedToIndex = module.m_attachedToIndex;
-    //        moduleToSave.modules.Add(subModule);
-    //    }
-    //    return moduleToSave;
-    //}
 }

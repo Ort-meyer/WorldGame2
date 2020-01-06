@@ -6,7 +6,7 @@ public class ParticleManager : MonoBehaviour
 {
 
     private List<GameObject> m_activeParticleEffects = new List<GameObject>();
-    private List<GameObject> m_activeBulletHoles = new List<GameObject>();
+    //private List<GameObject> m_activeBulletHoles = new List<GameObject>(); // Do I ever need this?
 
     // Use this for initialization
     void Start()

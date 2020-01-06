@@ -130,16 +130,6 @@ public class Human : MonoBehaviour
                                 }
                             }
                         }
-                        //Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
-                        //List<GameObject> targets = new List<GameObject>();
-                        //for (int i = 0; i < objs.Length; i++)
-                        //{
-                        //    GameObject obj = (objs[i] as EnemyEntity).gameObject;
-                        //    if (IsWithinSelectionBounds(obj))
-                        //    {
-                        //        targets.Add(obj);
-                        //    }
-                        //}
                     }
                     m_player.M_EngageWithSelectedUnits(selected); // Selected is a dumb name but the code is pretty
                 }
@@ -161,73 +151,6 @@ public class Human : MonoBehaviour
                 }
             }
         }
-
-
-        //if (Input.GetKeyUp(KeyCode.Mouse0))
-        //{
-        //    if (!Input.GetKey(KeyCode.LeftShift))
-        //    {
-        //        m_player.M_ClearSelectedUnits();
-        //    }
-        //    List<GameObject> selected = new List<GameObject>();
-
-        //    m_isDragging = false;
-        //    // Check if selection was just a click (kinda ugly but should be stable)
-        //    // Click (both where we started dragging and where we release are basically the same points)
-        //    if ((Input.mousePosition - m_mouseDownPoint).magnitude < 4) // Value is virtually pixels in screenspace
-        //    {
-        //        // If we hit something, and if that is a player unit, select it 
-        //        if (m_hit.transform != null)
-        //        {
-        //            // See if we select something new
-        //            BaseUnit hitUnit = m_hit.transform.GetComponent<BaseUnit>();
-        //            if (hitUnit)
-        //            {
-        //                if (hitUnit.m_alignment == m_player.m_alignment)
-        //                {
-        //                    selected.Add(m_hit.transform.gameObject);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    // Drag (selection box)
-        //    else
-        //    {
-        //        // Group engage
-        //        if (Input.GetKey(KeyCode.LeftControl))
-        //        {
-        //            Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
-        //            List<GameObject> targets = new List<GameObject>();
-        //            for (int i = 0; i < objs.Length; i++)
-        //            {
-        //                GameObject obj = (objs[i] as EnemyEntity).gameObject;
-        //                if (IsWithinSelectionBounds(obj))
-        //                {
-        //                    targets.Add(obj);
-        //                }
-        //            }
-        //            m_player.M_EngageWithSelectedUnits(targets);
-        //        }
-        //        // Group select
-        //        else
-        //        {
-        //            Object[] objs = FindObjectsOfType(typeof(BaseUnit));
-        //            for (int i = 0; i < objs.Length; i++)
-        //            {
-        //                GameObject obj = (objs[i] as BaseUnit).gameObject;
-        //                BaseUnit unit = obj.GetComponent<BaseUnit>();
-        //                if (unit.m_alignment == m_player.m_alignment)
-        //                {
-        //                    if (IsWithinSelectionBounds(obj))
-        //                    {
-        //                        selected.Add(obj);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    m_player.M_SelectUnits(selected);
-        //}
     }
 
 

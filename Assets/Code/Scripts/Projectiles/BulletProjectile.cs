@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : BaseProjectile
+public class BulletProjectile : BaseProjectile
 {
     public GameObject m_impactEffectPrefab;
     // How many seconds it takes for the object to stabilize (graphical only)

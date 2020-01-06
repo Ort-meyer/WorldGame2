@@ -27,20 +27,14 @@ public class Unit : MonoBehaviour
     public GameObject m_gfxObject;
 
     private Vector3 m_recoil;
-    // Current timer of recoil in seconds
-    private float m_currentRecoilTimer = 0;
     // Time in seconds that the recoil progresses
     public float m_recoilDuration = 1;
     public AnimationCurve m_recoilCurve;
-
-    Vector3 m_wobbleAxis = new Vector3(0, 0, 1);
 
     List<Recoil> m_recoilList = new List<Recoil>();
 
     void Start()
     {
-        // Kidna ugly hack to make sure the wobble doesnt occur upon spawning
-        m_currentRecoilTimer = m_recoilDuration;
     }
 
     // Update is called once per frame

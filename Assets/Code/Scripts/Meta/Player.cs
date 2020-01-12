@@ -7,22 +7,22 @@ public class Player : MonoBehaviour
     // Distance between each unit in a formation. TODO have this be dynamic somehow
     public int m_formationSpread;
     public int m_faction;
-    public Dictionary<int, GameObject> m_selectedUnits = new Dictionary<int, GameObject>();
-    // Dictionary of every unit owned by this player
-    public Dictionary<int, GameObject> m_ownedUnits = new Dictionary<int, GameObject>();
+    public Dictionary<int, Convoy> m_selectedConvoys = new Dictionary<int, Convoy>();
+    // Dictionary of every convoy owned by this player (Is this risky? Cant we lose units?)
+    public Dictionary<int, Convoy> m_ownedConvoys = new Dictionary<int, Convoy>();
     // Use this for initialization
     void Start()
     {
         // Hack to get all debug units into the list of owned units for AI TODO clean this up
         if (m_faction == 0)
         {
-            Object[] objs = FindObjectsOfType<Unit>();
+            Object[] objs = FindObjectsOfType<Convoy>();
             for (int i = 0; i < objs.Length; i++)
             {
-                Unit unit = (objs[i] as Unit);
-                if (unit.m_faction == m_faction)
+                Convoy convoy = (objs[i] as Convoy);
+                if (convoy.m_faction == m_faction)
                 {
-                    m_ownedUnits.Add(unit.gameObject.GetInstanceID(), unit.gameObject);
+                    m_ownedConvoys.Add(convoy.gameObject.GetInstanceID(), convoy);
                 }
             }
         }
@@ -35,17 +35,17 @@ public class Player : MonoBehaviour
 
     }
 
-    public void M_SelectUnits(List<GameObject> units)
+    public void M_SelectConvoys(List<Convoy> convoys)
     {
-        foreach (GameObject unit in units)
+        foreach (Convoy convoy in convoys)
         {
-            int objId = unit.GetInstanceID();
+            int objId = convoy.GetInstanceID();
             // Avoid adding the same unit twice
-            if (m_selectedUnits.ContainsKey(objId))
+            if (m_selectedConvoys.ContainsKey(objId))
             {
                 continue;
             }
-            m_selectedUnits.Add(unit.GetInstanceID(), unit);
+            m_selectedConvoys.Add(convoy.GetInstanceID(), convoy);
             //// If this is the human, also draw selection circle (not sure if this is the right place...)
             //if (GetComponent<Human>())
             //{
@@ -54,55 +54,103 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void M_ClearSelectedUnits()
+    public void M_ClearSelectedConvoys()
     {
-        m_selectedUnits.Clear();
+        m_selectedConvoys.Clear();
     }
 
-    public void M_MoveSelectedUnits(Vector3 destination)
+    public void M_MoveSelectedConvoys(Vector3 destination)
     {
-        int squareSize = (int)System.Math.Ceiling(System.Math.Sqrt(m_selectedUnits.Count));
-        int unitIndex = 0;
-
-        foreach (KeyValuePair<int, GameObject> pair in m_selectedUnits)
+        foreach(Convoy convoy in m_selectedConvoys.Values)
         {
-            if (pair.Value == null)
-                continue;
-            GameObject obj = pair.Value;
-
-            // Place the units in a square centered on the destination point.
-            int row = unitIndex % squareSize;
-            int col = unitIndex / squareSize;
-            float rowOffset = ((float)row - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
-            float colOffset = ((float)col - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
-
-            Vector3 unitDestination = destination;
-            unitDestination.x += rowOffset;
-            unitDestination.z += colOffset;
-
-            obj.GetComponent<BaseMovement>().M_MoveTo(unitDestination);
-            unitIndex++;
+            convoy.M_MoveTo(destination);
         }
+
+        //int squareSize = (int)System.Math.Ceiling(System.Math.Sqrt(m_selectedConvoys.Count));
+        //int unitIndex = 0;
+
+        //foreach (KeyValuePair<int, Convoy> pair in m_selectedConvoys)
+        //{
+        //    if (pair.Value == null)
+        //        continue;
+        //    GameObject obj = pair.Value.gameObject;
+
+        //    // Place the units in a square centered on the destination point.
+        //    int row = unitIndex % squareSize;
+        //    int col = unitIndex / squareSize;
+        //    float rowOffset = ((float)row - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
+        //    float colOffset = ((float)col - squareSize / 2) * 5.0f;  // TODO: Should be scaled according to unit size
+
+        //    Vector3 unitDestination = destination;
+        //    unitDestination.x += rowOffset;
+        //    unitDestination.z += colOffset;
+
+        //    obj.GetComponent<BaseMovement>().M_MoveTo(unitDestination);
+        //    unitIndex++;
+        //}
     }
 
-    public void M_EngageWithSelectedUnits(List<GameObject> targets)
+    public void M_EngageWithSelectedConvoys(List<GameObject> targets)
     {
-        foreach (GameObject obj in m_selectedUnits.Values)
+        foreach (Convoy convoy in m_selectedConvoys.Values)
         {
-            if (obj == null) // Cannot assume that dictionary is clean TODO clean it up somewhere? 
+            if (convoy == null) // Cannot assume that dictionary is clean TODO clean it up somewhere? 
                 continue;
-
-            Unit thisUnit = obj.GetComponent<Unit>(); // This shouldn't be necessary. Can I ever select something that's not a unit?
-            if (thisUnit)
+            if (convoy)
             {
-                thisUnit.M_AttackOrder(targets);
+                convoy.M_AttackOrder(targets);
             }
         }
     }
 
-    public void M_EngageWithSelectedUnits(GameObject target)
+    public void M_EngageWithSelectedConvoys(List<Convoy> targets)
     {
-        M_EngageWithSelectedUnits(new List<GameObject> { target });
+        foreach (Convoy convoy in m_selectedConvoys.Values)
+        {
+            if (convoy == null) // Cannot assume that dictionary is clean TODO clean it up somewhere? 
+                continue;
+            if (convoy)
+            {
+                convoy.M_AttackOrder(targets);
+            }
+        }
+    }
+
+    public void M_EngageWithSelectedConvoys(GameObject target)
+    {
+        M_EngageWithSelectedConvoys(new List<GameObject> { target });
+    }
+
+    public void M_FormConvoy()
+    {
+        //GameObject newConvoyObj = new GameObject();
+        //Instantiate(newConvoyObj);
+        //Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
+
+        //// Add all selected units together to the convoy
+        //List<Unit> selectedUnits = new List<Unit>();
+        //foreach (GameObject unitObj in m_selectedConvoys.Values)
+        //{
+        //    Unit unit = unitObj.GetComponent<Unit>();
+        //    //// If a convoy is selected, merge it into a large convoy
+        //    //Convoy convoy = unitObj.GetComponent<Convoy>();
+        //    //if (convoy)
+        //    //{
+        //    //    foreach (Unit convoyUnit in convoy.m_units)
+        //    //    {
+        //    //        selectedUnits.Add(convoyUnit);
+        //    //    }
+        //    //    Destroy(convoy.gameObject);
+        //    //}
+        //    //Unit unit = controllable.GetComponent<Unit>();
+        //    //if (unit)
+        //    //{
+        //    //    selectedUnits.Add(unit);
+        //    //}
+        //}
+        //M_ClearSelectedUnits();)
+
+        //newConvoy.M_InitConvoy(selectedUnits);
     }
 
     //private void DrawSelected(GameObject obj, bool selected)

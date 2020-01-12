@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour
     // All turrets directly attached to this unit
     private List<BaseTurret> m_turrets = new List<BaseTurret>();
     // What faction this unit belongs to
-    public int m_faction;
+    // public int m_faction; // We have this in convoy atm, but it might be a good idea to reintroduce
     // Meta unit representation of this unit (won't consistency be a problem?)
     public MetaUnit m_metaUnit;
     // Maximum recoil (arbitrary number for now)
@@ -32,6 +32,8 @@ public class Unit : MonoBehaviour
     public AnimationCurve m_recoilCurve;
 
     List<Recoil> m_recoilList = new List<Recoil>();
+
+    public Convoy m_convoy;
 
     void Start()
     {
@@ -80,10 +82,16 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void M_Init(MetaUnit metaUnit, List<BaseTurret> turrets)
+    public Convoy M_Init(MetaUnit metaUnit, List<BaseTurret> turrets)
     {
         m_metaUnit = metaUnit;
         m_turrets = turrets;
+        GameObject convoyObj = new GameObject();
+        Convoy convoy = convoyObj.AddComponent<Convoy>();
+        convoy.m_units.Add(this);
+        convoy.m_faction = metaUnit.m_faction;
+        m_convoy = convoy;
+        return convoy;
     }
 
 

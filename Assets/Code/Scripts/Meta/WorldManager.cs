@@ -68,24 +68,25 @@ public class WorldManager : MonoBehaviour
 
     private void M_SaveWorldToFile(string worldName)
     {
-        string fullFileName = m_worldSaveFolder + worldName + m_fileFormat;
-        // Create list of every unit in the game and their transforms (positions and rotations)      
-        List<SaveUnitData> allUnitsInWorld = new List<SaveUnitData>();
-        foreach (var playersKvp in m_players)
-        {
-            int faction = playersKvp.Key;
-            Player player = playersKvp.Value;
-            foreach (var unitsKvp in player.m_ownedUnits)
-            {
-                int instanceId = unitsKvp.Key;
-                GameObject unitObj = unitsKvp.Value;
-                Unit unit = unitObj.GetComponent<Unit>();
-                allUnitsInWorld.Add(new SaveUnitData(unit.m_metaUnit, unitObj.transform.position, unitObj.transform.rotation));
-            }
-        }
+        // TODO rewrite with respect to convoys (shouldn't be too hard). Also needs to not write entire meta units
+        //string fullFileName = m_worldSaveFolder + worldName + m_fileFormat;
+        //// Create list of every unit in the game and their transforms (positions and rotations)      
+        //List<SaveUnitData> allUnitsInWorld = new List<SaveUnitData>();
+        //foreach (var playersKvp in m_players)
+        //{
+        //    int faction = playersKvp.Key;
+        //    Player player = playersKvp.Value;
+        //    foreach (var unitsKvp in player.m_ownedUnits)
+        //    {
+        //        int instanceId = unitsKvp.Key;
+        //        GameObject unitObj = unitsKvp.Value;
+        //        Unit unit = unitObj.GetComponent<Unit>();
+        //        allUnitsInWorld.Add(new SaveUnitData(unit.m_metaUnit, unitObj.transform.position, unitObj.transform.rotation));
+        //    }
+        //}
 
-        string jsonString = JsonConvert.SerializeObject(allUnitsInWorld);
-        File.WriteAllText(fullFileName, jsonString);
+        //string jsonString = JsonConvert.SerializeObject(allUnitsInWorld);
+        //File.WriteAllText(fullFileName, jsonString);
 
     }
 

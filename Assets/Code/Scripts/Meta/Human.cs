@@ -59,7 +59,7 @@ public class Human : MonoBehaviour
                         // If we hit a unit that't not our own
                         if (hitUnit.m_convoy.m_faction != m_player.m_faction)
                         {
-                            m_player.M_EngageWithSelectedConvoys(hitUnit.m_convoy.gameObject); // This feels risky
+                            m_player.M_EngageWithSelectedConvoys(hitUnit.m_convoy); // This feels risky
                             break; ; // Probably a bad way to only avoid multiple commands
                         }
                     }

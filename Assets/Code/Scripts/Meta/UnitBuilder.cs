@@ -162,6 +162,10 @@ public class UnitBuilder : MonoBehaviour
         MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
         M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-6, 0, 0), m_spawnPosition.transform.rotation);
 
+        // Debuggy way of creating an enemy tank
+        loadedDoubleTank.m_faction = 0;
+        M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-16, 0, 0), m_spawnPosition.transform.rotation);
+
     }
 
     // Update is called once per frame

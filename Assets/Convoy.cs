@@ -32,15 +32,20 @@ public class Convoy : MonoBehaviour
     {
         foreach (Unit unit in m_units)
         {
-
+            unit.M_AttackOrder(targets);
         }
     }
 
     public void M_AttackOrder(List<Convoy> targets)
     {
-        foreach (Unit unit in m_units)
+        List<GameObject> targetObjs = new List<GameObject>();
+        foreach(Convoy targetConvoy in targets)
         {
-
+            foreach(Unit targetUnit in targetConvoy.m_units)
+            {
+                targetObjs.Add(targetUnit.gameObject);
+            }
         }
+        M_AttackOrder(targetObjs);
     }
 }

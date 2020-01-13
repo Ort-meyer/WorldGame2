@@ -116,9 +116,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void M_EngageWithSelectedConvoys(GameObject target)
+    public void M_EngageWithSelectedConvoys(Convoy target)
     {
-        M_EngageWithSelectedConvoys(new List<GameObject> { target });
+        M_EngageWithSelectedConvoys(new List<Convoy> { target });
     }
 
     public void M_FormConvoy()

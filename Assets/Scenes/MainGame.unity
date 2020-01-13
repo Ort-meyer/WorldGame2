@@ -245,7 +245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &97765474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,7 +257,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_faction: 0
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1
@@ -267,6 +266,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_convoy: {fileID: 0}
 --- !u!135 &97765475
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -352,7 +352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &225514060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,7 +364,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_faction: 0
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1
@@ -374,6 +373,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_convoy: {fileID: 0}
 --- !u!135 &225514061
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -573,6 +573,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519e33e09be895840a2c486c326a50b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_units: []
+  m_faction: -1
 --- !u!4 &410504227
 Transform:
   m_ObjectHideFlags: 0
@@ -722,7 +724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &762326646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -734,7 +736,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_faction: 0
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1
@@ -744,6 +745,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_convoy: {fileID: 0}
 --- !u!135 &762326647
 SphereCollider:
   m_ObjectHideFlags: 0

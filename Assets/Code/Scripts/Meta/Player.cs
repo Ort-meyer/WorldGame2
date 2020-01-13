@@ -123,9 +123,23 @@ public class Player : MonoBehaviour
 
     public void M_FormConvoy()
     {
-        //GameObject newConvoyObj = new GameObject();
-        //Instantiate(newConvoyObj);
-        //Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
+        GameObject newConvoyObj = new GameObject();
+        Instantiate(newConvoyObj);
+        Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
+        newConvoy.m_faction = m_faction;
+
+        foreach(Convoy convoy in m_selectedConvoys.Values)
+        {
+            newConvoy.m_units.AddRange(convoy.m_units);
+            m_ownedConvoys.Remove(convoy.GetInstanceID());
+            Destroy(convoy.gameObject);
+        }
+        m_selectedConvoys.Clear();
+        m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
+        foreach(Unit unit in newConvoy.m_units)
+        {
+            unit.m_convoy = newConvoy;
+        }
 
         //// Add all selected units together to the convoy
         //List<Unit> selectedUnits = new List<Unit>();
@@ -148,7 +162,7 @@ public class Player : MonoBehaviour
         //    //    selectedUnits.Add(unit);
         //    //}
         //}
-        //M_ClearSelectedUnits();)
+        //M_ClearSelectedUnits();
 
         //newConvoy.M_InitConvoy(selectedUnits);
     }

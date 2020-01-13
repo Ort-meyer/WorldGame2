@@ -34,6 +34,12 @@ public class Human : MonoBehaviour
         DoRaycast();
         RightClick();
         LeftClick();
+
+        // Form convoy
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            m_player.M_FormConvoy();
+        }
     }
 
     // Simply does a raycast and stores the hit data in private member

@@ -95,6 +95,7 @@ public class Human : MonoBehaviour
             // Click (both where we started dragging and where we release are basically the same points)
             if ((Input.mousePosition - m_mouseDownPoint).magnitude < 4) // Value is virtually pixels in screenspace
             {
+                m_player.M_ClearSelectedConvoys();
                 // If we hit something, and if that is a player unit, select it 
                 if (m_hits.Length > 0)
                 {

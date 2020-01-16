@@ -124,7 +124,6 @@ public class Player : MonoBehaviour
     public void M_FormConvoy()
     {
         GameObject newConvoyObj = new GameObject();
-        Instantiate(newConvoyObj);
         Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
         newConvoy.m_faction = m_faction;
 
@@ -134,6 +133,7 @@ public class Player : MonoBehaviour
             m_ownedConvoys.Remove(convoy.GetInstanceID());
             Destroy(convoy.gameObject);
         }
+        m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
         m_selectedConvoys.Clear();
         m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
         foreach(Unit unit in newConvoy.m_units)

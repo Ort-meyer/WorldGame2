@@ -40,6 +40,11 @@ public class Human : MonoBehaviour
         {
             m_player.M_FormConvoy();
         }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            m_player.M_SplitSelectedConvoys();
+        }
     }
 
     // Simply does a raycast and stores the hit data in private member

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -61,7 +62,7 @@ public class Player : MonoBehaviour
 
     public void M_MoveSelectedConvoys(Vector3 destination)
     {
-        foreach(Convoy convoy in m_selectedConvoys.Values)
+        foreach (Convoy convoy in m_selectedConvoys.Values)
         {
             convoy.M_MoveTo(destination);
         }
@@ -123,11 +124,9 @@ public class Player : MonoBehaviour
 
     public void M_FormConvoy()
     {
-        GameObject newConvoyObj = new GameObject();
-        Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
-        newConvoy.m_faction = m_faction;
+        Convoy newConvoy = M_CreateEmptyConvoy(m_faction);
 
-        foreach(Convoy convoy in m_selectedConvoys.Values)
+        foreach (Convoy convoy in m_selectedConvoys.Values)
         {
             newConvoy.m_units.AddRange(convoy.m_units);
             m_ownedConvoys.Remove(convoy.GetInstanceID());
@@ -136,7 +135,7 @@ public class Player : MonoBehaviour
         m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
         m_selectedConvoys.Clear();
         m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
-        foreach(Unit unit in newConvoy.m_units)
+        foreach (Unit unit in newConvoy.m_units)
         {
             unit.m_convoy = newConvoy;
         }
@@ -167,6 +166,43 @@ public class Player : MonoBehaviour
         //newConvoy.M_InitConvoy(selectedUnits);
     }
 
+    public void M_SplitSelectedConvoys() // TODO similar funciton for form convoy? (i.e. split in two)
+    {
+        List<Convoy> toRemove = m_selectedConvoys.Values.ToList();
+        foreach(Convoy convoy in toRemove)
+        {
+            M_SplitConvoy(convoy);
+        }
+    }
+  
+    public void M_SplitConvoy(Convoy convoy)
+    {
+        foreach (Unit unit in convoy.m_units)
+        {
+            Convoy newConvoy = M_CreateEmptyConvoy(m_faction);
+            newConvoy.m_units.Add(unit);
+            unit.m_convoy = newConvoy;
+            m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
+            m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
+        }
+
+        m_ownedConvoys.Remove(convoy.GetInstanceID());
+        m_selectedConvoys.Remove(convoy.GetInstanceID()); // This is risky, unless param convoy is always 
+        Destroy(convoy.gameObject);
+    }
+
+    public Convoy M_CreateEmptyConvoy(int faction)
+    {
+        GameObject newConvoyObj = new GameObject();
+        Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
+        newConvoy.m_faction = faction;
+        return newConvoy;
+    }
+
+    // TODO AttachToConvoy help function?
+    // Other help functions too? to cleanup old convoys and stuff?
+
+    // TODO fix this feature again
     //private void DrawSelected(GameObject obj, bool selected)
     //{
     //    if (selected)

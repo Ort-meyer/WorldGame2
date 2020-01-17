@@ -8,6 +8,7 @@ public class Convoy : MonoBehaviour
     public List<Unit> m_units = new List<Unit>();
     // Which faction this convoy belongs to
     public int m_faction = -1;
+    
     // Use this for initialization
     void Start()
     {
@@ -17,14 +18,20 @@ public class Convoy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Vector3 convoyCenter = new Vector3();
+        foreach(Unit unit in m_units)
+        {
+            convoyCenter += unit.transform.position;
+        }
+        convoyCenter = convoyCenter / m_units.Count;
+        transform.position = convoyCenter;
     }
 
     public void M_MoveTo(Vector3 destination)
     {
         foreach(Unit unit in m_units)
         {
-            unit.GetComponent<BaseMovement>().M_MoveTo(destination);
+            unit.M_MoveTo(destination);
         }
     }
     

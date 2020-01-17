@@ -17,6 +17,8 @@ public class Unit : MonoBehaviour
 
     // All turrets directly attached to this unit
     private List<BaseTurret> m_turrets = new List<BaseTurret>();
+
+    private BaseMovement m_movement;
     // What faction this unit belongs to
     // public int m_faction; // We have this in convoy atm, but it might be a good idea to reintroduce
     // Meta unit representation of this unit (won't consistency be a problem?)
@@ -35,8 +37,11 @@ public class Unit : MonoBehaviour
 
     public Convoy m_convoy;
 
+    public Vector3 m_relativePosInConvoy;
+
     void Start()
     {
+        m_movement = GetComponent<BaseMovement>();
     }
 
     // Update is called once per frame
@@ -46,6 +51,12 @@ public class Unit : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.X))
         {
             M_AddRecoil(new Vector3(0, 0, 0));
+        }
+
+        // Calculate position in convoy
+        if(m_movement && m_convoy.m_units.Count > 1) // This should be improved
+        {
+            m_movement.M_MoveTo(Convoy.m_)
         }
 
         if (m_gfxObject)
@@ -69,6 +80,15 @@ public class Unit : MonoBehaviour
             Vector3 wobbleAxis = Vector3.Cross(totalRecoil.normalized, transform.up);
 
             m_gfxObject.transform.localRotation = Quaternion.AngleAxis(totalRecoil.magnitude, wobbleAxis);
+        }
+    }
+
+    public void M_MoveTo(Vector3 direction)
+    {
+        BaseMovement movement = GetComponent<BaseMovement>();
+        if(movement)
+        {
+            movement.M_MoveTo(direction);
         }
     }
 

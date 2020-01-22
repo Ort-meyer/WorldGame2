@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // The prefab for each convoy. Should probably not be in this class though
+    public GameObject m_convoyPrefab;
     // Distance between each unit in a formation. TODO have this be dynamic somehow
     public int m_formationSpread;
     public int m_faction;

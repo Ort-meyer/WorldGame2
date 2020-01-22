@@ -19,7 +19,6 @@ public class NavPathManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
         m_path = new NavMeshPath();
     }
 

@@ -54,9 +54,9 @@ public class Unit : MonoBehaviour
         }
 
         // Calculate position in convoy
-        if(m_movement && m_convoy.m_units.Count > 1) // This should be improved
+        if(m_movement)// && m_convoy.m_units.Count > 1) // This should be improved
         {
-            m_movement.M_MoveTo(Convoy.m_)
+
         }
 
         if (m_gfxObject)

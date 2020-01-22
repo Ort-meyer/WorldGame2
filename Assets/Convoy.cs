@@ -8,11 +8,13 @@ public class Convoy : MonoBehaviour
     public List<Unit> m_units = new List<Unit>();
     // Which faction this convoy belongs to
     public int m_faction = -1;
+
+    public NavPathManager m_navPathManager;
     
     // Use this for initialization
     void Start()
     {
-
+        m_navPathManager = GetComponent<NavPathManager>();
     }
 
     // Update is called once per frame
@@ -25,6 +27,12 @@ public class Convoy : MonoBehaviour
         }
         convoyCenter = convoyCenter / m_units.Count;
         transform.position = convoyCenter;
+    }
+
+    // It would be better to have a public member, right?
+    public Vector3 GetNextCorner()
+    {
+        return m_navPathManager.M_GetNextCorner();
     }
 
     public void M_MoveTo(Vector3 destination)

@@ -52,12 +52,12 @@ public class Unit : MonoBehaviour
         {
             M_AddRecoil(new Vector3(0, 0, 0));
         }
-
-        // Calculate position in convoy
-        if(m_movement)// && m_convoy.m_units.Count > 1) // This should be improved
-        {
-
-        }
+        
+        //// Send destination to movement
+        //if(m_movement)// && m_convoy.m_units.Count > 1) // This should be improved
+        //{
+        //    m_movement.M_MoveTo(m_convoy.M_GetNextCorner()); // TODO make callback or something?
+        //}
 
         if (m_gfxObject)
         {
@@ -83,15 +83,6 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void M_MoveTo(Vector3 direction)
-    {
-        BaseMovement movement = GetComponent<BaseMovement>();
-        if(movement)
-        {
-            movement.M_MoveTo(direction);
-        }
-    }
-
     public void M_AttackOrder(List<GameObject> targets)
     {
         GetComponent<BaseMovement>().M_StopOrder(); // TODO this should probably not this universal
@@ -102,16 +93,12 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public Convoy M_Init(MetaUnit metaUnit, List<BaseTurret> turrets)
+    public void M_Init(MetaUnit metaUnit, List<BaseTurret> turrets, Convoy convoy)
     {
         m_metaUnit = metaUnit;
         m_turrets = turrets;
-        GameObject convoyObj = new GameObject();
-        Convoy convoy = convoyObj.AddComponent<Convoy>();
-        convoy.m_units.Add(this);
-        convoy.m_faction = metaUnit.m_faction;
         m_convoy = convoy;
-        return convoy;
+        convoy.m_units.Add(this);
     }
 
 

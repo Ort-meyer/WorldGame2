@@ -18,15 +18,14 @@ public class CarMovement : BaseMovement
     //private NavPathManager m_navPathManager;
     private Vector3 m_desVelocity;
     private CharacterController m_charControl;
-    private Unit m_unit;
 
     private float m_currentWheelAngle = 0;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         //m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
-        m_unit = GetComponent<Unit>();
     }
 
     void Update()

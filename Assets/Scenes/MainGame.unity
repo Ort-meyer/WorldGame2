@@ -482,6 +482,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: 1476415101419970, guid: c80ace884c401134cbb33377b08f67c9, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c80ace884c401134cbb33377b08f67c9, type: 2}
   m_IsPrefabParent: 0
@@ -631,6 +635,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f90145c2229ddf4cbb6f6ac79598f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_convoyPrefab: {fileID: 1476415101419970, guid: c80ace884c401134cbb33377b08f67c9,
+    type: 2}
   hullPrefabsArray:
   - hullType: 0
     prefab: {fileID: 1695947525043890, guid: 1fb66699b12c5fe4ebba2ae51fbd3cce, type: 2}
@@ -994,10 +1000,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb888c794b0417743a2147070a097969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_convoyPrefab: {fileID: 1476415101419970, guid: c80ace884c401134cbb33377b08f67c9,
-    type: 2}
   m_formationSpread: 0
   m_faction: 0
+  m_unitBuilder: {fileID: 0}
 --- !u!1001 &1089571387
 Prefab:
   m_ObjectHideFlags: 0
@@ -1100,10 +1105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb888c794b0417743a2147070a097969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_convoyPrefab: {fileID: 1476415101419970, guid: c80ace884c401134cbb33377b08f67c9,
-    type: 2}
   m_formationSpread: 0
   m_faction: 1
+  m_unitBuilder: {fileID: 0}
 --- !u!1 &1537117214
 GameObject:
   m_ObjectHideFlags: 0

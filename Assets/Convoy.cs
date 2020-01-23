@@ -14,6 +14,11 @@ public class Convoy : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //m_navPathManager = GetComponent<NavPathManager>();
+    }
+
+    private void Awake()
+    {
         m_navPathManager = GetComponent<NavPathManager>();
     }
 
@@ -23,24 +28,31 @@ public class Convoy : MonoBehaviour
         Vector3 convoyCenter = new Vector3();
         foreach(Unit unit in m_units)
         {
-            convoyCenter += unit.transform.position;
+            convoyCenter += unit.transform.position+unit.m_relativePosInConvoy;
         }
-        convoyCenter = convoyCenter / m_units.Count;
+        convoyCenter = convoyCenter * (1.0f / m_units.Count);
         transform.position = convoyCenter;
+        // Point the convoy to its destination
+        Vector3 toNextWaypoint = M_GetNextCorner() - transform.position;
+        if(!m_navPathManager.M_DestinationReached())
+        {
+            transform.forward = toNextWaypoint.normalized;
+        }
     }
 
     // It would be better to have a public member, right?
-    public Vector3 GetNextCorner()
+    public Vector3 M_GetNextCorner()
     {
         return m_navPathManager.M_GetNextCorner();
     }
 
     public void M_MoveTo(Vector3 destination)
     {
-        foreach(Unit unit in m_units)
-        {
-            unit.M_MoveTo(destination);
-        }
+        m_navPathManager.M_SetDestination(destination);
+        //foreach(Unit unit in m_units)
+        //{
+        //    unit.M_MoveTo(destination);
+        //}
     }
     
     public void M_AttackOrder(List<GameObject> targets)

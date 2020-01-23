@@ -67,3 +67,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_units: []
   m_faction: -1
+  m_navPathManager: {fileID: 0}

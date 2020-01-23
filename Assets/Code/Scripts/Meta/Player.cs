@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // The prefab for each convoy. Should probably not be in this class though
-    public GameObject m_convoyPrefab;
     // Distance between each unit in a formation. TODO have this be dynamic somehow
     public int m_formationSpread;
     public int m_faction;
     public Dictionary<int, Convoy> m_selectedConvoys = new Dictionary<int, Convoy>();
     // Dictionary of every convoy owned by this player (Is this risky? Cant we lose units?)
     public Dictionary<int, Convoy> m_ownedConvoys = new Dictionary<int, Convoy>();
+
+    public UnitBuilder m_unitBuilder;
     // Use this for initialization
     void Start()
     {
+        m_unitBuilder = FindObjectOfType<UnitBuilder>() as UnitBuilder;
         // Hack to get all debug units into the list of owned units for AI TODO clean this up
         if (m_faction == 0)
         {
@@ -126,7 +127,7 @@ public class Player : MonoBehaviour
 
     public void M_FormConvoy()
     {
-        Convoy newConvoy = M_CreateEmptyConvoy(m_faction);
+        Convoy newConvoy = m_unitBuilder.M_BuildNewConvoy(m_faction);
 
         foreach (Convoy convoy in m_selectedConvoys.Values)
         {
@@ -137,9 +138,13 @@ public class Player : MonoBehaviour
         m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
         m_selectedConvoys.Clear();
         m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
+        int i = -1;
         foreach (Unit unit in newConvoy.m_units)
         {
             unit.m_convoy = newConvoy;
+            // DEBUG asign relative positions to convoy units
+            unit.m_relativePosInConvoy = new Vector3(i * 4, 0, 0);
+            i += 2;
         }
 
         //// Add all selected units together to the convoy
@@ -181,7 +186,7 @@ public class Player : MonoBehaviour
     {
         foreach (Unit unit in convoy.m_units)
         {
-            Convoy newConvoy = M_CreateEmptyConvoy(m_faction);
+            Convoy newConvoy = m_unitBuilder.M_BuildNewConvoy(m_faction);
             newConvoy.m_units.Add(unit);
             unit.m_convoy = newConvoy;
             m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
@@ -191,14 +196,6 @@ public class Player : MonoBehaviour
         m_ownedConvoys.Remove(convoy.GetInstanceID());
         m_selectedConvoys.Remove(convoy.GetInstanceID()); // This is risky, unless param convoy is always 
         Destroy(convoy.gameObject);
-    }
-
-    public Convoy M_CreateEmptyConvoy(int faction)
-    {
-        GameObject newConvoyObj = new GameObject();
-        Convoy newConvoy = newConvoyObj.AddComponent<Convoy>();
-        newConvoy.m_faction = faction;
-        return newConvoy;
     }
 
     // TODO AttachToConvoy help function?

@@ -30,32 +30,25 @@ public class TankMovement : BaseMovement
     // Update is called once per frame
     void Update()
     {
-        //Vector3 toNextWaypoint = m_destination - transform.position;
-        //// Poor way to ensure we stop moving when we're close to destination
-        //if (toNextWaypoint.magnitude < 0.05)
-        //{
-        //    return;
-        //}
-        //toNextWaypoint.y = 0;
-
-
-        // Rotate to face towards target (within a certain angle maybe?)
+        // The angle we want to turn
         float turnAngle = 0;
-        //float diffAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
 
-
-
-        Vector3 nextWaypoint = m_unit.m_convoy.M_GetNextCorner() + m_unit.m_relativePosInConvoy;
-        Vector3 toNextWaypoint = nextWaypoint - transform.position;
+        Vector3 convoyNextWaypoint = m_unit.m_convoy.M_GetNextCorner();
+        // Rotate relative pos to be relative convoy's direction
+        Vector3 unitNextWaypoint = convoyNextWaypoint + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
+       
+        Vector3 toNextWaypoint = unitNextWaypoint - transform.position;
         toNextWaypoint.y = 0;
         float diffDestAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
 
-        Vector3 correctConvoyPos = m_unit.m_convoy.transform.position + m_unit.m_relativePosInConvoy;
+        // Rotate correct waypoint pos depending on convoy direction (which is towards next waypoint)
+        Vector3 correctConvoyPos = m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
         Vector3 toCorrectConvoyPos = correctConvoyPos - transform.position;
         toCorrectConvoyPos.y = 0;
         float diffConAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
 
-        Debug.DrawLine(transform.position, correctConvoyPos);
+        Debug.DrawLine(transform.position, correctConvoyPos, Color.red);
+        Debug.DrawLine(transform.position, unitNextWaypoint, Color.black);
 
         // Calculate how much of each we use to determine direction
         float leashFactor = Mathf.Clamp(toCorrectConvoyPos.magnitude / m_maxLeashDistance, 0, 1);
@@ -94,34 +87,6 @@ public class TankMovement : BaseMovement
             m_charControl.SimpleMove(transform.forward * m_currentSpeed);
         }
     }
-
-    //private float M_TurnTowardsDestination()
-    //{
-    //    Vector3 nextWaypoint = m_unit.m_convoy.M_GetNextCorner() + m_unit.m_relativePosInConvoy;
-    //    Vector3 toNextWaypoint = nextWaypoint - transform.position;
-    //    toNextWaypoint.y = 0;
-    //    float diffAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
-    //    // Poor way to ensure we stop moving when we're close to destination
-    //    if (toNextWaypoint.magnitude < 0.05)
-    //    {
-    //        diffAngle = 0;
-    //    }
-    //    return diffAngle;
-    //}
-
-    //private float M_TurnTowardsConvoyPos()
-    //{
-    //    // Where we should be
-    //    Vector3 correctConvoyPos = m_unit.m_convoy.transform.position + m_unit.m_relativePosInConvoy;
-    //    Vector3 toCorrectConvoyPos = correctConvoyPos - transform.position;
-    //    toCorrectConvoyPos.y = 0;
-    //    float diffAngle = Helpers.GetDiffAngle2D(transform.forward, toCorrectConvoyPos);
-    //    if (toCorrectConvoyPos.magnitude < 0.05)
-    //    {
-    //        diffAngle = 0;
-    //    }
-    //    return diffAngle;
-    //}
 
     private float M_GetAngleFromTo(Vector3 from, Vector3 to)
     {

@@ -80,4 +80,10 @@ public static class Helpers
         }
         return closestObj;
     }
+
+    // Rotates a point around a pivot. This feels unnecessary. Remote?
+    public static Vector3 RotatePointAroundPivot(Quaternion rotation, Vector3 point, Vector3 pivot)
+    {
+        return rotation * (point - pivot) + pivot;
+    }
 }

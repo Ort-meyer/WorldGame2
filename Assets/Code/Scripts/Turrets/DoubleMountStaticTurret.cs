@@ -13,10 +13,18 @@ public class DoubleMountStaticTurret : BaseTurret
     // The target currently being fired on
     public GameObject m_target;
 
+    // List with both weapons that this double mount has (dumb name? m_weapons are directly attached. Maybe improve this somehow?)
+    public List<BaseWeapon> m_deepWeapons = new List<BaseWeapon>();
+
     // Use this for initialization
     protected override void Start()
     {
-
+        // This should be fine, unless I go bananas with having double mounts with double mounts
+        m_deepWeapons = new List<BaseWeapon>(GetComponentsInChildren<BaseWeapon>());
+        foreach (BaseWeapon weapon in m_deepWeapons)
+        {
+            weapon.m_automaticFiring = false;
+        }
     }
 
     // Update is called once per frame
@@ -27,7 +35,7 @@ public class DoubleMountStaticTurret : BaseTurret
             float diffToTarget = Helpers.GetDiffAngle2D(transform.forward, m_target.transform.position - transform.position);
             if (Mathf.Abs(diffToTarget) < m_diffAngleBeforeFiring)
             {
-                m_turrets[0].M_SetFiring(true);
+                m_deepWeapons[0].M_Fire();
                 Invoke("M_FireOtherGun", m_durationBetweenGunFire);
             }
         }
@@ -35,7 +43,22 @@ public class DoubleMountStaticTurret : BaseTurret
 
     private void M_FireOtherGun()
     {
-        m_turrets[1].M_SetFiring(true);
+        m_deepWeapons[1].M_Fire();
+    }
+
+    private bool M_BothGunsReady()
+    {
+        // If one of the weapons isnt ready, none of them are
+        bool ready = true;
+        foreach(BaseWeapon weapon in m_deepWeapons)
+        {
+            if(!weapon.m_readyToFire)
+            {
+                ready = false;
+            }
+        }
+        return ready;
+
     }
 
     public override void M_SetTargets(List<GameObject> targets)

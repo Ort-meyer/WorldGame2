@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MachineGun : BaseWeapon
+public class GunWeapon : BaseWeapon
 {
     // The gun will fire when the diff to the target is lower than this
     public float m_angleDiffToFire = 5;
@@ -32,29 +32,47 @@ public class MachineGun : BaseWeapon
     // Update is called once per frame
     protected override void Update()
     {
-        if (m_isFiring)
+        M_UpdateCooldown();
+        M_CalculateReady();
+        if (m_automaticFiring && m_readyToFire)
         {
-            if (m_currentCooldown <= 0)
-            {
-                if (m_targetTrans != null)
-                {
-                    Vector3 toTarget = m_targetTrans.position - transform.position;
-                    toTarget.y = 0;
-                    Vector3 forward = transform.forward;
-                    forward.y = 0;
-                    float diff = Helpers.GetDiffAngle2D(toTarget, forward);
+            M_Fire();
+        }
+    }
 
-                    if (diff <= m_angleDiffToFire)
-                    {
-                        M_FireWeapon();
-                        m_currentCooldown = m_maxCooldown;
-                    }
+    private void M_UpdateCooldown()
+    {
+        if (m_currentCooldown > 0)
+        {
+            m_currentCooldown -= Time.deltaTime;
+        }
+    }
+
+    private void M_CalculateReady()
+    {
+        if (m_currentCooldown <= 0) // This if case is a silly optimization that makes the code harder to read
+        {
+            if (m_targetTrans != null)
+            {
+                Vector3 toTarget = m_targetTrans.position - transform.position;
+                toTarget.y = 0;
+                Vector3 forward = transform.forward;
+                forward.y = 0;
+                float diff = Helpers.GetDiffAngle2D(toTarget, forward);
+
+                if (diff <= m_angleDiffToFire)
+                {
+                    m_readyToFire = true;
                 }
             }
-            else
-            {
-                m_currentCooldown -= Time.deltaTime;
-            }
+        }
+    }
+
+    public override void M_Fire()
+    {
+        if (m_readyToFire)
+        {
+            M_FireWeapon();
         }
     }
 
@@ -71,5 +89,7 @@ public class MachineGun : BaseWeapon
         GameObject firingUnitObj = firingUnit.gameObject;
         newProjectile.GetComponent<BaseProjectile>().M_SetFiringUnit(firingUnitObj); // TODO safeguard this?
         firingUnit.M_AddRecoil(newProjectile.transform.forward * m_recoil);
+        m_readyToFire = false;
+        m_currentCooldown = m_maxCooldown;
     }
 }

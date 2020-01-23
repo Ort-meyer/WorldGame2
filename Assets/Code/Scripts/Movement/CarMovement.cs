@@ -15,59 +15,36 @@ public class CarMovement : BaseMovement
 
     //public GameObject m_DEBUG;
 
-    private NavPathManager m_navPathManager;
+    //private NavPathManager m_navPathManager;
     private Vector3 m_desVelocity;
     private CharacterController m_charControl;
 
-    private Vector3 m_destinationPostion;
-
-
     private float m_currentWheelAngle = 0;
 
-    void Start()
+    protected override void Start()
     {
-        m_navPathManager = gameObject.GetComponent<NavPathManager>();
+        base.Start();
+        //m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.U))
+        Vector3 toNextWaypoint = m_destination - transform.position;
+        // Poor way to ensure we stop moving when we're close to destination
+        if (toNextWaypoint.magnitude > 0.05)
         {
-            M_MoveTo(transform.position + transform.forward * 10);
+            return;
         }
-        if (Input.GetKeyUp(KeyCode.H))
-        {
-            M_MoveTo(transform.position + transform.right * -1 * 10);
-        }
-        if (Input.GetKeyUp(KeyCode.K))
-        {
-            M_MoveTo(transform.position + transform.right * 10);
-        }
+        toNextWaypoint.y = 0;
 
-        if (!m_navPathManager.M_DestinationReached())
-        {
-            //m_DEBUG.transform.position = m_navPathManager.M_GetNextCorner();
-            // Move wheels towards next waypoint
-            Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
-            toNextWaypoint.y = 0;
+        // Direction vector with magnitude to where this unit should be in the convoy
+        Vector3 toWhereWeShoudldBe = (m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.position) - transform.position;
 
-            M_TurnWheels(toNextWaypoint);
-            M_TurnVehicle();
-            m_charControl.SimpleMove(m_frontWheels[0].transform.forward.normalized * m_speed);
-        }
-    }
+        M_TurnWheels(toNextWaypoint);
+        M_TurnVehicle();
+        m_charControl.SimpleMove(m_frontWheels[0].transform.forward.normalized * m_speed);
 
-    // Sets the destination for this unit to move to
-    public override void M_MoveTo(Vector3 destination)
-    {
-        m_navPathManager.M_SetDestination(destination);
-    }
-
-    // Clears destination and causes the unit to stop
-    public override void M_StopOrder()
-    {
-        m_navPathManager.M_ClearDestination();
     }
 
     private void M_TurnWheels(Vector3 direction)

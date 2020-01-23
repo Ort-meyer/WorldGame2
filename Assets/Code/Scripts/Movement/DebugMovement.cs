@@ -21,11 +21,11 @@ public class DebugMovement : BaseMovement
         transform.position += vecToNextCorner.normalized * m_speed * Time.deltaTime;
     }
 
-    // Sets the destination for this unit to move to
-    public override void M_MoveTo(Vector3 destination)
-    {
-        m_pathManager.M_SetDestination(destination);
-    }
+    //// Sets the destination for this unit to move to
+    //public override void M_MoveTo(Vector3 destination)
+    //{
+    //    m_pathManager.M_SetDestination(destination);
+    //}
 
     // Clears destination and causes the unit to stop
     public override void M_StopOrder()

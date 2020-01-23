@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Human : MonoBehaviour
@@ -33,6 +34,17 @@ public class Human : MonoBehaviour
         DoRaycast();
         RightClick();
         LeftClick();
+
+        // Form convoy
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            m_player.M_FormConvoy();
+        }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            m_player.M_SplitSelectedConvoys();
+        }
     }
 
     // Simply does a raycast and stores the hit data in private member
@@ -47,6 +59,7 @@ public class Human : MonoBehaviour
         // Right mouse button - move order (really bad idea to have it here)
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
+            Dictionary<int, Convoy> targetsToEngage = new Dictionary<int, Convoy>();
             foreach (RaycastHit hit in m_hits)
             {
                 if (hit.transform != null)
@@ -55,16 +68,16 @@ public class Human : MonoBehaviour
                     if (hitUnit)
                     {
                         // If we hit a unit that't not our own
-                        if (hitUnit.m_faction != m_player.m_faction)
+                        if (hitUnit.m_convoy.m_faction != m_player.m_faction)
                         {
-                            m_player.M_EngageWithSelectedUnits(hitUnit.gameObject);
+                            m_player.M_EngageWithSelectedConvoys(hitUnit.m_convoy); // This feels risky
                             break; ; // Probably a bad way to only avoid multiple commands
                         }
                     }
                     // Move if this hit was on a terrain
                     if (hit.transform.GetComponent<Terrain>())
                     {
-                        m_player.M_MoveSelectedUnits(hit.point);
+                        m_player.M_MoveSelectedConvoys(hit.point);
                     }
                 }
             }
@@ -81,12 +94,13 @@ public class Human : MonoBehaviour
         // Temporary to select just the one unit
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            List<GameObject> selected = new List<GameObject>();
+            Dictionary<int, Convoy> selected = new Dictionary<int, Convoy>();
             m_isDragging = false;
             // Check if selection was just a click (kinda ugly but should be stable)
             // Click (both where we started dragging and where we release are basically the same points)
             if ((Input.mousePosition - m_mouseDownPoint).magnitude < 4) // Value is virtually pixels in screenspace
             {
+                m_player.M_ClearSelectedConvoys();
                 // If we hit something, and if that is a player unit, select it 
                 if (m_hits.Length > 0)
                 {
@@ -96,14 +110,15 @@ public class Human : MonoBehaviour
                         Unit hitUnit = hit.transform.GetComponent<Unit>();
                         if (hitUnit)
                         {
-                            if (hitUnit.m_faction == m_player.m_faction)
+                            if (hitUnit.m_convoy.m_faction == m_player.m_faction)
                             {
-                                selected.Add(hit.transform.gameObject);
+                                selected[hitUnit.m_convoy.GetInstanceID()] = hitUnit.m_convoy;
+                                //selected.Add(hit.transform.gameObject);
                                 if (!Input.GetKey(KeyCode.LeftShift))
                                 {
-                                    m_player.M_ClearSelectedUnits();
+                                    m_player.M_ClearSelectedConvoys();
                                 }
-                                m_player.M_SelectUnits(selected);
+                                m_player.M_SelectConvoys(selected.Values.ToList());
                                 break; // TODO I think that the list is sorted by distance. If not, ensure we only take the closes unit
                             }
                         }
@@ -116,118 +131,37 @@ public class Human : MonoBehaviour
                 // Group engage
                 if (Input.GetKey(KeyCode.LeftControl))
                 {
+                    List<Convoy> targets = new List<Convoy>();
                     // Engage all other players' units (TODO change when there's allied players)
                     foreach (Player player in m_worldManager.m_players.Values)
                     {
                         // Only hit things that aren't our own
                         if(player.m_faction != m_player.m_faction)
                         {
-                            foreach (GameObject obj in player.m_ownedUnits.Values)
-                            {
-                                if (IsWithinSelectionBounds(obj))
-                                {
-                                    selected.Add(obj);
-                                }
-                            }
+                            targets.AddRange(GetConvoysInSelectionBox(player.m_ownedConvoys.Values.ToList()));
                         }
-                        //Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
-                        //List<GameObject> targets = new List<GameObject>();
-                        //for (int i = 0; i < objs.Length; i++)
-                        //{
-                        //    GameObject obj = (objs[i] as EnemyEntity).gameObject;
-                        //    if (IsWithinSelectionBounds(obj))
-                        //    {
-                        //        targets.Add(obj);
-                        //    }
-                        //}
                     }
-                    m_player.M_EngageWithSelectedUnits(selected); // Selected is a dumb name but the code is pretty
+                    m_player.M_EngageWithSelectedConvoys(targets);
                 }
                 // Group select
                 else
                 {
-                    foreach (GameObject obj in m_worldManager.m_players[m_player.m_faction].m_ownedUnits.Values)
-                    {
-                        if (IsWithinSelectionBounds(obj))
-                        {
-                            selected.Add(obj);
-                        }
-                    }
+                    
+                    //foreach (GameObject obj in m_worldManager.m_players[m_player.m_faction].m_ownedUnits.Values)
+                    //{
+                    //    if (IsWithinSelectionBounds(obj))
+                    //    {
+                    //        selected.Add(obj);
+                    //    }
+                    //}
                     if (!Input.GetKey(KeyCode.LeftShift))
                     {
-                        m_player.M_ClearSelectedUnits();
+                        m_player.M_ClearSelectedConvoys();
                     }
-                    m_player.M_SelectUnits(selected);
+                    m_player.M_SelectConvoys(GetConvoysInSelectionBox(m_player.m_ownedConvoys.Values.ToList()));
                 }
             }
         }
-
-
-        //if (Input.GetKeyUp(KeyCode.Mouse0))
-        //{
-        //    if (!Input.GetKey(KeyCode.LeftShift))
-        //    {
-        //        m_player.M_ClearSelectedUnits();
-        //    }
-        //    List<GameObject> selected = new List<GameObject>();
-
-        //    m_isDragging = false;
-        //    // Check if selection was just a click (kinda ugly but should be stable)
-        //    // Click (both where we started dragging and where we release are basically the same points)
-        //    if ((Input.mousePosition - m_mouseDownPoint).magnitude < 4) // Value is virtually pixels in screenspace
-        //    {
-        //        // If we hit something, and if that is a player unit, select it 
-        //        if (m_hit.transform != null)
-        //        {
-        //            // See if we select something new
-        //            BaseUnit hitUnit = m_hit.transform.GetComponent<BaseUnit>();
-        //            if (hitUnit)
-        //            {
-        //                if (hitUnit.m_alignment == m_player.m_alignment)
-        //                {
-        //                    selected.Add(m_hit.transform.gameObject);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    // Drag (selection box)
-        //    else
-        //    {
-        //        // Group engage
-        //        if (Input.GetKey(KeyCode.LeftControl))
-        //        {
-        //            Object[] objs = FindObjectsOfType(typeof(EnemyEntity));
-        //            List<GameObject> targets = new List<GameObject>();
-        //            for (int i = 0; i < objs.Length; i++)
-        //            {
-        //                GameObject obj = (objs[i] as EnemyEntity).gameObject;
-        //                if (IsWithinSelectionBounds(obj))
-        //                {
-        //                    targets.Add(obj);
-        //                }
-        //            }
-        //            m_player.M_EngageWithSelectedUnits(targets);
-        //        }
-        //        // Group select
-        //        else
-        //        {
-        //            Object[] objs = FindObjectsOfType(typeof(BaseUnit));
-        //            for (int i = 0; i < objs.Length; i++)
-        //            {
-        //                GameObject obj = (objs[i] as BaseUnit).gameObject;
-        //                BaseUnit unit = obj.GetComponent<BaseUnit>();
-        //                if (unit.m_alignment == m_player.m_alignment)
-        //                {
-        //                    if (IsWithinSelectionBounds(obj))
-        //                    {
-        //                        selected.Add(obj);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    m_player.M_SelectUnits(selected);
-        //}
     }
 
 
@@ -279,10 +213,29 @@ public class Human : MonoBehaviour
         bounds.SetMinMax(min, max);
         return bounds;
     }
+    
+    public List<Convoy> GetConvoysInSelectionBox(List<Convoy> convoys)
+    {
+        List<Convoy> convoysInBox = new List<Convoy>();
+        foreach(Convoy convoy in convoys)
+        {
+            foreach(Unit unit in convoy.m_units)
+            {
+                if(IsWithinSelectionBounds(unit.gameObject))
+                {
+                    convoysInBox.Add(convoy);
+                    break; // This takes me one level up, right?
+                }
+            }
+        }
+        return convoysInBox;
+    }
 
     public bool IsWithinSelectionBounds(GameObject gameObject)
     {
         var viewportBounds = GetViewportBounds(m_mouseDownPoint, Input.mousePosition);
         return viewportBounds.Contains(Camera.main.WorldToViewportPoint(gameObject.transform.position));
     }
+
+
 }

@@ -139,7 +139,6 @@ GameObject:
   - component: {fileID: 114412926463427862}
   - component: {fileID: 143717149560819742}
   - component: {fileID: 135428665165274380}
-  - component: {fileID: 114628278316424710}
   - component: {fileID: 114429834929153114}
   - component: {fileID: 114431560044030342}
   m_Layer: 0
@@ -889,7 +888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_faction: 0
   m_maxRecoil: 10
   m_gfxObject: {fileID: 1354987105044400}
   m_recoilDuration: 1
@@ -962,6 +960,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_convoy: {fileID: 0}
+  m_relativePosInConvoy: {x: 0, y: 0, z: 0}
 --- !u!114 &114429834929153114
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -996,19 +996,6 @@ MonoBehaviour:
   - {fileID: 4428658727098346}
   - {fileID: 4365907734786702}
   m_attachesToHardpoint: {fileID: 0}
---- !u!114 &114628278316424710
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1731884617878822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc7618ace7222bc4dace0458fd17699d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_pathUpdateFrequency: 0
-  m_cornerIncrementDistance: 1
 --- !u!114 &114749672776526204
 MonoBehaviour:
   m_ObjectHideFlags: 1

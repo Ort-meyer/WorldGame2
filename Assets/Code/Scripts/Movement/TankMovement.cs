@@ -45,7 +45,7 @@ public class TankMovement : BaseMovement
         Vector3 correctConvoyPos = m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
         Vector3 toCorrectConvoyPos = correctConvoyPos - transform.position;
         toCorrectConvoyPos.y = 0;
-        float diffConAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
+        float diffConAngle = Helpers.GetDiffAngle2D(transform.forward, toCorrectConvoyPos);
 
         Debug.DrawLine(transform.position, correctConvoyPos, Color.red);
         Debug.DrawLine(transform.position, unitNextWaypoint, Color.black);

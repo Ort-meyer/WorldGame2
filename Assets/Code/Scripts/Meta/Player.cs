@@ -125,6 +125,7 @@ public class Player : MonoBehaviour
         M_EngageWithSelectedConvoys(new List<Convoy> { target });
     }
 
+    // TODO improve with convoy layout parameter
     public void M_FormConvoy()
     {
         Convoy newConvoy = m_unitBuilder.M_BuildNewConvoy(m_faction);
@@ -138,13 +139,13 @@ public class Player : MonoBehaviour
         m_ownedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
         m_selectedConvoys.Clear();
         m_selectedConvoys.Add(newConvoy.GetInstanceID(), newConvoy);
-        int i = -1;
+        int i = 0;
         foreach (Unit unit in newConvoy.m_units)
         {
             unit.m_convoy = newConvoy;
             // DEBUG asign relative positions to convoy units
-            unit.m_relativePosInConvoy = new Vector3(i * 4, 0, 0);
-            i += 2;
+            unit.m_relativePosInConvoy = new Vector3(0, 0, -i*5.5f);
+            i += 1;
         }
 
         //// Add all selected units together to the convoy

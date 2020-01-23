@@ -496,7 +496,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093833cf4ae727247b6f4f4744213695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 5
+  m_maxLeashDistance: 10
+  m_destination: {x: 0, y: 0, z: 0}
+  m_convoyPosDiff: {x: 0, y: 0, z: 0}
+  m_unit: {fileID: 0}
+  m_maxSpeed: 3
   m_turnSpeed: 30
   m_angleToMove: 15
 --- !u!143 &143961574987361418

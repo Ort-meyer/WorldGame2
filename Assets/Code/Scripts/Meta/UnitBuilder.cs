@@ -73,6 +73,7 @@ public class UnitBuilder : MonoBehaviour
     public Dictionary<WeaponType, GameObject> m_weaponPrefabs = new Dictionary<WeaponType, GameObject>();
 
     public GameObject m_spawnPosition;
+    public GameObject m_enemyConvoySpawnPosition;
 
     // TODO just move all this singleton meta thingies to the same game object?
     WorldManager m_worldManager;
@@ -101,9 +102,12 @@ public class UnitBuilder : MonoBehaviour
 
         // Build some units
         //BuildBuggy();
-        BuildTank(new Vector3(0,0,0));
-        BuildTank(new Vector3(4,0,0));
-        //BuildEnemyTank();
+        //BuildTank(new Vector3(0,0,0));
+        //BuildTank(new Vector3(4,0,0));
+        
+        BuildEnemyTank(new Vector3(0,0,0));
+        BuildEnemyTank(new Vector3(4,0,0));
+        BuildEnemyTank(new Vector3(-4, 0, 0));
         //BuildDoubleTank();
 
     }
@@ -264,7 +268,7 @@ public class UnitBuilder : MonoBehaviour
 
 
     }
-    public void BuildEnemyTank()
+    public void BuildEnemyTank(Vector3 offset)
     {
         UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
         MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
@@ -289,7 +293,7 @@ public class UnitBuilder : MonoBehaviour
         MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
         // Debuggy way of creating an enemy tank
         loadedDoubleTank.m_faction = 0;
-        M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-16, 0, 0), m_spawnPosition.transform.rotation);
+        M_BuildMetaUnit(loadedDoubleTank, m_enemyConvoySpawnPosition.transform.position + offset, m_spawnPosition.transform.rotation);
     }
 
 }

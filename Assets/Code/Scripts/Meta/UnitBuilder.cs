@@ -106,8 +106,8 @@ public class UnitBuilder : MonoBehaviour
         //BuildTank(new Vector3(4,0,0));
         
         BuildEnemyTank(new Vector3(0,0,0));
-        //BuildEnemyTank(new Vector3(4,0,0));
-        //BuildEnemyTank(new Vector3(-4, 0, 0));
+        BuildEnemyTank(new Vector3(4,0,0));
+        BuildEnemyTank(new Vector3(-4, 0, 0));
         //BuildDoubleTank();
 
     }

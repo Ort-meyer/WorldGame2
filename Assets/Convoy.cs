@@ -24,13 +24,17 @@ public class Convoy : MonoBehaviour
     void Update()
     {
         // TODO calculate convoy forward too? Average of all units forward vectors?
-        Vector3 convoyCenter = new Vector3();
+        Vector3 convoyCenterPos = new Vector3();
+        Vector3 convoyCenterForward = new Vector3();
         foreach(Unit unit in m_units)
         {
-            convoyCenter += unit.transform.position+unit.m_relativePosInConvoy;
+            convoyCenterPos += unit.transform.position+unit.m_relativePosInConvoy;
+            convoyCenterForward += unit.transform.forward.normalized;
         }
-        convoyCenter = convoyCenter * (1.0f / m_units.Count);
-        transform.position = convoyCenter;
+        convoyCenterPos = convoyCenterPos * (1.0f / m_units.Count);
+        convoyCenterForward = convoyCenterForward.normalized;
+        transform.position = convoyCenterPos;
+        transform.rotation = Quaternion.LookRotation(convoyCenterForward);
     }
 
     public void M_MoveTo(Vector3 destination)

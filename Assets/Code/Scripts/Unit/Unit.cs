@@ -110,4 +110,9 @@ public class Unit : MonoBehaviour
             m_recoilList.Add(new Recoil(direction.normalized));
         }
     }
+
+    public void M_MoveTo(Vector3 destination)
+    {
+        m_movement.M_MoveTo(destination);
+    }
 }

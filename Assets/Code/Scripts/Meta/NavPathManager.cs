@@ -28,7 +28,9 @@ public class NavPathManager : MonoBehaviour
         // Automatically increment when close to next corner (still not sure that this is best way to do it)
         if (m_active && m_path != null) // Shouldn't need second part of this if-case
         {
-            if ((transform.position - m_path.corners[m_nextCornerIndex]).magnitude < m_cornerIncrementDistance)
+            Vector3 toNextCorner = transform.position - m_path.corners[m_nextCornerIndex];
+            toNextCorner.y = 0;
+            if (toNextCorner.magnitude < m_cornerIncrementDistance)
             {
                 m_nextCornerIndex++;
                 // If we've reached the end, deactivate the component
@@ -46,13 +48,13 @@ public class NavPathManager : MonoBehaviour
             return;
         }
 
-        InvokeRepeating("UpdatePath", m_pathUpdateFrequency, m_pathUpdateFrequency);
     }
 
     private void UpdatePath()
     {
         NavMesh.CalculatePath(transform.position, m_destination, NavMesh.AllAreas, m_path);
         m_nextCornerIndex = 1;
+        // Invoke("UpdatePath", m_pathUpdateFrequency);
         // Visualize path
         //foreach (Vector3 nodePos in m_path.corners)
         //{
@@ -66,6 +68,7 @@ public class NavPathManager : MonoBehaviour
         m_active = true;
         m_destinationReached = false;
         m_destination = destination;
+        //InvokeRepeating("UpdatePath", m_pathUpdateFrequency, m_pathUpdateFrequency);
         UpdatePath();
     }
 

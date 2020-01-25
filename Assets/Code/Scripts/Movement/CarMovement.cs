@@ -14,8 +14,6 @@ public class CarMovement : BaseMovement
     public List<GameObject> m_frontWheels;
 
     //public GameObject m_DEBUG;
-
-    //private NavPathManager m_navPathManager;
     private Vector3 m_desVelocity;
     private CharacterController m_charControl;
 
@@ -24,13 +22,13 @@ public class CarMovement : BaseMovement
     protected override void Start()
     {
         base.Start();
-        //m_navPathManager = gameObject.GetComponent<NavPathManager>();
+        m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        Vector3 toNextWaypoint = m_destination - transform.position;
+        Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
         // Poor way to ensure we stop moving when we're close to destination
         if (toNextWaypoint.magnitude > 0.05)
         {

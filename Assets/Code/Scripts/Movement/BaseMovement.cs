@@ -6,13 +6,12 @@ public class BaseMovement : MonoBehaviour
 {
     // How far until this unit leashes fully
     public float m_maxLeashDistance = 3;
-    // Destination of the unit
-    [HideInInspector]
-    public Vector3 m_destination;
     // The diff vector to where it should be in the convoy
     [HideInInspector]
     public Vector3 m_convoyPosDiff;
     public Unit m_unit;
+
+    public NavPathManager m_navPathManager;
 
     // Use this for initialization
     protected virtual void Start()
@@ -29,13 +28,13 @@ public class BaseMovement : MonoBehaviour
     // Sets the destination for this unit to move to
     public virtual void M_MoveTo(Vector3 destination)
     {
-        m_destination = destination;
+        m_navPathManager.M_SetDestination(destination);
     }
 
     // Clears destination and causes the unit to stop
     public virtual void M_StopOrder()
     {
-        m_destination = transform.position;
+        m_navPathManager.M_ClearDestination();
     }
 
     public void M_SetConvoyPosDiff(Vector3 convoyPosDiff)

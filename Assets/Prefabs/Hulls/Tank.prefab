@@ -59,6 +59,7 @@ GameObject:
   - component: {fileID: 143961574987361418}
   - component: {fileID: 114648554808547562}
   - component: {fileID: 65881719864187522}
+  - component: {fileID: 114301937071754038}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -403,6 +404,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114301937071754038
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1695947525043890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc7618ace7222bc4dace0458fd17699d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_pathUpdateFrequency: 0.5
+  m_cornerIncrementDistance: 1
 --- !u!114 &114467541956005514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -496,10 +510,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093833cf4ae727247b6f4f4744213695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxLeashDistance: 10
-  m_destination: {x: 0, y: 0, z: 0}
+  m_maxLeashDistance: 1e+9
   m_convoyPosDiff: {x: 0, y: 0, z: 0}
   m_unit: {fileID: 0}
+  m_navPathManager: {fileID: 0}
   m_maxSpeed: 3
   m_turnSpeed: 30
   m_angleToMove: 15

@@ -23,7 +23,7 @@ public class TankMovement : BaseMovement
     protected override void Start()
     {
         base.Start();
-        //m_navPathManager = gameObject.GetComponent<NavPathManager>();
+        m_navPathManager = gameObject.GetComponent<NavPathManager>();
         m_charControl = gameObject.GetComponent<CharacterController>();
     }
 
@@ -33,14 +33,15 @@ public class TankMovement : BaseMovement
         // The angle we want to turn
         float turnAngle = 0;
 
-        Vector3 convoyNextWaypoint = m_unit.m_convoy.M_GetNextCorner();
-        // Rotate relative pos to be relative convoy's direction
-        Vector3 unitNextWaypoint = convoyNextWaypoint + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
-       
+        // Rotate relative pos to be relative convoy's direction (Old implementation. Reuse?)
+        //Vector3 unitNextWaypoint = m_navPathManager.M_GetNextCorner() + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy
+
+        Vector3 unitNextWaypoint = m_navPathManager.M_GetNextCorner();
         Vector3 toNextWaypoint = unitNextWaypoint - transform.position;
         toNextWaypoint.y = 0;
         float diffDestAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
 
+        // Should we remove this? Could just set leashfactor to something enormous
         // Rotate correct waypoint pos depending on convoy direction (which is towards next waypoint)
         Vector3 correctConvoyPos = m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
         Vector3 toCorrectConvoyPos = correctConvoyPos - transform.position;
@@ -52,9 +53,10 @@ public class TankMovement : BaseMovement
 
         // Calculate how much of each we use to determine direction
         float leashFactor = Mathf.Clamp(toCorrectConvoyPos.magnitude / m_maxLeashDistance, 0, 1);
-        float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
+        //float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
+        float diffAngle = diffDestAngle;
 
-        // Ugly way to keep unit from spinning
+        //// Ugly way to keep unit from spinning
         if (toNextWaypoint.magnitude < 0.05)
         {
             diffAngle = 0;
@@ -71,7 +73,8 @@ public class TankMovement : BaseMovement
         // The dot product used to calculate increase or decrease of speed
         float speedDot = Vector3.Dot(transform.forward, toCorrectConvoyPos.normalized);
         // Should be between 0 and 1
-        m_currentSpeed = m_maxSpeed * ((1 + speedDot) /2);
+        //m_currentSpeed = m_maxSpeed * ((1 + speedDot) /2);
+        m_currentSpeed = m_maxSpeed;
 
         // This is ugly, to get the unit to stop. TODO replace with engine component?
         if (toNextWaypoint.magnitude < 0.15)

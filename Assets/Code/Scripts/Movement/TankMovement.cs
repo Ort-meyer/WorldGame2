@@ -34,9 +34,10 @@ public class TankMovement : BaseMovement
         float turnAngle = 0;
 
         // Rotate relative pos to be relative convoy's direction (Old implementation. Reuse?)
-        //Vector3 unitNextWaypoint = m_navPathManager.M_GetNextCorner() + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy
+        //Vector3 unitNextWaypoint = m_navPathManager.M_GetNextCorner() + m_unit.m_convoy.transform.rotation * m_unit.m_relativePosInConvoy;
 
         Vector3 unitNextWaypoint = m_navPathManager.M_GetNextCorner();
+
         Vector3 toNextWaypoint = unitNextWaypoint - transform.position;
         toNextWaypoint.y = 0;
         float diffDestAngle = Helpers.GetDiffAngle2D(transform.forward, toNextWaypoint);
@@ -51,10 +52,14 @@ public class TankMovement : BaseMovement
         Debug.DrawLine(transform.position, correctConvoyPos, Color.red);
         Debug.DrawLine(transform.position, unitNextWaypoint, Color.black);
 
+
+        // TODO add some "avoid your buddies" logic??
+
+
         // Calculate how much of each we use to determine direction
         float leashFactor = Mathf.Clamp(toCorrectConvoyPos.magnitude / m_maxLeashDistance, 0, 1);
-        //float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
-        float diffAngle = diffDestAngle;
+        float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
+        //float diffAngle = diffDestAngle;
 
         //// Ugly way to keep unit from spinning
         if (toNextWaypoint.magnitude < 0.05)
@@ -73,7 +78,7 @@ public class TankMovement : BaseMovement
         // The dot product used to calculate increase or decrease of speed
         float speedDot = Vector3.Dot(transform.forward, toCorrectConvoyPos.normalized);
         // Should be between 0 and 1
-        //m_currentSpeed = m_maxSpeed * ((1 + speedDot) /2);
+        m_currentSpeed = m_maxSpeed * ((1 + speedDot) /2);
         m_currentSpeed = m_maxSpeed;
 
         // This is ugly, to get the unit to stop. TODO replace with engine component?

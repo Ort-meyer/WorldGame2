@@ -257,6 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_movement: {fileID: 0}
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1
@@ -365,6 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_movement: {fileID: 0}
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1
@@ -817,6 +819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bd12072f715104c843f323b361039c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_movement: {fileID: 0}
   m_maxRecoil: 10
   m_gfxObject: {fileID: 0}
   m_recoilDuration: 1

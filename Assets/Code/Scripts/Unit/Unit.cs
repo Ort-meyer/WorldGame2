@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour
     // All turrets directly attached to this unit
     private List<BaseTurret> m_turrets = new List<BaseTurret>();
 
-    private BaseMovement m_movement;
+    public BaseMovement m_movement;
     // What faction this unit belongs to
     // public int m_faction; // We have this in convoy atm, but it might be a good idea to reintroduce
     // Meta unit representation of this unit (won't consistency be a problem?)
@@ -111,8 +111,8 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void M_MoveTo(Vector3 destination)
+    public void M_MoveTo(Vector3 destination, Vector3 direction)
     {
-        m_movement.M_MoveTo(destination);
+        m_movement.M_MoveTo(destination + Quaternion.LookRotation(direction, Vector3.up) * m_relativePosInConvoy);
     }
 }

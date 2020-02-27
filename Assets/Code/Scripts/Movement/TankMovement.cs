@@ -58,8 +58,8 @@ public class TankMovement : BaseMovement
 
         // Calculate how much of each we use to determine direction
         float leashFactor = Mathf.Clamp(toCorrectConvoyPos.magnitude / m_maxLeashDistance, 0, 1);
-        float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
-        //float diffAngle = diffDestAngle;
+        //float diffAngle = leashFactor * diffConAngle + (1 - leashFactor) * diffDestAngle;
+        float diffAngle = diffDestAngle; // Replace with above line for convoy logic (broken atm)
 
         //// Ugly way to keep unit from spinning
         if (toNextWaypoint.magnitude < 0.05)

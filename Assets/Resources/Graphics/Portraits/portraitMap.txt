@@ -1,3 +1,4 @@
 0;gladnusi
 1;Nusi
 2;sadnusi
+3;empty

@@ -115,7 +115,7 @@ public class DialogueManager : MonoBehaviour
             new List<int>(){1, 3},
             new List<int>(){0}),
             //1
-            new PlayerSentence("Are you OK?", true, new List<Sentence>()
+            new PlayerSentence("Are you OK?", false, new List<Sentence>()
             {
                 new Sentence("Are you OK", 0),
                 new Sentence("No man, shit's bad. Can you help me? Some god damn dudes took some shit" +
@@ -125,7 +125,7 @@ public class DialogueManager : MonoBehaviour
             //2
             new List<int>(){2},
             new List<int>(){0, 1, 2, 3}),// End convo
-            new PlayerSentence("Sure, I'll help out", true, new List<Sentence>()
+            new PlayerSentence("Sure, I'll help out", false, new List<Sentence>()
             {
                 new Sentence("Sure, I'll help out", 0),
                 new Sentence("Thanks buddy! Go kick some ass", 1),
@@ -133,7 +133,7 @@ public class DialogueManager : MonoBehaviour
             //3
             new List<int>(){ },
             new List<int>(){2}),
-            new PlayerSentence("Got to go!", true, new List<Sentence>()
+            new PlayerSentence("Got to go!", false, new List<Sentence>()
             {
                 new Sentence("Got to go!", 0),
                 new Sentence("OK, cya boyo!", 1),
@@ -162,8 +162,6 @@ public class DialogueManager : MonoBehaviour
             if (m_currentPlayerSentence != null)
             {
                 M_ProgressConversation();
-                M_ClearAllSentences();
-                M_PlaceAllActiveSentences();
             }
         }
     }
@@ -223,9 +221,9 @@ public class DialogueManager : MonoBehaviour
         m_nextConversationSentence = 0;
         // Progress first sentence (typically identical to the player sentence text)
         M_ProgressConversation();
-        // Clear and draw the start of the new conversation
-        M_ClearAllSentences();
-        M_PlaceAllActiveSentences();
+        //// Clear and draw the start of the new conversation
+        //M_ClearAllSentences();
+        //M_PlaceAllActiveSentences();
     }
 
     // Places all currently active sentinces, starting at startRow
@@ -274,10 +272,24 @@ public class DialogueManager : MonoBehaviour
         {
             m_allActiveSentences.Enqueue(m_currentPlayerSentence.m_conversation[m_nextConversationSentence]);
             m_nextConversationSentence++;
+            M_ClearAllSentences();
+            M_PlaceAllActiveSentences();
         }
         else
         {
             // End of conversation, present new player options
+
+            // Enable options
+            foreach (int i in m_currentPlayerSentence.m_enableIndices)
+            {
+                m_DEBUGcharacter.m_playerSentences[i].m_active = true;
+            }
+            // Disable options
+            foreach (int i in m_currentPlayerSentence.m_disableIndices)
+            {
+                m_DEBUGcharacter.m_playerSentences[i].m_active = false;
+            }
+            M_PlaceAllSentences();
         }
     }
 

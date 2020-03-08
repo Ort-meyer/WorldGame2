@@ -221,9 +221,6 @@ public class DialogueManager : MonoBehaviour
         m_nextConversationSentence = 0;
         // Progress first sentence (typically identical to the player sentence text)
         M_ProgressConversation();
-        //// Clear and draw the start of the new conversation
-        //M_ClearAllSentences();
-        //M_PlaceAllActiveSentences();
     }
 
     // Places all currently active sentinces, starting at startRow
@@ -233,7 +230,7 @@ public class DialogueManager : MonoBehaviour
         for (int i = m_allActiveSentences.Count - 1; i >= 0; i--)
         {
             Sentence currentSentence = sentences[i];
-            currentRow += currentSentence.m_numRows;
+            currentRow += currentSentence.m_numRows + 1;
             // Full, remove from queue
             if (currentRow > m_totalNumRowsInWindow)
             {
@@ -243,7 +240,6 @@ public class DialogueManager : MonoBehaviour
             else
             {
                 GameObject sObj = Instantiate(m_sentencePrefab, m_conversationStartAnchor);
-                currentRow += currentSentence.m_numRows;
                 sObj.GetComponent<RectTransform>().localPosition = new Vector3(0, (currentRow + 1) * m_rowHeight, 0);
                 Image portrait = sObj.GetComponentInChildren<Image>();
                 portrait.sprite = m_resourceManager.M_GetPortrait(currentSentence.m_portraitIndex);

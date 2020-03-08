@@ -9,7 +9,7 @@ public class ResourceManager : MonoBehaviour
 {
     Dictionary<int, Sprite> m_portraitImages = new Dictionary<int, Sprite>();
     const string m_portraitsFolder = @"Graphics\Portraits\";
-    const string m_portraitMapFileName = @"portraitMap.txt";
+    const string m_portraitMapFileName = @"portraitMap";
 
     // Use this for initialization
     void Start()
@@ -25,7 +25,9 @@ public class ResourceManager : MonoBehaviour
 
     private void M_LoadPortraits()
     {
-        foreach (string line in File.ReadAllLines(@"Assets\Resources\" + m_portraitsFolder + m_portraitMapFileName))
+        TextAsset txt = Resources.Load<TextAsset>(m_portraitsFolder + m_portraitMapFileName);
+        //foreach (string line in File.ReadAllLines(@"Assets\Resources\" + m_portraitsFolder + m_portraitMapFileName))
+        foreach (string line in txt.text.Replace("\r", "").Split('\n'))
         {
             int index = Int32.Parse(line.Split(';')[0]);
             string portraitFileName = line.Split(';')[1];

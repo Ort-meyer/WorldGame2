@@ -1,4 +1,3 @@
-0;gladnusi
-1;Nusi
-2;sadnusi
-3;empty
+0;MainCharacter
+1;QuestGiver
+2;SideKick

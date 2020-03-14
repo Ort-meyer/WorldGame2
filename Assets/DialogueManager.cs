@@ -114,7 +114,9 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
-
+        RectTransform dialogueTrans = m_dialoguePanel.GetComponent<RectTransform>();
+        float ypos = -1 * Screen.height * 0.5f + dialogueTrans.rect.height * 0.5f + 40; // TODO not have this magic number here
+        dialogueTrans.localPosition = new Vector3(0, ypos, 0);
     }
 
     // Update is called once per frame

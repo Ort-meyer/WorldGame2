@@ -158,6 +158,16 @@ public class DialogueManager : MonoBehaviour
     private int M_PlaceAllActivePlayerSentences()
     {
         int currentRow = 0;
+        int activeCount = 0;
+        // First find out how many active there are (this is stupid but I cba do improve it)
+        for (int i = m_DEBUGcharacter.m_playerSentences.Count - 1; i >= 0; i--)
+        {
+            PlayerSentence ps = m_DEBUGcharacter.m_playerSentences[i];
+            if (ps.m_active)
+            {
+                activeCount++;
+            }
+        }
         // First place all player sentences, if any
         for (int i = m_DEBUGcharacter.m_playerSentences.Count - 1; i >= 0; i--)
         {
@@ -168,7 +178,8 @@ public class DialogueManager : MonoBehaviour
                 currentRow += ps.m_sentence.m_numRows;
                 psObj.GetComponent<RectTransform>().localPosition = new Vector3(0, (currentRow + 1) * m_rowHeight, 0);
                 m_allActiveSentenceObjs.Add(psObj);
-                psObj.GetComponent<Text>().text = (i + 1).ToString() + ": " + ps.m_sentence.m_text;
+                psObj.GetComponent<Text>().text = (activeCount).ToString() + ": " + ps.m_sentence.m_text;
+                activeCount--;
                 psObj.GetComponent<Button>().onClick.AddListener(delegate { M_PlayerSentenceOnClick(ps); });
 
                 // Just some security that we don't overflow. If it happens, it's a writing miss (for now)
@@ -302,7 +313,7 @@ public class DialogueManager : MonoBehaviour
         };
     }
 
-    
+
     private void M_CreateTimbaDialogue()
     {
         // Just to make coding the dialogue easier
@@ -402,140 +413,4 @@ public class DialogueManager : MonoBehaviour
 
         };
     }
-
-    // Second, place the entire "log" of current sentences
-
-
-    //// Then place all current responses
-    //Sentence[] sentences = m_activeSentences.ToArray();
-
-
-
-    //// Iterate from back of queue and put most recent messages first. If full, remove from queue
-    //for (int i = m_activeSentences.Count - 1; i >= 0; i--)
-    //{
-    //    Sentence currentSentence = sentences[i];
-    //    currentRow += currentSentence.m_numRows;
-    //    // Full, remove from queue
-    //    if (currentRow > m_totalNumRowsInWindow)
-    //    {
-    //        m_activeSentences.Dequeue();
-    //    }
-    //    // Print this sentence
-    //    else
-    //    {
-    //        Vector3 sentencePos = new Vector3(0, previousYPos + (currentSentence.m_numRows + 1) * m_rowHeight, 0);
-    //        currentSentence.m_sentenceObj.GetComponent<RectTransform>().localPosition = sentencePos;
-    //        previousYPos = sentencePos.y;
-    //    }
 }
-
-
-
-//private GameObject M_PutSentence(Sentence sentence, GameObject sentencePrefab)
-//{
-//    GameObject newSentenceObj = Instantiate(sentencePrefab, m_conversationStartAnchor);
-//    newSentenceObj.GetComponentInChildren<Image>().sprite = m_resourceManager.M_GetPortrait(sentence.m_portraitIndex);
-//    newSentenceObj.GetComponent<Text>().text = sentence.m_text;
-
-//    // Put player portrait on left side
-//    if (sentence.m_portraitIndex == 0 || sentence.m_portraitIndex == 3)
-//    {
-//        Vector3 currentPos = newSentenceObj.GetComponentInChildren<Image>().rectTransform.localPosition;
-//        newSentenceObj.GetComponentInChildren<Image>().rectTransform.localPosition = new Vector3(-1 * currentPos.x, currentPos.y, currentPos.z);
-//    }
-//    // If there's only one row, put it right aligned (only npc portraits)
-//    if (sentence.m_numRows == 1 && (sentence.m_portraitIndex != 0 || sentence.m_portraitIndex == 3))
-//    {
-//        newSentenceObj.GetComponent<Text>().alignment = TextAnchor.UpperRight;
-//    }
-
-//    sentence.m_sentenceObj = newSentenceObj;
-//    m_activeSentences.Enqueue(sentence);
-//    return newSentenceObj;
-//}
-
-//private void M_PutPlayerSentences()
-//{
-//    int nextrSentenceIndex = 1;
-//    foreach (PlayerSentence playerSentence in m_DEBUGcharacter.m_playerSentences)
-//    {
-//        if (playerSentence.m_active)
-//        {
-//            playerSentence.m_sentence.UpdateText(nextrSentenceIndex.ToString() + ": " + playerSentence.m_sentence.m_text);
-//            nextrSentenceIndex++;
-//            GameObject playerSentenceObj = M_PutSentence(playerSentence.m_sentence, m_playerSentencePrefab);
-//            playerSentenceObj.GetComponent<Button>().onClick.AddListener(delegate { M_PlayerSentenceOnClick(playerSentence); });
-//        }
-//    }
-//    m_numActivePlayerSentences = nextrSentenceIndex - 1;
-//    M_UpdateSentencePositions();
-//}
-
-//public void M_PlayerSentenceOnClick(PlayerSentence playerSentenceClicked)
-//{
-//    Sentence[] sentenceArray = m_activeSentences.ToArray();
-//    // Remove all player sentence objects (the last few sentences in the queue)
-//    for (int i = m_activeSentences.Count - 1; i >= 0; i--)
-//    {
-//        Destroy(sentenceArray[i].m_sentenceObj);
-//    }
-
-//    // Convert queue to array, remove last few sentences, then back to queue
-//    m_activeSentences = new Queue<Sentence>(sentenceArray.Skip(m_activeSentences.Count - m_numActivePlayerSentences));
-
-//    // Now start the conversation from this player sentence
-//    m_currentPlayerSentence = playerSentenceClicked;
-//    m_currentConversationIndex = 0;
-//    M_ProgressConversation();
-//}
-
-//private void M_ProgressConversation()
-//{
-//    M_PutSentence(m_currentPlayerSentence.m_conversation[m_currentConversationIndex], m_sentencePrefab);
-//    m_currentConversationIndex++;
-//    M_UpdateSentencePositions();
-//    // Check if conversation is done
-//    if (m_currentConversationIndex > m_currentPlayerSentence.m_conversation.Count)
-//    {
-//        foreach (int index in m_currentPlayerSentence.m_enableIndices)
-//        {
-//            m_DEBUGcharacter.m_playerSentences[index].m_active = true;
-//        }
-//        foreach (int index in m_currentPlayerSentence.m_disableIndices)
-//        {
-//            m_DEBUGcharacter.m_playerSentences[index].m_active = false;
-//        }
-//    }
-//    M_PutPlayerSentences();
-//}
-
-
-//private void M_UpdateSentencePositions()
-//{
-//    // Iterate from back of queue and put most recent messages first. If full, remove from queue
-//    int currentRow = 0;
-//    //Sentence[] sentences = new Sentence[m_activeSentenceObjs.Count];
-//    Sentence[] sentences = m_activeSentences.ToArray();
-
-//    float previousYPos = 0;
-
-//    for (int i = m_activeSentences.Count; i > 0; i--)
-//    {
-//        Sentence currentSentence = sentences[i - 1];
-//        currentRow += currentSentence.m_numRows;
-//        // Full, remove from queue
-//        if (currentRow > m_totalNumRowsInWindow)
-//        {
-//            Destroy(m_activeSentences.Dequeue().m_sentenceObj);
-//        }
-//        // Print this sentence
-//        else
-//        {
-//            Vector3 sentencePos = new Vector3(0, previousYPos + (currentSentence.m_numRows + 1) * m_rowHeight, 0);
-//            currentSentence.m_sentenceObj.GetComponent<RectTransform>().localPosition = sentencePos;
-//            previousYPos = sentencePos.y;
-//        }
-//    }
-//}
-//}

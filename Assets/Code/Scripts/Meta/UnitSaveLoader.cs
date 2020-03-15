@@ -17,13 +17,6 @@ public class UnitSaveLoader : MonoBehaviour
 
     }
 
-    //List<string> M_GetSavedUnitNames()
-    //{
-    //    m_unitBuilder = GetComponent<UnitBuilder>();
-    //    string fullSaveDirectory = Directory.GetCurrentDirectory() + m_unitSaveFolder;
-    //    return new List<string>(Directory.GetFiles(fullSaveDirectory));
-    //}
-
     public void M_SaveUnitToFile(string unitName, MetaUnit metaUnit)
     {
         // See if unit name already exists, and if we should overwrite. Make check separate method?

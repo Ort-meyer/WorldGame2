@@ -20,11 +20,11 @@ public class DemoAi : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_player = GetComponent<Player>();
-        m_worldManager = FindObjectOfType<WorldManager>();
+        //m_player = GetComponent<Player>();
+        //m_worldManager = FindObjectOfType<WorldManager>();
 
-        Invoke("M_FormConvoy", m_timeUntilConvoyForm);
-        Invoke("M_MoveOut", m_timeUntilMoveout);
+        //Invoke("M_FormConvoy", m_timeUntilConvoyForm);
+        //Invoke("M_MoveOut", m_timeUntilMoveout);
     }
 
     // Update is called once per frame

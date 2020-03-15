@@ -78,16 +78,18 @@ public class UnitBuilder : MonoBehaviour
     // TODO just move all this singleton meta thingies to the same game object?
     WorldManager m_worldManager;
 
+    UnitSaveLoader m_saveLoadHandler;
+
     private void Awake()
     {
         m_worldManager = FindObjectOfType<WorldManager>();
+        m_saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
     }
 
     private void Start()
     {
-
         // Convert arrays to dictionaries
-        foreach(HullTypePrefab kvp in hullPrefabsArray)
+        foreach (HullTypePrefab kvp in hullPrefabsArray)
         {
             m_hullPrefabs.Add(kvp.hullType, kvp.prefab);
         }
@@ -105,9 +107,9 @@ public class UnitBuilder : MonoBehaviour
         //BuildTank(new Vector3(0,0,0));
         //BuildTank(new Vector3(4,0,0));
         
-        BuildEnemyTank(new Vector3(0,0,0));
-        BuildEnemyTank(new Vector3(4,0,0));
-        BuildEnemyTank(new Vector3(-4, 0, 0));
+        //BuildEnemyTank(new Vector3(0,0,0));
+        //BuildEnemyTank(new Vector3(4,0,0));
+        //BuildEnemyTank(new Vector3(-4, 0, 0));
         //BuildDoubleTank();
 
     }
@@ -197,7 +199,6 @@ public class UnitBuilder : MonoBehaviour
 
     public void BuildBuggy()
     {
-        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
         ///////////////// Define and build buggy///////////////
         // Create a full meta unit here for development purposes
         MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
@@ -211,9 +212,9 @@ public class UnitBuilder : MonoBehaviour
         MetaUnit buggyUnit = new MetaUnit(HullType.Buggy, 1);
         buggyUnit.m_turrets.Add(0, buggyTurret);
 
-        saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
+        m_saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
 
-        MetaUnit loadedBuggy = saveLoadHandler.M_LoadFromFile("buggy");
+        MetaUnit loadedBuggy = m_saveLoadHandler.M_LoadFromFile("buggy");
         M_BuildMetaUnit(loadedBuggy, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
     }
     public void BuildTank(Vector3 offset)

@@ -101,4 +101,12 @@ public class WorldManager : MonoBehaviour
         return allUnitsInWorld;
     }
 
+    private void M_FormConvoy(GameObject newUnitObj, int faction)
+    {
+        Convoy newUnitConvoy = m_unitBuilder.M_BuildNewConvoy(faction);
+        m_players[faction].m_ownedConvoys.Add(newUnitConvoy.GetInstanceID(), newUnitConvoy);
+        Unit newUnit = newUnitObj.GetComponent<Unit>();
+        newUnitConvoy.m_units.Add(newUnit);
+        newUnit.M_Activate(newUnitConvoy);
+    }
 }

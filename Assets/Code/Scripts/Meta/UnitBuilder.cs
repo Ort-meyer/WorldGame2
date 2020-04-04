@@ -127,10 +127,8 @@ public class UnitBuilder : MonoBehaviour
         newUnitObj.transform.rotation = spawnRotation;
         Unit newUnit = newUnitObj.GetComponent<Unit>();
         List<BaseTurret> builtTurrets = M_BuildTurrets(metaUnit.m_turrets, newUnit.m_gfxObject);
-        Convoy newUnitConvoy = M_BuildNewConvoy(metaUnit.m_faction);
-        newUnit.M_Init(metaUnit, builtTurrets, newUnitConvoy);
-
-        m_worldManager.m_players[metaUnit.m_faction].m_ownedConvoys.Add(newUnitConvoy.GetInstanceID(), newUnitConvoy);
+        newUnit.M_Init(metaUnit, builtTurrets);
+    
         return newUnitObj;
     }
 

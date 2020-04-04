@@ -10,13 +10,22 @@ public class BuildRoomUI : MonoBehaviour
     public GameObject m_loadUnitButtonObj;
     public GameObject m_componentDropdownObj;
 
+    public GameObject m_unitSpawnPosition;
+
+    private UnitBuilder m_unitBuilder;
+
     // Use this for initialization
     void Start()
     {
+        // Set meta references
+        m_unitBuilder = FindObjectOfType<UnitBuilder>();
+
+        // Init component dropdown
         Dropdown componentDropdown = m_componentDropdownObj.GetComponent<Dropdown>();
         componentDropdown.options.Clear();
-        componentDropdown.onValueChanged.AddListener(delegate { M_ComponentDropdownValueChange(); });
+        componentDropdown.onValueChanged.AddListener(delegate { M_ComponentDropdownValueChange(componentDropdown); });
 
+        // Init new unit button
         m_newUnitButtonObj.GetComponent<Button>().onClick.AddListener(delegate {M_NewUnitButtonPress(); });
     }
 
@@ -30,14 +39,19 @@ public class BuildRoomUI : MonoBehaviour
     {
         Dropdown componentDropdown = m_componentDropdownObj.GetComponent<Dropdown>();
         componentDropdown.options.Clear();
-        componentDropdown.options.Add(new Dropdown.OptionData("something cool"));
-        componentDropdown.options.Add(new Dropdown.OptionData("something cool2"));
-        componentDropdown.options.Add(new Dropdown.OptionData("something cool5"));
+        componentDropdown.options.Add(new Dropdown.OptionData("dummy"));
 
+
+        foreach (HullType hulltype in m_unitBuilder.m_hullPrefabs.Keys)
+        {
+            componentDropdown.options.Add(new Dropdown.OptionData(hulltype.ToString()));
+            
+        }
     }
 
-    void M_ComponentDropdownValueChange()
+    void M_ComponentDropdownValueChange(Dropdown dropdown)
     {
-        Debug.Log("derp");
+        MetaUnit newUnit = new MetaUnit(HullType.Tank, 0);
+        GameObject newUnitObj = m_unitBuilder.M_BuildMetaUnit(newUnit, m_unitSpawnPosition.transform.position, m_unitSpawnPosition.transform.rotation);
     }
 }

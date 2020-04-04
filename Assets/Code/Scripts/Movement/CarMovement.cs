@@ -28,21 +28,27 @@ public class CarMovement : BaseMovement
 
     void Update()
     {
-        Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
-        // Poor way to ensure we stop moving when we're close to destination
-        if (toNextWaypoint.magnitude > 0.05)
+        if (m_active)
         {
-            return;
+            Vector3 toNextWaypoint = m_navPathManager.M_GetNextCorner() - transform.position;
+            // Poor way to ensure we stop moving when we're close to destination
+            if (toNextWaypoint.magnitude > 0.05)
+            {
+                return;
+            }
+            toNextWaypoint.y = 0;
+
+            // Direction vector with magnitude to where this unit should be in the convoy
+            Vector3 toWhereWeShoudldBe = (m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.position) - transform.position;
+
+            M_TurnWheels(toNextWaypoint);
+            M_TurnVehicle();
+            m_charControl.SimpleMove(m_frontWheels[0].transform.forward.normalized * m_speed);
         }
-        toNextWaypoint.y = 0;
-
-        // Direction vector with magnitude to where this unit should be in the convoy
-        Vector3 toWhereWeShoudldBe = (m_unit.m_convoy.transform.position + m_unit.m_convoy.transform.position) - transform.position;
-
-        M_TurnWheels(toNextWaypoint);
-        M_TurnVehicle();
-        m_charControl.SimpleMove(m_frontWheels[0].transform.forward.normalized * m_speed);
-
+        else
+        {
+            m_charControl.SimpleMove(new Vector3());
+        }
     }
 
     private void M_TurnWheels(Vector3 direction)

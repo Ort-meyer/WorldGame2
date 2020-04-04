@@ -93,12 +93,16 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void M_Init(MetaUnit metaUnit, List<BaseTurret> turrets, Convoy convoy)
+    public void M_Init(MetaUnit metaUnit, List<BaseTurret> turrets)
     {
         m_metaUnit = metaUnit;
         m_turrets = turrets;
-        m_convoy = convoy;
-        convoy.m_units.Add(this);
+    }
+
+    // Activates this unit to move around and stuff
+    public void M_Activate(Convoy convoy)
+    {
+        m_movement.enabled = true;
     }
 
 

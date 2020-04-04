@@ -13,6 +13,9 @@ public class BaseMovement : MonoBehaviour
 
     public NavPathManager m_navPathManager;
 
+    // Whether this unit should move at all
+    public bool m_active = false;
+
     // Use this for initialization
     protected virtual void Start()
     {

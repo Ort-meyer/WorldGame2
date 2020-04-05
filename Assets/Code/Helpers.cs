@@ -7,7 +7,7 @@ public static class Helpers
     public static float GetDiffAngle2D(Vector3 forward, Vector3 vectorToTarget)
     {
         Vector2 currentDirection = new Vector2(forward.x, forward.z);
-        Vector2 targetDirection = new Vector2(vectorToTarget.x, vectorToTarget.z); 
+        Vector2 targetDirection = new Vector2(vectorToTarget.x, vectorToTarget.z);
 
         float diffAngle = Vector2.Angle(currentDirection, targetDirection);
 
@@ -69,10 +69,10 @@ public static class Helpers
     {
         float currentDistance = 100000;
         GameObject closestObj = null;
-        foreach(GameObject obj in toObjects)
+        foreach (GameObject obj in toObjects)
         {
             float thisDistance = (fromObj.transform.position - obj.transform.position).magnitude;
-            if(thisDistance < currentDistance)
+            if (thisDistance < currentDistance)
             {
                 currentDistance = thisDistance;
                 closestObj = obj;
@@ -85,5 +85,10 @@ public static class Helpers
     public static Vector3 RotatePointAroundPivot(Quaternion rotation, Vector3 point, Vector3 pivot)
     {
         return rotation * (point - pivot) + pivot;
+    }
+
+    public static T ToEnum<T>(string str)
+    {
+        return(T)System.Enum.Parse(typeof(T), str);
     }
 }

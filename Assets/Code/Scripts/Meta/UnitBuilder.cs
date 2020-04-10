@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//public enum HullType { Tank, Buggy };
+//public enum TurretType { Rotating, Traverse, TankTurret, Double};
+//public enum WeaponType { MachineGun, Cannon };
+
 public enum HullType { Tank, Buggy };
-public enum TurretType { Rotating, Traverse, TankTurret, Double};
-public enum WeaponType { MachineGun, Cannon };
+public enum TurretType { Small};
+public enum WeaponType { MachineGun};
 
 [System.Serializable]
 public struct HullTypePrefab
@@ -195,104 +199,104 @@ public class UnitBuilder : MonoBehaviour
         return newConvoy;
     }
 
-    public void BuildBuggy()
-    {
-        ///////////////// Define and build buggy///////////////
-        // Create a full meta unit here for development purposes
-        MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
+    //public void BuildBuggy()
+    //{
+    //    ///////////////// Define and build buggy///////////////
+    //    // Create a full meta unit here for development purposes
+    //    MetaWeapon machineGun = new MetaWeapon(WeaponType.MachineGun);
 
-        MetaTurret machineGunMount = new MetaTurret(TurretType.Traverse);
-        machineGunMount.m_weapons.Add(0, machineGun);
+    //    MetaTurret machineGunMount = new MetaTurret(TurretType.Traverse);
+    //    machineGunMount.m_weapons.Add(0, machineGun);
 
-        MetaTurret buggyTurret = new MetaTurret(TurretType.Rotating);
-        buggyTurret.m_turrets.Add(0, machineGunMount);
+    //    MetaTurret buggyTurret = new MetaTurret(TurretType.Rotating);
+    //    buggyTurret.m_turrets.Add(0, machineGunMount);
 
-        MetaUnit buggyUnit = new MetaUnit(HullType.Buggy, 1);
-        buggyUnit.m_turrets.Add(0, buggyTurret);
+    //    MetaUnit buggyUnit = new MetaUnit(HullType.Buggy, 1);
+    //    buggyUnit.m_turrets.Add(0, buggyTurret);
 
-        m_saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
+    //    m_saveLoadHandler.M_SaveUnitToFile("buggy", buggyUnit);
 
-        MetaUnit loadedBuggy = m_saveLoadHandler.M_LoadFromFile("buggy");
-        M_BuildMetaUnit(loadedBuggy, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
-    }
-    public void BuildTank(Vector3 offset)
-    {
-        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
-        // Create a full meta unit here for development purposes
-        MetaWeapon mainGun = new MetaWeapon(WeaponType.Cannon);
-        MetaTurret mainGunMount = new MetaTurret(TurretType.Traverse);
-        mainGunMount.m_weapons.Add(0, mainGun);
+    //    MetaUnit loadedBuggy = m_saveLoadHandler.M_LoadFromFile("buggy");
+    //    M_BuildMetaUnit(loadedBuggy, m_spawnPosition.transform.position, m_spawnPosition.transform.rotation);
+    //}
+    //public void BuildTank(Vector3 offset)
+    //{
+    //    UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
+    //    // Create a full meta unit here for development purposes
+    //    MetaWeapon mainGun = new MetaWeapon(WeaponType.Cannon);
+    //    MetaTurret mainGunMount = new MetaTurret(TurretType.Traverse);
+    //    mainGunMount.m_weapons.Add(0, mainGun);
 
-        MetaWeapon auxGun = new MetaWeapon(WeaponType.MachineGun);
-        MetaTurret auxGunMount = new MetaTurret(TurretType.Traverse);
-        auxGunMount.m_weapons.Add(0, auxGun);
+    //    MetaWeapon auxGun = new MetaWeapon(WeaponType.MachineGun);
+    //    MetaTurret auxGunMount = new MetaTurret(TurretType.Traverse);
+    //    auxGunMount.m_weapons.Add(0, auxGun);
 
-        MetaTurret tankTurret = new MetaTurret(TurretType.TankTurret);
-        tankTurret.m_turrets.Add(0, mainGunMount);
-        tankTurret.m_turrets.Add(1, auxGunMount);
+    //    MetaTurret tankTurret = new MetaTurret(TurretType.TankTurret);
+    //    tankTurret.m_turrets.Add(0, mainGunMount);
+    //    tankTurret.m_turrets.Add(1, auxGunMount);
 
-        MetaUnit tankUnit = new MetaUnit(HullType.Tank, 1);
-        tankUnit.m_turrets.Add(0, tankTurret);
+    //    MetaUnit tankUnit = new MetaUnit(HullType.Tank, 1);
+    //    tankUnit.m_turrets.Add(0, tankTurret);
 
-        saveLoadHandler.M_SaveUnitToFile("tank", tankUnit);
+    //    saveLoadHandler.M_SaveUnitToFile("tank", tankUnit);
 
-        MetaUnit loadedTank = saveLoadHandler.M_LoadFromFile("tank");
-        M_BuildMetaUnit(loadedTank, m_spawnPosition.transform.position + offset, m_spawnPosition.transform.rotation);
-    }
-    public void BuildDoubleTank()
-    {
-        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
-        /////////////// Define and build double cannon tank
-        MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
-        MetaTurret rightGunMount = new MetaTurret(TurretType.Traverse);
-        rightGunMount.m_weapons.Add(0, rightGun);
+    //    MetaUnit loadedTank = saveLoadHandler.M_LoadFromFile("tank");
+    //    M_BuildMetaUnit(loadedTank, m_spawnPosition.transform.position + offset, m_spawnPosition.transform.rotation);
+    //}
+    //public void BuildDoubleTank()
+    //{
+    //    UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
+    //    /////////////// Define and build double cannon tank
+    //    MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
+    //    MetaTurret rightGunMount = new MetaTurret(TurretType.Traverse);
+    //    rightGunMount.m_weapons.Add(0, rightGun);
 
-        MetaWeapon leftGun = new MetaWeapon(WeaponType.Cannon);
-        MetaTurret leftGunMount = new MetaTurret(TurretType.Traverse);
-        leftGunMount.m_weapons.Add(0, leftGun);
+    //    MetaWeapon leftGun = new MetaWeapon(WeaponType.Cannon);
+    //    MetaTurret leftGunMount = new MetaTurret(TurretType.Traverse);
+    //    leftGunMount.m_weapons.Add(0, leftGun);
 
-        MetaTurret doubleGunMount = new MetaTurret(TurretType.Double);
-        doubleGunMount.m_turrets.Add(0, rightGunMount);
-        doubleGunMount.m_turrets.Add(1, leftGunMount);
+    //    MetaTurret doubleGunMount = new MetaTurret(TurretType.Double);
+    //    doubleGunMount.m_turrets.Add(0, rightGunMount);
+    //    doubleGunMount.m_turrets.Add(1, leftGunMount);
 
-        MetaTurret doubleTankTurret = new MetaTurret(TurretType.TankTurret);
-        doubleTankTurret.m_turrets.Add(0, doubleGunMount);
+    //    MetaTurret doubleTankTurret = new MetaTurret(TurretType.TankTurret);
+    //    doubleTankTurret.m_turrets.Add(0, doubleGunMount);
 
-        MetaUnit doubleTankUnit = new MetaUnit(HullType.Tank, 1);
-        doubleTankUnit.m_turrets.Add(0, doubleTankTurret);
+    //    MetaUnit doubleTankUnit = new MetaUnit(HullType.Tank, 1);
+    //    doubleTankUnit.m_turrets.Add(0, doubleTankTurret);
 
-        saveLoadHandler.M_SaveUnitToFile("doubletank", doubleTankUnit);
-        MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
-        M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-6, 0, 0), m_spawnPosition.transform.rotation);
+    //    saveLoadHandler.M_SaveUnitToFile("doubletank", doubleTankUnit);
+    //    MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
+    //    M_BuildMetaUnit(loadedDoubleTank, m_spawnPosition.transform.position + new Vector3(-6, 0, 0), m_spawnPosition.transform.rotation);
 
 
-    }
-    public void BuildEnemyTank(Vector3 offset)
-    {
-        UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
-        MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
-        MetaTurret rightGunMount = new MetaTurret(TurretType.Traverse);
-        rightGunMount.m_weapons.Add(0, rightGun);
+    //}
+    //public void BuildEnemyTank(Vector3 offset)
+    //{
+    //    UnitSaveLoader saveLoadHandler = FindObjectOfType<UnitSaveLoader>();
+    //    MetaWeapon rightGun = new MetaWeapon(WeaponType.Cannon);
+    //    MetaTurret rightGunMount = new MetaTurret(TurretType.Traverse);
+    //    rightGunMount.m_weapons.Add(0, rightGun);
 
-        MetaWeapon leftGun = new MetaWeapon(WeaponType.Cannon);
-        MetaTurret leftGunMount = new MetaTurret(TurretType.Traverse);
-        leftGunMount.m_weapons.Add(0, leftGun);
+    //    MetaWeapon leftGun = new MetaWeapon(WeaponType.Cannon);
+    //    MetaTurret leftGunMount = new MetaTurret(TurretType.Traverse);
+    //    leftGunMount.m_weapons.Add(0, leftGun);
 
-        MetaTurret doubleGunMount = new MetaTurret(TurretType.Double);
-        doubleGunMount.m_turrets.Add(0, rightGunMount);
-        doubleGunMount.m_turrets.Add(1, leftGunMount);
+    //    MetaTurret doubleGunMount = new MetaTurret(TurretType.Double);
+    //    doubleGunMount.m_turrets.Add(0, rightGunMount);
+    //    doubleGunMount.m_turrets.Add(1, leftGunMount);
 
-        MetaTurret doubleTankTurret = new MetaTurret(TurretType.TankTurret);
-        doubleTankTurret.m_turrets.Add(0, doubleGunMount);
+    //    MetaTurret doubleTankTurret = new MetaTurret(TurretType.TankTurret);
+    //    doubleTankTurret.m_turrets.Add(0, doubleGunMount);
 
-        MetaUnit doubleTankUnit = new MetaUnit(HullType.Tank, 1);
-        doubleTankUnit.m_turrets.Add(0, doubleTankTurret);
+    //    MetaUnit doubleTankUnit = new MetaUnit(HullType.Tank, 1);
+    //    doubleTankUnit.m_turrets.Add(0, doubleTankTurret);
 
-        saveLoadHandler.M_SaveUnitToFile("doubletank", doubleTankUnit);
-        MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
-        // Debuggy way of creating an enemy tank
-        loadedDoubleTank.m_faction = 0;
-        M_BuildMetaUnit(loadedDoubleTank, m_enemyConvoySpawnPosition.transform.position + offset, m_spawnPosition.transform.rotation);
-    }
+    //    saveLoadHandler.M_SaveUnitToFile("doubletank", doubleTankUnit);
+    //    MetaUnit loadedDoubleTank = saveLoadHandler.M_LoadFromFile("doubletank");
+    //    // Debuggy way of creating an enemy tank
+    //    loadedDoubleTank.m_faction = 0;
+    //    M_BuildMetaUnit(loadedDoubleTank, m_enemyConvoySpawnPosition.transform.position + offset, m_spawnPosition.transform.rotation);
+    //}
 
 }

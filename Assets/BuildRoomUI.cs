@@ -21,6 +21,10 @@ public class BuildRoomUI : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        // This is just for editor. It's just for development purposes
+        m_unitSpawnPosition.SetActive(false);
+
+
         // Set meta references
         m_unitBuilder = FindObjectOfType<UnitBuilder>();
         m_unitBuilder = FindObjectOfType<UnitBuilder>();
@@ -61,6 +65,7 @@ public class BuildRoomUI : MonoBehaviour
             }
             MetaUnit newUnit = new MetaUnit(Helpers.ToEnum<HullType>(componentName), 0);
             m_unitConstructingObj = m_unitBuilder.M_BuildMetaUnit(newUnit, m_unitSpawnPosition.transform.position, m_unitSpawnPosition.transform.rotation);
+            dropdown.ClearOptions();
         }
         if (componentType == "turret")
         {
